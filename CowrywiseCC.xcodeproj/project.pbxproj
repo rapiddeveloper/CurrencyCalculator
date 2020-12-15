@@ -56,6 +56,9 @@
 		846E682D2588FB3E00C71DA6 /* CowrywiseCC */ = {
 			isa = PBXGroup;
 			children = (
+				846E68442588FBD200C71DA6 /* Supporting Views */,
+				846E68432588FBB700C71DA6 /* Home */,
+				846E68422588FB8E00C71DA6 /* Models */,
 				846E682E2588FB3E00C71DA6 /* AppDelegate.swift */,
 				846E68302588FB3E00C71DA6 /* SceneDelegate.swift */,
 				846E68322588FB3E00C71DA6 /* ContentView.swift */,
@@ -73,6 +76,27 @@
 				846E68372588FB4500C71DA6 /* Preview Assets.xcassets */,
 			);
 			path = "Preview Content";
+			sourceTree = "<group>";
+		};
+		846E68422588FB8E00C71DA6 /* Models */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = Models;
+			sourceTree = "<group>";
+		};
+		846E68432588FBB700C71DA6 /* Home */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = Home;
+			sourceTree = "<group>";
+		};
+		846E68442588FBD200C71DA6 /* Supporting Views */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = "Supporting Views";
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
