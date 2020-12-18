@@ -14,6 +14,13 @@ enum ConversionType: Int, Hashable {
     case targetToBase = 2
 }
 
+enum CurrencyType: String, Hashable {
+    case target = "target"
+    case base = "base"
+}
+
+
+
 struct RateResponse: Codable {
     var success: Bool
     var timestamp: Double
@@ -23,11 +30,17 @@ struct RateResponse: Codable {
     var rates: [String: Double]
  }
 
+struct CurrenciesResponse: Codable {
+   var success: Bool
+   var symbols: [String:String]
+}
+
 struct ConversionInfo {
     var baseCurrencyAmt: Double?
     var targetCurrencyAmt: Double?
     var baseCurrency: String
     var targetCurrency: String
+    var currencies: [(String,String)]?
     var rate: [String: Double]?
 }
 
@@ -58,6 +71,17 @@ struct ConversionInfoViewModel {
     var targetCurrency: String {
         String(conversionInfo.targetCurrency.uppercased())
     }
+    
+    var currencies: [String] {
+        
+        var currencies: [String] = []
+        
+        if let currencyCodesAndNames = conversionInfo.currencies {
+            currencies = currencyCodesAndNames.map({"\($0.0) - \($0.1)"})
+        }
+        
+        return currencies
+    }
        
 }
 
@@ -73,6 +97,13 @@ class AppData: ObservableObject {
     
     
     var conversionType: ConversionType = .baseToTarget
+    let APIKey = "9e01c5fa47031db88531e4fb4bffa919"
+    let currenciesEndpoint = "symbols"
+    var currenciesURL = ""
+    var selectedBaseCurrencyIdx = 0
+    var selectedTargetCurrencyIdx = 1
+    var selectedCurrencyType: CurrencyType = .base
+    
     var rateEndpoint: String {
  
         let today = Date()
@@ -84,23 +115,27 @@ class AppData: ObservableObject {
         
         let formattedDate = formatter.string(from: today)
         
-        return   "http://data.fixer.io/api/\(formattedDate)?access_key=9e01c5fa47031db88531e4fb4bffa919&base=\(conversionInfo.baseCurrency)&symbols=\(conversionInfo.targetCurrency)"
+        return   "http://data.fixer.io/api/\(formattedDate)?access_key=\(APIKey)&base=\(conversionInfo.baseCurrency)&symbols=\(conversionInfo.targetCurrency)"
     }
     
     init() {
-        
+        currenciesURL = "http://data.fixer.io/api/\(currenciesEndpoint)?access_key=\(APIKey)"
         self.conversionInfo = ConversionInfoViewModel(conversionInfo: ConversionInfo(baseCurrencyAmt: 1, targetCurrencyAmt: 10, baseCurrency: "EUR", targetCurrency: "NGN", rate: nil))
 
         loadRate(url: rateEndpoint) { rate in
             self.updateConversionInfo(with: rate)
+            // print(self.conversionInfo)
+            self.loadCurrencies(url: self.currenciesURL) { currencies in
+                if let currencies = currencies {
+                    self.updateConversionInfo(currencies: currencies.sorted(by: {$0.0 < $1.0 }) )
+                   // print(self.conversionInfo)
+                }
+            }
         }
-        
-      //  convertTester()
-       // convertAmountTester()
         
     }
     
-    func updateConversionInfo(with newBaseCurrency: String, with newBaseCurrencyAmt: String, with newTargetCurrency: String, with newTargetCurrencyAmt: String) {
+    func updateConversionInfo(newBaseCurrencyAmt: String, newTargetCurrencyAmt: String) {
         
         // validation
         if let baseAmt = Double(newBaseCurrencyAmt), baseAmt >= 0 {
@@ -115,13 +150,19 @@ class AppData: ObservableObject {
             conversionInfo.conversionInfo.targetCurrencyAmt = nil
         }
         
-        conversionInfo.conversionInfo.baseCurrency = newBaseCurrency
-        conversionInfo.conversionInfo.targetCurrency = newTargetCurrency
-        
+    }
+    
+    func updateConversionInfo(newBaseCurrency: String, newTargetCurrency: String)  {
+         conversionInfo.conversionInfo.baseCurrency = newBaseCurrency
+         conversionInfo.conversionInfo.targetCurrency = newTargetCurrency
     }
     
     func updateConversionInfo(with newRate: [String: Double]?) {
         conversionInfo.conversionInfo.rate = newRate
+    }
+    
+    func updateConversionInfo(currencies: [(String, String)]?) {
+        conversionInfo.conversionInfo.currencies = currencies
     }
     
     /*
@@ -160,6 +201,7 @@ class AppData: ObservableObject {
         }
     }
     
+    
     func loadRate(url: String, completed: @escaping ([String: Double]?)->()) {
          if let url = URL(string: url) {
             let urlRequest = URLRequest(url: url)
@@ -181,14 +223,40 @@ class AppData: ObservableObject {
                 if let responseData = data,
                     let result = try? decoder.decode(RateResponse.self, from: responseData) {
                     completed(result.rates)
-                    
                 }
-//                else {
-//                    self.rates = nil
-//                }
+ 
             })
         }
     }
+    
+    func loadCurrencies(url: String, completed: @escaping ([String: String]?)->()) {
+            if let url = URL(string: url) {
+               let urlRequest = URLRequest(url: url)
+               let session = URLSession.shared
+               ratePublisher = session.dataTaskPublisher(for: urlRequest)
+               .tryMap({ data, response -> Data? in
+                   if let res = response as? HTTPURLResponse {
+                       print(res.statusCode)
+                       if res.statusCode == 200 { // returned anything
+                           return data
+                       }
+                   }
+                   return nil
+               })
+               .receive(on: RunLoop.main)
+               .assertNoFailure()
+               .sink(receiveValue: { data in
+                   let decoder = JSONDecoder()
+                   if let responseData = data,
+                       let result = try? decoder.decode(CurrenciesResponse.self, from: responseData) {
+                       completed(result.symbols)
+                   }
+    
+               })
+           }
+       }
+    
+ 
     
     /*
     func convertTester() {

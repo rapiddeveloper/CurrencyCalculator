@@ -43,13 +43,6 @@ struct Home_Previews: PreviewProvider {
     }
 }
 
-struct CurrencyBtn: View {
-     
-    var body: some View {
-        Text("Currency Btn")
-    }
-}
-
 struct CurrencyHistoryTrend: View {
      
     var body: some View {

@@ -15,6 +15,8 @@
 		846E683B2588FB4500C71DA6 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 846E68392588FB4500C71DA6 /* LaunchScreen.storyboard */; };
 		846E68462588FD5800C71DA6 /* AppData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 846E68452588FD5800C71DA6 /* AppData.swift */; };
 		847B326E258BBB9500C7C4F1 /* Home.swift in Sources */ = {isa = PBXBuildFile; fileRef = 847B326D258BBB9500C7C4F1 /* Home.swift */; };
+		847B3270258BCC2200C7C4F1 /* CurrencyBtn.swift in Sources */ = {isa = PBXBuildFile; fileRef = 847B326F258BCC2200C7C4F1 /* CurrencyBtn.swift */; };
+		847B3273258CD39300C7C4F1 /* CurrencyList.swift in Sources */ = {isa = PBXBuildFile; fileRef = 847B3272258CD39300C7C4F1 /* CurrencyList.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -28,6 +30,8 @@
 		846E683C2588FB4500C71DA6 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		846E68452588FD5800C71DA6 /* AppData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppData.swift; sourceTree = "<group>"; };
 		847B326D258BBB9500C7C4F1 /* Home.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Home.swift; sourceTree = "<group>"; };
+		847B326F258BCC2200C7C4F1 /* CurrencyBtn.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CurrencyBtn.swift; sourceTree = "<group>"; };
+		847B3272258CD39300C7C4F1 /* CurrencyList.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CurrencyList.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -60,6 +64,7 @@
 		846E682D2588FB3E00C71DA6 /* CowrywiseCC */ = {
 			isa = PBXGroup;
 			children = (
+				847B3271258CD36D00C7C4F1 /* Currency */,
 				846E68442588FBD200C71DA6 /* Supporting Views */,
 				846E68432588FBB700C71DA6 /* Home */,
 				846E68422588FB8E00C71DA6 /* Models */,
@@ -101,8 +106,17 @@
 		846E68442588FBD200C71DA6 /* Supporting Views */ = {
 			isa = PBXGroup;
 			children = (
+				847B326F258BCC2200C7C4F1 /* CurrencyBtn.swift */,
 			);
 			path = "Supporting Views";
+			sourceTree = "<group>";
+		};
+		847B3271258CD36D00C7C4F1 /* Currency */ = {
+			isa = PBXGroup;
+			children = (
+				847B3272258CD39300C7C4F1 /* CurrencyList.swift */,
+			);
+			path = Currency;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -177,6 +191,8 @@
 			buildActionMask = 2147483647;
 			files = (
 				846E682F2588FB3E00C71DA6 /* AppDelegate.swift in Sources */,
+				847B3270258BCC2200C7C4F1 /* CurrencyBtn.swift in Sources */,
+				847B3273258CD39300C7C4F1 /* CurrencyList.swift in Sources */,
 				846E68312588FB3E00C71DA6 /* SceneDelegate.swift in Sources */,
 				847B326E258BBB9500C7C4F1 /* Home.swift in Sources */,
 				846E68332588FB3E00C71DA6 /* ContentView.swift in Sources */,
