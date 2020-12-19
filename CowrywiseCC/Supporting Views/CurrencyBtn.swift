@@ -8,27 +8,39 @@
 
 import SwiftUI
 
-struct CurrencyBtn: View {
+struct CurrencyBtn<Content: View>: View {
     
     @EnvironmentObject var appData: AppData
+    let currencyType: CurrencyType
+    
+    let label: Content
+    let action: ()->()
+    
+    init(currencyType: CurrencyType, @ViewBuilder label:()->Content, /*@ViewBuilder icon:()->Content,*/ action: @escaping ()->()) {
+        self.currencyType = currencyType
+        self.label = label()
+        //self.icon = icon()
+        self.action = action
+      
+    }
     
     var body: some View {
+      
         HStack(spacing: 12) {
-            Image("countryflag")
-                .resizable()
-                .renderingMode(.original)
-                .scaledToFill()
-                .frame(width: 24, height: 24)
-                .clipShape(Circle())
-            Text(appData.conversionInfo.baseCurrency)
-                .font(.headline)
+            label
+            Group {
+                if currencyType == .base {
+                    Text(appData.conversionInfo.baseCurrency)
+                } else {
+                    Text(appData.conversionInfo.targetCurrency)
+                }
+            }
+            .font(.headline)
             Button(action: {
-               
-                
+                self.action()
             }, label: {
-                Image(systemName: "chevron.down")
+                 Image(systemName: "chevron.down")
             })
-          
         }
         .padding(8)
         .foregroundColor(Color(UIColor.systemGray2))
@@ -43,7 +55,7 @@ struct CurrencyBtn: View {
 
 struct CurrencyBtn_Previews: PreviewProvider {
     static var previews: some View {
-        CurrencyBtn()
+        CurrencyBtn(currencyType: .base, label: {EmptyView()},  action: {})
         .environmentObject(AppData())
     }
 }

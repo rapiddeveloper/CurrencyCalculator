@@ -13,18 +13,45 @@ import SwiftUI
 struct CurrencyList: View {
     @EnvironmentObject var appData: AppData
     @State private var selectedCurrency: String = ""
+     
     
     var body: some View {
         VStack(alignment: .leading) {
-            List {
+            HStack {
                 Text("Select \(appData.selectedCurrencyType.rawValue.capitalized) Currency")
+                Spacer()
+                Button("Done", action: {
+                    self.appData.currencyListOpened = false
+                })
+            }
+            .padding()
+            List  {
+               
                 ForEach(appData.conversionInfo.currencies, id: \.self) { currency in
                     Text(currency)
                         .font(.subheadline)
+                        .frame(minWidth: 0, maxWidth: .infinity, alignment: .leading)
+                        .contentShape(Rectangle())
+                        .onTapGesture {
+                           
+                            self.selectedCurrency = currency
+                    }
+                    .listRowBackground(self.selectedCurrency == currency ? Color.gray : Color.clear)
                 }
+              
+            }
+        
+        }
+        .onAppear {
+            if self.appData.selectedCurrencyType == .base {
+                self.selectedCurrency = self.appData.conversionInfo.baseCurrency
+            } else {
+                self.selectedCurrency = self.appData.conversionInfo.targetCurrency
             }
         }
+        
         .onDisappear {
+            
             let newCurrencies = self.getNewCurrencies()
             if let newBaseCurrency = newCurrencies[CurrencyType.base],
                 let newTargetCurrency = newCurrencies[CurrencyType.target] {
@@ -93,7 +120,9 @@ struct CurrencyList: View {
 
 struct CurrencyList_Previews: PreviewProvider {
     static var previews: some View {
-        CurrencyList()
-        .environmentObject(AppData())
+        NavigationView {
+            CurrencyList()
+                .environmentObject(AppData())
+        }
     }
 }

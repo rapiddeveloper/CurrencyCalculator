@@ -77,7 +77,8 @@ struct ConversionInfoViewModel {
         var currencies: [String] = []
         
         if let currencyCodesAndNames = conversionInfo.currencies {
-            currencies = currencyCodesAndNames.map({"\($0.0) - \($0.1)"})
+           // currencies = currencyCodesAndNames.map({"\($0.0) - \($0.1)"})
+             currencies = currencyCodesAndNames.map({"\($0.0)"})
         }
         
         return currencies
@@ -92,17 +93,16 @@ enum ConversionErrors: Error {
 class AppData: ObservableObject {
     
     @Published var conversionInfo: ConversionInfoViewModel!
-    
+    @Published var currencyListOpened = false
     var ratePublisher: AnyCancellable?
     
     
     var conversionType: ConversionType = .baseToTarget
     let APIKey = "9e01c5fa47031db88531e4fb4bffa919"
     let currenciesEndpoint = "symbols"
-    var currenciesURL = ""
-    var selectedBaseCurrencyIdx = 0
-    var selectedTargetCurrencyIdx = 1
+    var currenciesURL = "" 
     var selectedCurrencyType: CurrencyType = .base
+    
     
     var rateEndpoint: String {
  
