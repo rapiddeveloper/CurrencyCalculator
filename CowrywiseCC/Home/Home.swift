@@ -7,6 +7,7 @@
 //
 
 import SwiftUI
+import KingfisherSwiftUI
 
 struct Home: View {
     
@@ -25,11 +26,10 @@ struct Home: View {
                 CurrencyBtn(
                     currencyType: .base,
                     label: {
-                        Image("countryflag")
-                            .resizable()
-                            .renderingMode(.original)
-                            .scaledToFill()
-                            .frame(width: 24, height: 24)
+                        KFImage(URL(string: appData.baseCurrencyFlagURL))
+                            //.resizable()
+                            //.scaledToFill()
+                            .frame(width: 32, height: 32)
                             .clipShape(Circle())
                     },
                     action: {
@@ -37,15 +37,15 @@ struct Home: View {
                           self.appData.currencyListOpened = true
                     }
                 )
+                   
                 
                 CurrencyBtn(
                     currencyType: .target,
                     label: {
-                        Image("countryflag")
-                            .resizable()
-                            .renderingMode(.original)
-                            .scaledToFill()
-                            .frame(width: 24, height: 24)
+                           KFImage(URL(string: appData.targetCurrencyFlagURL))
+                           // .resizable()
+                            //.scaledToFit()
+                            .frame(width: 32, height: 32)
                             .clipShape(Circle())
                     },
                     action: {
@@ -72,7 +72,7 @@ struct Home: View {
 
 struct Home_Previews: PreviewProvider {
     static var previews: some View {
-        Home()
+        Home().environmentObject(AppData())
     }
 }
 

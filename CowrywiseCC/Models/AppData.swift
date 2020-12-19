@@ -35,6 +35,12 @@ struct CurrenciesResponse: Codable {
    var symbols: [String:String]
 }
 
+struct Flag: Codable {
+    var flag: String
+}
+
+ 
+
 struct ConversionInfo {
     var baseCurrencyAmt: Double?
     var targetCurrencyAmt: Double?
@@ -42,6 +48,8 @@ struct ConversionInfo {
     var targetCurrency: String
     var currencies: [(String,String)]?
     var rate: [String: Double]?
+    var targetCurrencyFlag: String?
+    var baseCurrencyFlag: String?
 }
 
 struct ConversionInfoViewModel {
@@ -103,6 +111,21 @@ class AppData: ObservableObject {
     var currenciesURL = "" 
     var selectedCurrencyType: CurrencyType = .base
     
+    var baseCurrencyFlagURL: String {
+        let currency = conversionInfo.baseCurrency.lowercased()
+        let start = currency.startIndex
+        let end = currency.index(after: start)
+        let countryCode = currency[start...end]
+        return "https://www.countryflags.io/\(countryCode)/flat/64.png"
+    }
+    
+    var targetCurrencyFlagURL: String {
+           let currency = conversionInfo.targetCurrency.lowercased()
+             let start = currency.startIndex
+             let end = currency.index(after: start)
+             let countryCode = currency[start...end]
+             return "https://www.countryflags.io/\(countryCode)/flat/64.png"
+    }
     
     var rateEndpoint: String {
  
@@ -164,6 +187,14 @@ class AppData: ObservableObject {
     func updateConversionInfo(currencies: [(String, String)]?) {
         conversionInfo.conversionInfo.currencies = currencies
     }
+    
+    func updateConversionInfo(newBaseCurrencyFlag: String) {
+        conversionInfo.conversionInfo.baseCurrencyFlag = newBaseCurrencyFlag
+    }
+    
+    func updateConversionInfo(newTargetCurrencyFlag: String) {
+           conversionInfo.conversionInfo.targetCurrencyFlag = newTargetCurrencyFlag
+       }
     
     /*
      performs a conversion given a conversion type and updates the corresponding currency amount
@@ -228,6 +259,33 @@ class AppData: ObservableObject {
             })
         }
     }
+    
+    func loadFlag(url: String, completed: @escaping (Flag?) -> ()) {
+            if let url = URL(string: url) {
+               let urlRequest = URLRequest(url: url)
+               let session = URLSession.shared
+               ratePublisher = session.dataTaskPublisher(for: urlRequest)
+               .tryMap({ data, response -> Data? in
+                   if let res = response as? HTTPURLResponse {
+                       print(res.statusCode)
+                       if res.statusCode == 200 { // returned anything
+                           return data
+                       }
+                   }
+                   return nil
+               })
+               .receive(on: RunLoop.main)
+               .assertNoFailure()
+               .sink(receiveValue: { data in
+                   let decoder = JSONDecoder()
+                   if let responseData = data,
+                       let result = try? decoder.decode([Flag].self, from: responseData) {
+                        completed(result.first)
+                   }
+    
+               })
+           }
+       }
     
     func loadCurrencies(url: String, completed: @escaping ([String: String]?)->()) {
             if let url = URL(string: url) {
