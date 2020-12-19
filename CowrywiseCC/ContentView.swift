@@ -9,13 +9,23 @@
 import SwiftUI
 
 struct ContentView: View {
+    
+    @EnvironmentObject var appData: AppData
+    
     var body: some View {
-        Text("Hello, World!")
+        NavigationView {
+             Home()
+            .sheet(isPresented: $appData.currencyListOpened, content: {
+                CurrencyList().environmentObject(self.appData)
+        })
+        }
     }
+    
 }
 
 struct ContentView_Previews: PreviewProvider {
     static var previews: some View {
         ContentView()
+        .environmentObject(AppData())
     }
 }
