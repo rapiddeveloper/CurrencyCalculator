@@ -13,7 +13,7 @@ import SwiftUI
 struct CurrencyList: View {
     @EnvironmentObject var appData: AppData
     @State private var selectedCurrency: String = ""
-     
+    @Environment(\.presentationMode) var presentationMode
     
     var body: some View {
         VStack(alignment: .leading) {
@@ -21,7 +21,8 @@ struct CurrencyList: View {
                 Text("Select \(appData.selectedCurrencyType.rawValue.capitalized) Currency")
                 Spacer()
                 Button("Done", action: {
-                    self.appData.currencyListOpened = false
+                    //self.appData.currencyListOpened = false
+                    self.presentationMode.wrappedValue.dismiss()
                 })
             }
             .padding()

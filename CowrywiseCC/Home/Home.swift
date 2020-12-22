@@ -8,6 +8,7 @@
 
 import SwiftUI
 import KingfisherSwiftUI
+import Charts
 
 struct Home: View {
     
@@ -64,7 +65,9 @@ struct Home: View {
                 Text("link")
                // Image(systemName: ".info")
             }
+            PieTrend()
             CurrencyHistoryTrend()
+            
             Spacer()
         }
     }
@@ -77,9 +80,30 @@ struct Home_Previews: PreviewProvider {
 }
 
 struct CurrencyHistoryTrend: View {
-     
+    
     var body: some View {
         Text("Currency Btn")
+    }
+}
+
+struct PieTrend: View {
+    
+    @State private var pieChartEntries: [PieChartDataEntry] = []
+    @State private var category: Wine.Category = .variety
+    
+    var body: some View {
+        VStack {
+            PieChart(entries: Wine.entriesForWines(Wine.allWines, category: category), category: $category)
+                .scaledToFit()
+                .frame(width: 400)
+            Picker("Category", selection: $category, content: {
+                Text(Wine.Category.variety.rawValue.uppercased())
+                    .tag(Wine.Category.variety)
+                Text(Wine.Category.winery.rawValue.uppercased())
+                    .tag(Wine.Category.winery)
+            })
+            .pickerStyle(SegmentedPickerStyle())
+        }
     }
 }
 

@@ -7,15 +7,7 @@
 //
 
 import SwiftUI
+import Charts
 
-struct RateChart: View {
-    var body: some View {
-        Text(/*@START_MENU_TOKEN@*/"Hello, World!"/*@END_MENU_TOKEN@*/)
-    }
-}
 
-struct RateChart_Previews: PreviewProvider {
-    static var previews: some View {
-        RateChart()
-    }
-}
+

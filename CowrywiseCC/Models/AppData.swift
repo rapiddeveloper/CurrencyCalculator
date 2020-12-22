@@ -8,6 +8,7 @@
 
 import Foundation
 import Combine
+import Charts
 
 enum ConversionType: Int, Hashable {
     case baseToTarget = 1
@@ -35,8 +36,23 @@ struct CurrenciesResponse: Codable {
    var symbols: [String:String]
 }
 
+struct TimeseriesResponse: Codable {
+   var motd: [String:String]
+   var success: Bool
+   var timeseries: Bool
+   var base: String
+   var start_date: String
+   var end_date: String
+   var rates: [String: [String:Double]]
+}
+
 struct Flag: Codable {
     var flag: String
+}
+
+struct Rate {
+    var date: Double
+    var value: Double
 }
 
  
@@ -50,11 +66,13 @@ struct ConversionInfo {
     var rate: [String: Double]?
     var targetCurrencyFlag: String?
     var baseCurrencyFlag: String?
+    var rates: [String: [String:Double]]?
 }
 
 struct ConversionInfoViewModel {
     
     var conversionInfo: ConversionInfo
+    
     
     var baseCurrencyAmount: String {
         if let amt = conversionInfo.baseCurrencyAmt {
@@ -91,8 +109,33 @@ struct ConversionInfoViewModel {
         
         return currencies
     }
+    
+    var entries: [ChartDataEntry] {
+        
+            let formatter = DateFormatter()
+            formatter.dateStyle = .short
+            formatter.timeStyle = .none
+            formatter.dateFormat = "yyyy-MM-dd"
+            
+            var ratelist = [ChartDataEntry]()
+            
+            if let rates = conversionInfo.rates {
+                let dateKeys = Array(rates.keys)
+                for dateKey in dateKeys {
+                    if let rate = rates[dateKey],
+                        let rateValue = rate[conversionInfo.targetCurrency],
+                        let date = formatter.date(from: dateKey) {
+                        ratelist.append(ChartDataEntry(x: date.timeIntervalSince1970, y: rateValue))
+                    }
+                }
+              
+            }
+        
+            return ratelist
+        }
+    
+  }
        
-}
 
 enum ConversionErrors: Error {
     case divisionByZero
@@ -106,10 +149,13 @@ class AppData: ObservableObject {
     
     
     var conversionType: ConversionType = .baseToTarget
-    let APIKey = "9e01c5fa47031db88531e4fb4bffa919"
+    let APIKey = "1d4bb84c085abdc2dd12645046fb3ab3" //"9e01c5fa47031db88531e4fb4bffa919"
+    
+    let timeSeriesEndpoint = "timeseries"
     let currenciesEndpoint = "symbols"
     var currenciesURL = "" 
     var selectedCurrencyType: CurrencyType = .base
+    
     
     var baseCurrencyFlagURL: String {
         let currency = conversionInfo.baseCurrency.lowercased()
@@ -120,11 +166,29 @@ class AppData: ObservableObject {
     }
     
     var targetCurrencyFlagURL: String {
-           let currency = conversionInfo.targetCurrency.lowercased()
+             let currency = conversionInfo.targetCurrency.lowercased()
              let start = currency.startIndex
              let end = currency.index(after: start)
              let countryCode = currency[start...end]
              return "https://www.countryflags.io/\(countryCode)/flat/64.png"
+    }
+    
+    func rateTimeseriesURL(daysPast: Int) -> String {
+       
+        let formatter = DateFormatter()
+        formatter.dateStyle = .short
+        formatter.timeStyle = .none
+        formatter.dateFormat = "yyyy-MM-dd"
+        
+        let today = Date()
+        let daysAgo = Date(timeIntervalSinceNow: TimeInterval(-daysPast * 24 * 60 * 60) )
+        let startDate = formatter.string(from: daysAgo)
+        let endDate = formatter.string(from: today)
+        
+         let symbol = conversionInfo.targetCurrency
+         let base = conversionInfo.baseCurrency
+        
+        return "https://api.exchangerate.host/\(timeSeriesEndpoint)?start_date=\(startDate)&end_date=\(endDate)&base=\(base)&symbols=\(symbol)"
     }
     
     var rateEndpoint: String {
@@ -142,6 +206,9 @@ class AppData: ObservableObject {
     }
     
     init() {
+       // print(rateTimeseriesURL(daysPast: 30))
+        //let url = "https://api.exchangerate.host/timeseries?start_date=2020-12-01&end_date=2020-12-04&base=USD&symbols=NGN"
+        
         currenciesURL = "http://data.fixer.io/api/\(currenciesEndpoint)?access_key=\(APIKey)"
         self.conversionInfo = ConversionInfoViewModel(conversionInfo: ConversionInfo(baseCurrencyAmt: 1, targetCurrencyAmt: 10, baseCurrency: "EUR", targetCurrency: "NGN", rate: nil))
 
@@ -151,11 +218,21 @@ class AppData: ObservableObject {
             self.loadCurrencies(url: self.currenciesURL) { currencies in
                 if let currencies = currencies {
                     self.updateConversionInfo(currencies: currencies.sorted(by: {$0.0 < $1.0 }) )
-                   // print(self.conversionInfo)
-                }
+                    self.getRateTimeseries(daysPast: 30)
+                 }
             }
         }
         
+    }
+    
+    func getRateTimeseries(daysPast: Int) {
+        let url = rateTimeseriesURL(daysPast: daysPast)
+        self.loadRateTimeseries(url: url) { rates in
+            if let rates = rates {
+                self.conversionInfo.conversionInfo.rates = rates
+                print(self.conversionInfo.entries)
+            }
+        }
     }
     
     func updateConversionInfo(newBaseCurrencyAmt: String, newTargetCurrencyAmt: String) {
@@ -231,6 +308,43 @@ class AppData: ObservableObject {
            
         }
     }
+    
+    func loadRateTimeseries(url: String, completed: @escaping ([String: [String:Double]]?)->()) {
+        
+            if let url = URL(string: url) {
+               let urlRequest = URLRequest(url: url)
+               let session = URLSession.shared
+               ratePublisher = session.dataTaskPublisher(for: urlRequest)
+               .tryMap({ data, response -> Data? in
+                   if let res = response as? HTTPURLResponse {
+                       print(res.statusCode)
+                       if res.statusCode == 200 { // returned anything
+                           return data
+                       }
+                   }
+                   return nil
+               })
+               .receive(on: RunLoop.main)
+               .assertNoFailure()
+               .sink(receiveValue: { data in
+                   let decoder = JSONDecoder()
+                    if let responseData = data {
+                        do {
+                           let result = try decoder.decode(TimeseriesResponse.self, from: responseData)
+                            completed(result.rates)
+                        } catch {
+                            print(error)
+                        }
+                    }
+                    /*
+                       let result = try? decoder.decode(TimeseriesResponse.self, from: responseData) {
+                       completed(result.rates)
+                   }*/
+    
+               })
+           }
+       }
+       
     
     
     func loadRate(url: String, completed: @escaping ([String: Double]?)->()) {
