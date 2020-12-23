@@ -26,7 +26,7 @@ struct RateTrend: View {
     @State private var pos: CGPoint = .zero
     @State private var x: String = ""
     @State private var y: String = ""
-    @State private var mode: Int = 0 // 30 days
+   // @State private var mode: Int = 0 // 30 days
 
     let width: CGFloat = 100
     let height: CGFloat = 100
@@ -34,7 +34,7 @@ struct RateTrend: View {
     let dotHeight: CGFloat = 16
     
     var tooltipBaseInfo: String {
-        "1 \(appData.conversionInfo.baseCurrency) = \(y)"
+         return "1 \(appData.conversionInfo.baseCurrency) = \(y)"
     }
 
     
@@ -79,13 +79,19 @@ struct RateTrend: View {
         
     }
     
+    var mode: Int {
+        appData.conversionInfo.timeframeMode
+    }
+    
     var body: some View {
+        
         VStack {
             HStack {
                 Button(action: {
                     self.pos = .zero
-                    self.mode = 0
-                    self.appData.getRateTimeseries(daysPast: 30)
+                    //self.mode = 0
+                    self.appData.updateConversionInfo(mode: 0)
+                    self.appData.getRateTimeseries()
 
                 }, label: {
                     VStack(alignment: .center, spacing: 8) {
@@ -100,8 +106,9 @@ struct RateTrend: View {
                 Spacer()
                 Button(action: {
                     self.pos = .zero
-                    self.mode = 1
-                    self.appData.getRateTimeseries(daysPast: 90)
+                    //self.mode = 1
+                    self.appData.updateConversionInfo(mode: 1)
+                    self.appData.getRateTimeseries()
                 }, label: {
                     VStack(alignment: .center, spacing: 8) {
                         Text("90 Days Past")

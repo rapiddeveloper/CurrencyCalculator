@@ -66,6 +66,7 @@ struct ConversionInfo {
     var targetCurrencyFlag: String?
     var baseCurrencyFlag: String?
     var rates: [String: [String:Double]]?
+    var mode: Int
 }
 
 struct ConversionInfoViewModel {
@@ -107,6 +108,10 @@ struct ConversionInfoViewModel {
         }
         
         return currencies
+    }
+    
+    var timeframeMode: Int {
+        conversionInfo.mode
     }
     
     var entries: [ChartDataEntry] {
@@ -208,7 +213,7 @@ class AppData: ObservableObject {
     init() {
         
         currenciesURL = "http://data.fixer.io/api/\(currenciesEndpoint)?access_key=\(APIKey)"
-        self.conversionInfo = ConversionInfoViewModel(conversionInfo: ConversionInfo(baseCurrencyAmt: 1, targetCurrencyAmt: 10, baseCurrency: "EUR", targetCurrency: "NGN", rate: nil))
+        self.conversionInfo = ConversionInfoViewModel(conversionInfo: ConversionInfo(baseCurrencyAmt: 1, targetCurrencyAmt: 10, baseCurrency: "EUR", targetCurrency: "NGN", rate: nil, mode: 0))
 
         loadRate(url: rateEndpoint) { rate in
             self.updateConversionInfo(with: rate)
@@ -216,7 +221,7 @@ class AppData: ObservableObject {
             self.loadCurrencies(url: self.currenciesURL) { currencies in
                 if let currencies = currencies {
                     self.updateConversionInfo(currencies: currencies.sorted(by: {$0.0 < $1.0 }) )
-                    self.getRateTimeseries(daysPast: 30)
+                    self.getRateTimeseries()
                  }
             }
         }
@@ -232,6 +237,16 @@ class AppData: ObservableObject {
             }
         }
     }
+    
+    func getRateTimeseries() {
+        let url = rateTimeseriesURL(daysPast: conversionInfo.conversionInfo.mode == 0 ? 30 : 90)
+           self.loadRateTimeseries(url: url) { rates in
+               if let rates = rates {
+                   self.conversionInfo.conversionInfo.rates = rates
+                  // print(self.conversionInfo.entries)
+               }
+           }
+       }
     
     
     
@@ -255,6 +270,10 @@ class AppData: ObservableObject {
     func updateConversionInfo(newBaseCurrency: String, newTargetCurrency: String)  {
          conversionInfo.conversionInfo.baseCurrency = newBaseCurrency
          conversionInfo.conversionInfo.targetCurrency = newTargetCurrency
+    }
+    
+    func updateConversionInfo(mode: Int) {
+        self.conversionInfo.conversionInfo.mode = mode
     }
     
     func updateConversionInfo(with newRate: [String: Double]?) {
