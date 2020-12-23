@@ -15,60 +15,59 @@ struct Home: View {
      @EnvironmentObject var appData: AppData
     
     var body: some View {
-        VStack {
-            HStack {
-                Text("Menu")
-                Text("Sign Up")
-            }
-            Text("Currency Calculator")
-            TextField("", text: .constant("Base"))
-            TextField("", text: .constant("Target"))
-            HStack {
-                CurrencyBtn(
-                    currencyType: .base,
-                    label: {
-                        KFImage(URL(string: appData.baseCurrencyFlagURL))
-                            //.resizable()
-                            //.scaledToFill()
-                            .frame(width: 32, height: 32)
-                            .clipShape(Circle())
-                    },
-                    action: {
-                          self.appData.selectedCurrencyType = .base
-                          self.appData.currencyListOpened = true
-                    }
-                )
+        ScrollView {
+            VStack {
+                HStack {
+                    Text("Menu")
+                    Text("Sign Up")
+                }
+                Text("Currency Calculator")
+                TextField("", text: .constant("Base"))
+                TextField("", text: .constant("Target"))
+                HStack {
+                    CurrencyBtn(
+                        currencyType: .base,
+                        label: {
+                            KFImage(URL(string: appData.baseCurrencyFlagURL))
+                                .frame(width: 32, height: 32)
+                                .clipShape(Circle())
+                        },
+                        action: {
+                              self.appData.selectedCurrencyType = .base
+                              self.appData.currencyListOpened = true
+                        }
+                    )
+                       
+                    
+                    CurrencyBtn(
+                        currencyType: .target,
+                        label: {
+                               KFImage(URL(string: appData.targetCurrencyFlagURL))
+                                .frame(width: 32, height: 32)
+                                .clipShape(Circle())
+                        },
+                        action: {
+                              self.appData.selectedCurrencyType = .target
+                              self.appData.currencyListOpened = true
+                        }
+                    )
                    
+                }
+                Button(action: {
+                    
+                }, label: {
+                    Text("Convert")
+                })
+                HStack {
+                    Text("link")
+                }
+                RateTrend()
+                    .frame(height: 600)
+               // PieTrend()
                 
-                CurrencyBtn(
-                    currencyType: .target,
-                    label: {
-                           KFImage(URL(string: appData.targetCurrencyFlagURL))
-                           // .resizable()
-                            //.scaledToFit()
-                            .frame(width: 32, height: 32)
-                            .clipShape(Circle())
-                    },
-                    action: {
-                          self.appData.selectedCurrencyType = .target
-                          self.appData.currencyListOpened = true
-                    }
-                )
-               
-            }
-            Button(action: {
                 
-            }, label: {
-                Text("Convert")
-            })
-            HStack {
-                Text("link")
-               // Image(systemName: ".info")
+                Spacer()
             }
-            PieTrend()
-            CurrencyHistoryTrend()
-            
-            Spacer()
         }
     }
 }

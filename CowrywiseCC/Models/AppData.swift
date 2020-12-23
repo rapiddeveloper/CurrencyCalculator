@@ -21,7 +21,6 @@ enum CurrencyType: String, Hashable {
 }
 
 
-
 struct RateResponse: Codable {
     var success: Bool
     var timestamp: Double
@@ -128,6 +127,7 @@ struct ConversionInfoViewModel {
                         ratelist.append(ChartDataEntry(x: date.timeIntervalSince1970, y: rateValue))
                     }
                 }
+                ratelist.sort(by: {$0.x < $1.x})
               
             }
         
@@ -206,8 +206,6 @@ class AppData: ObservableObject {
     }
     
     init() {
-       // print(rateTimeseriesURL(daysPast: 30))
-        //let url = "https://api.exchangerate.host/timeseries?start_date=2020-12-01&end_date=2020-12-04&base=USD&symbols=NGN"
         
         currenciesURL = "http://data.fixer.io/api/\(currenciesEndpoint)?access_key=\(APIKey)"
         self.conversionInfo = ConversionInfoViewModel(conversionInfo: ConversionInfo(baseCurrencyAmt: 1, targetCurrencyAmt: 10, baseCurrency: "EUR", targetCurrency: "NGN", rate: nil))
@@ -230,10 +228,12 @@ class AppData: ObservableObject {
         self.loadRateTimeseries(url: url) { rates in
             if let rates = rates {
                 self.conversionInfo.conversionInfo.rates = rates
-                print(self.conversionInfo.entries)
+               // print(self.conversionInfo.entries)
             }
         }
     }
+    
+    
     
     func updateConversionInfo(newBaseCurrencyAmt: String, newTargetCurrencyAmt: String) {
         
@@ -336,11 +336,7 @@ class AppData: ObservableObject {
                             print(error)
                         }
                     }
-                    /*
-                       let result = try? decoder.decode(TimeseriesResponse.self, from: responseData) {
-                       completed(result.rates)
-                   }*/
-    
+                 
                })
            }
        }

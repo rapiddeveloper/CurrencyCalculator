@@ -18,11 +18,12 @@
 		847B3270258BCC2200C7C4F1 /* CurrencyBtn.swift in Sources */ = {isa = PBXBuildFile; fileRef = 847B326F258BCC2200C7C4F1 /* CurrencyBtn.swift */; };
 		847B3273258CD39300C7C4F1 /* CurrencyList.swift in Sources */ = {isa = PBXBuildFile; fileRef = 847B3272258CD39300C7C4F1 /* CurrencyList.swift */; };
 		84B4F8D7258E0090001BDC81 /* KingfisherSwiftUI in Frameworks */ = {isa = PBXBuildFile; productRef = 84B4F8D6258E0090001BDC81 /* KingfisherSwiftUI */; };
-		84B4F8D9258E3953001BDC81 /* RateChart.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84B4F8D8258E3953001BDC81 /* RateChart.swift */; };
+		84B4F8D9258E3953001BDC81 /* LineChart.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84B4F8D8258E3953001BDC81 /* LineChart.swift */; };
 		84B4F8E6258E3AD8001BDC81 /* Charts.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 84B4F8E2258E3AAD001BDC81 /* Charts.framework */; };
 		84B4F8E7258E3AD8001BDC81 /* Charts.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 84B4F8E2258E3AAD001BDC81 /* Charts.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		84B4F8EA258E3C42001BDC81 /* Wine.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84B4F8E9258E3C42001BDC81 /* Wine.swift */; };
 		84B4F8EC258E3E13001BDC81 /* PieChart.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84B4F8EB258E3E13001BDC81 /* PieChart.swift */; };
+		84BDE5A825924D6200C0077B /* RateTrend.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84BDE5A725924D6200C0077B /* RateTrend.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -69,10 +70,11 @@
 		847B326D258BBB9500C7C4F1 /* Home.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Home.swift; sourceTree = "<group>"; };
 		847B326F258BCC2200C7C4F1 /* CurrencyBtn.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CurrencyBtn.swift; sourceTree = "<group>"; };
 		847B3272258CD39300C7C4F1 /* CurrencyList.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CurrencyList.swift; sourceTree = "<group>"; };
-		84B4F8D8258E3953001BDC81 /* RateChart.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RateChart.swift; sourceTree = "<group>"; };
+		84B4F8D8258E3953001BDC81 /* LineChart.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LineChart.swift; sourceTree = "<group>"; };
 		84B4F8DC258E3AAD001BDC81 /* Charts.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = Charts.xcodeproj; path = "../../../../../Downloads/Charts-master/Charts.xcodeproj"; sourceTree = "<group>"; };
 		84B4F8E9258E3C42001BDC81 /* Wine.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Wine.swift; sourceTree = "<group>"; };
 		84B4F8EB258E3E13001BDC81 /* PieChart.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PieChart.swift; sourceTree = "<group>"; };
+		84BDE5A725924D6200C0077B /* RateTrend.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RateTrend.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -146,7 +148,8 @@
 			children = (
 				847B326D258BBB9500C7C4F1 /* Home.swift */,
 				84B4F8E9258E3C42001BDC81 /* Wine.swift */,
-				84B4F8D8258E3953001BDC81 /* RateChart.swift */,
+				84B4F8D8258E3953001BDC81 /* LineChart.swift */,
+				84BDE5A725924D6200C0077B /* RateTrend.swift */,
 				84B4F8EB258E3E13001BDC81 /* PieChart.swift */,
 			);
 			path = Home;
@@ -292,8 +295,9 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				84B4F8D9258E3953001BDC81 /* RateChart.swift in Sources */,
+				84B4F8D9258E3953001BDC81 /* LineChart.swift in Sources */,
 				846E682F2588FB3E00C71DA6 /* AppDelegate.swift in Sources */,
+				84BDE5A825924D6200C0077B /* RateTrend.swift in Sources */,
 				84B4F8EA258E3C42001BDC81 /* Wine.swift in Sources */,
 				84B4F8EC258E3E13001BDC81 /* PieChart.swift in Sources */,
 				847B3270258BCC2200C7C4F1 /* CurrencyBtn.swift in Sources */,

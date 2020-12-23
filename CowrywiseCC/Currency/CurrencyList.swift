@@ -26,22 +26,18 @@ struct CurrencyList: View {
                 })
             }
             .padding()
-            List  {
-               
+            List {
                 ForEach(appData.conversionInfo.currencies, id: \.self) { currency in
                     Text(currency)
                         .font(.subheadline)
                         .frame(minWidth: 0, maxWidth: .infinity, alignment: .leading)
                         .contentShape(Rectangle())
                         .onTapGesture {
-                           
                             self.selectedCurrency = currency
                     }
                     .listRowBackground(self.selectedCurrency == currency ? Color.gray : Color.clear)
                 }
-              
             }
-        
         }
         .onAppear {
             if self.appData.selectedCurrencyType == .base {

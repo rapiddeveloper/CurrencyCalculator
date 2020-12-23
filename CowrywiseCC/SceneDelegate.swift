@@ -23,7 +23,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         
         let delegate = UIApplication.shared.delegate as! AppDelegate
         
-        let contentView = ContentView().environmentObject(delegate.appData)
+        let contentView = /*ContentView()*/ RateTrend().environmentObject(delegate.appData)
 
         // Use a UIHostingController as window root view controller.
         if let windowScene = scene as? UIWindowScene {
