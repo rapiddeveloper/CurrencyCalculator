@@ -54,7 +54,7 @@ struct CurrencyList: View {
                 let newTargetCurrency = newCurrencies[CurrencyType.target] {
                 self.appData.updateConversionInfo(newBaseCurrency: newBaseCurrency, newTargetCurrency: newTargetCurrency)
                 // reset time series for new currencies
-                self.appData.updateConversionInfo(mode: 0)
+                self.appData.updateConversionInfo(mode: 0, pos: .zero)
                 self.appData.getRateTimeseries()
             }
         }
@@ -105,7 +105,7 @@ struct CurrencyList: View {
         /* should return base currency with target currency swapped when targetCurrency is selected
          *  and selected currency matches the current base currency
          */
-        appData.conversionInfo = ConversionInfoViewModel(conversionInfo: ConversionInfo(baseCurrencyAmt: 3, targetCurrencyAmt: 10, baseCurrency: "EUR", targetCurrency: "USD", rate: ["USD":1.6], mode: 0))
+        appData.conversionInfo = ConversionInfoViewModel(conversionInfo: ConversionInfo(baseCurrencyAmt: 3, targetCurrencyAmt: 10, baseCurrency: "EUR", targetCurrency: "USD", rate: ["USD":1.6], mode: 0, pos: .zero))
         appData.selectedCurrencyType = .target
         selectedCurrency = "EUR"
         let newCurrencies = getNewCurrencies()

@@ -33,7 +33,6 @@ struct LineChart: UIViewRepresentable {
         lineChart.xAxisRenderer = customXAxisRenderer
         lineChart.leftYAxisRenderer = customYAxisRenderer
         lineChart.xAxis.valueFormatter = XAxisFormatter(representable: self)
- 
         return lineChart
     }
 
@@ -41,11 +40,12 @@ struct LineChart: UIViewRepresentable {
         
          let dataSet = LineChartDataSet(entries: entries)
          let salesChartData = LineChartData(dataSet: dataSet)
-
+     
         // customization
          uiView.data = salesChartData
          uiView.marker = Tooltip(representable: self)
-
+         
+         
          configureChart(uiView)
         formatDataset(dataSet)
          /*formatCenter(uiView)
@@ -163,6 +163,8 @@ class Coordinator: NSObject, ChartViewDelegate  {
 }
 
 func configureChart(_ uiView: LineChartView) {
+    
+    
     
     uiView.dragEnabled = false
     uiView.doubleTapToZoomEnabled = false

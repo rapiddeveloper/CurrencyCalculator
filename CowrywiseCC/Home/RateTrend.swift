@@ -23,7 +23,7 @@ struct RateTrend: View {
     
     @EnvironmentObject var appData: AppData
     
-    @State private var pos: CGPoint = .zero
+    //@State private var pos: CGPoint = .zero
     @State private var x: String = ""
     @State private var y: String = ""
    // @State private var mode: Int = 0 // 30 days
@@ -36,12 +36,17 @@ struct RateTrend: View {
     var tooltipBaseInfo: String {
          return "1 \(appData.conversionInfo.baseCurrency) = \(y)"
     }
+    
+    var showTooltip: Bool {
+         appData.conversionInfo.timeframeMode == 0
+    }
 
     
     var activeDotPos: CGPoint {
         
         var x: CGFloat = 0
         var y: CGFloat = 0
+        let pos = appData.conversionInfo.tooltipPos
         if pos.x > 0 {
             x = pos.x// - (dotWidth * 0.25)
         } else {
@@ -84,12 +89,11 @@ struct RateTrend: View {
     }
     
     var body: some View {
-        
-        VStack {
+        let tooltipFlipped = shouldFlipTooltip()
+        return VStack {
             HStack {
                 Button(action: {
-                    self.pos = .zero
-                    //self.mode = 0
+                    
                     self.appData.updateConversionInfo(mode: 0)
                     self.appData.getRateTimeseries()
 
@@ -105,7 +109,7 @@ struct RateTrend: View {
                 })
                 Spacer()
                 Button(action: {
-                    self.pos = .zero
+                    
                     //self.mode = 1
                     self.appData.updateConversionInfo(mode: 1)
                     self.appData.getRateTimeseries()
@@ -123,13 +127,15 @@ struct RateTrend: View {
             .padding(.horizontal, 32)
             .padding(.vertical, 32)
            
-            LineChart(entries: appData.conversionInfo.entries, pos: $pos, x: $x, y: $y)
+            LineChart(entries: appData.conversionInfo.entries, pos: $appData.conversionInfo.tooltipPos, x: $x, y: $y)
                 .overlay (
                     GeometryReader { proxy in
-                        if self.pos != .zero {
-                            Tooltip(x: self.x, y: self.tooltipBaseInfo, cornerRadius: 20, fill: .green)
+                        if self.appData.conversionInfo.tooltipPos != .zero {
+                            Tooltip(x: self.x, y: self.tooltipBaseInfo, cornerRadius: 20, fill: .green, isFlipped: tooltipFlipped)
                                 // .frame(width: self.width)
                                 .position(self.tooltipPos)
+                                .offset(x: tooltipFlipped ? -140 : 0, y: 0)
+                                 
                             Group {
                                 Circle()
                                     .fill(Color.green)
@@ -142,10 +148,18 @@ struct RateTrend: View {
                             .position(self.activeDotPos)
                         }
                     }
+                   
             )
+            
         }
        .background(Color(red: 4/255, green: 96/255, blue: 209/255))
        
+    }
+    
+    func shouldFlipTooltip() -> Bool {
+        print("trying to flip")
+        let screenWidth = UIScreen.main.bounds.size.width
+        return (screenWidth - tooltipPos.x) < 50
     }
 }
 
@@ -162,6 +176,7 @@ fileprivate struct Tooltip: View {
     let y: String
     let cornerRadius: CGFloat
     let fill: Color
+    let isFlipped: Bool
     
     var body: some View {
         VStack(alignment: .leading, spacing: 8) {
@@ -174,7 +189,7 @@ fileprivate struct Tooltip: View {
         .foregroundColor(.white)
         .padding()
          .background(
-            RoundedCorner(radius: cornerRadius, corners: [.bottomRight, .topLeft, .topRight])
+            RoundedCorner(radius: cornerRadius, corners: [isFlipped ? .bottomLeft : .bottomRight , .topLeft, .topRight])
             .fill(fill)
         )
     }

@@ -67,6 +67,7 @@ struct ConversionInfo {
     var baseCurrencyFlag: String?
     var rates: [String: [String:Double]]?
     var mode: Int
+    var pos: CGPoint
 }
 
 struct ConversionInfoViewModel {
@@ -112,6 +113,16 @@ struct ConversionInfoViewModel {
     
     var timeframeMode: Int {
         conversionInfo.mode
+    }
+    
+    var tooltipPos: CGPoint {
+        get {
+             conversionInfo.pos
+        }
+        
+        set {
+            conversionInfo.pos = newValue
+        }
     }
     
     var entries: [ChartDataEntry] {
@@ -213,7 +224,7 @@ class AppData: ObservableObject {
     init() {
         
         currenciesURL = "http://data.fixer.io/api/\(currenciesEndpoint)?access_key=\(APIKey)"
-        self.conversionInfo = ConversionInfoViewModel(conversionInfo: ConversionInfo(baseCurrencyAmt: 1, targetCurrencyAmt: 10, baseCurrency: "EUR", targetCurrency: "NGN", rate: nil, mode: 0))
+        self.conversionInfo = ConversionInfoViewModel(conversionInfo: ConversionInfo(baseCurrencyAmt: 1, targetCurrencyAmt: 10, baseCurrency: "EUR", targetCurrency: "NGN", rate: nil, mode: 0, pos: .zero))
 
         loadRate(url: rateEndpoint) { rate in
             self.updateConversionInfo(with: rate)
@@ -272,8 +283,9 @@ class AppData: ObservableObject {
          conversionInfo.conversionInfo.targetCurrency = newTargetCurrency
     }
     
-    func updateConversionInfo(mode: Int) {
+    func updateConversionInfo(mode: Int, pos: CGPoint) {
         self.conversionInfo.conversionInfo.mode = mode
+        self.conversionInfo.conversionInfo.pos = pos
     }
     
     func updateConversionInfo(with newRate: [String: Double]?) {
