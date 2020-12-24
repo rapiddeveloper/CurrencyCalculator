@@ -26,8 +26,9 @@ struct RateTrend: View {
     @State private var pos: CGPoint = .zero
     @State private var x: String = ""
     @State private var y: String = ""
-   // @State private var mode: Int = 0 // 30 days
-
+    
+    @State private var linkText = "I see you ther"
+ 
     let width: CGFloat = 100
     let height: CGFloat = 100
     let dotWidth: CGFloat = 16
@@ -146,8 +147,17 @@ struct RateTrend: View {
                         }
                     }
             )
+            VStack {
+                Link(text: "Get rate alerts straight to your inbox", destination: "", lineColor: .white, textColor: .white, lineWidth: CGFloat(1.0))
+            }
+            .padding(.top, 32)
+            .padding(.bottom, 48)
+          
         }
-       .background(Color(red: 4/255, green: 96/255, blue: 209/255))
+        .background(
+            RoundedRectangle(cornerRadius: 20)
+                .fill(Color(red: 4/255, green: 96/255, blue: 209/255))
+        )
        .onReceive(appData.$exchangeName, perform: {  value in
             // reset time series for new currencies
             self.appData.updateConversionInfo(mode: 0)
