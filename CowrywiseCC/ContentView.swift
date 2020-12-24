@@ -15,11 +15,11 @@ struct ContentView: View {
     var body: some View {
             NavigationView {
                  Home()
-                .sheet(isPresented: $appData.currencyListOpened, content: {
-                    CurrencyList().environmentObject(self.appData)
-            })
-        }
-    }
+                    .sheet(isPresented: $appData.currencyListOpened, content: {
+                        CurrencyList().environmentObject(self.appData)
+                     })
+            }
+      }
     
 }
 

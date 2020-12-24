@@ -161,6 +161,7 @@ class AppData: ObservableObject {
     
     @Published var conversionInfo: ConversionInfoViewModel!
     @Published var currencyListOpened = false
+    @Published var exchangeName = ""
     var ratePublisher: AnyCancellable?
     
     
@@ -283,9 +284,8 @@ class AppData: ObservableObject {
          conversionInfo.conversionInfo.targetCurrency = newTargetCurrency
     }
     
-    func updateConversionInfo(mode: Int, pos: CGPoint) {
+    func updateConversionInfo(mode: Int) {
         self.conversionInfo.conversionInfo.mode = mode
-        self.conversionInfo.conversionInfo.pos = pos
     }
     
     func updateConversionInfo(with newRate: [String: Double]?) {
@@ -303,6 +303,10 @@ class AppData: ObservableObject {
     func updateConversionInfo(newTargetCurrencyFlag: String) {
            conversionInfo.conversionInfo.targetCurrencyFlag = newTargetCurrencyFlag
        }
+    
+    func setExchangeName( ) {
+        exchangeName = "\(conversionInfo.baseCurrency) - \(conversionInfo.targetCurrency)"
+    }
     
     /*
      performs a conversion given a conversion type and updates the corresponding currency amount

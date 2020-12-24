@@ -62,7 +62,7 @@ struct Home: View {
                     Text("link")
                 }
                 RateTrend()
-                    .frame(height: 600)
+                    .frame(height: 400)
                // PieTrend()
                 
                 

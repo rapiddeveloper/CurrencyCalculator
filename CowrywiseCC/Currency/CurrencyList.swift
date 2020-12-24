@@ -12,7 +12,7 @@ import SwiftUI
 
 struct CurrencyList: View {
     @EnvironmentObject var appData: AppData
-    @State private var selectedCurrency: String = ""
+    @State private var tempSelectedCurrency: String = ""
     @Environment(\.presentationMode) var presentationMode
     
     var body: some View {
@@ -21,6 +21,12 @@ struct CurrencyList: View {
                 Text("Select \(appData.selectedCurrencyType.rawValue.capitalized) Currency")
                 Spacer()
                 Button("Done", action: {
+                    let newCurrencies = self.getNewCurrencies()
+                    if let newBaseCurrency = newCurrencies[CurrencyType.base],
+                        let newTargetCurrency = newCurrencies[CurrencyType.target] {
+                        self.appData.updateConversionInfo(newBaseCurrency: newBaseCurrency, newTargetCurrency: newTargetCurrency)
+                        self.appData.setExchangeName()
+                    }
                     //self.appData.currencyListOpened = false
                     self.presentationMode.wrappedValue.dismiss()
                 })
@@ -33,30 +39,22 @@ struct CurrencyList: View {
                         .frame(minWidth: 0, maxWidth: .infinity, alignment: .leading)
                         .contentShape(Rectangle())
                         .onTapGesture {
-                            self.selectedCurrency = currency
+                            self.tempSelectedCurrency = currency
                     }
-                    .listRowBackground(self.selectedCurrency == currency ? Color.gray : Color.clear)
+                    .listRowBackground(self.tempSelectedCurrency == currency ? Color.gray : Color.clear)
                 }
             }
         }
         .onAppear {
             if self.appData.selectedCurrencyType == .base {
-                self.selectedCurrency = self.appData.conversionInfo.baseCurrency
+                self.tempSelectedCurrency = self.appData.conversionInfo.baseCurrency
             } else {
-                self.selectedCurrency = self.appData.conversionInfo.targetCurrency
+                self.tempSelectedCurrency = self.appData.conversionInfo.targetCurrency
             }
         }
         
         .onDisappear {
-            
-            let newCurrencies = self.getNewCurrencies()
-            if let newBaseCurrency = newCurrencies[CurrencyType.base],
-                let newTargetCurrency = newCurrencies[CurrencyType.target] {
-                self.appData.updateConversionInfo(newBaseCurrency: newBaseCurrency, newTargetCurrency: newTargetCurrency)
-                // reset time series for new currencies
-                self.appData.updateConversionInfo(mode: 0, pos: .zero)
-                self.appData.getRateTimeseries()
-            }
+            // todo:
         }
     }
     
@@ -68,20 +66,20 @@ struct CurrencyList: View {
         let currTargetCurrency = self.appData.conversionInfo.conversionInfo.targetCurrency
         
         if self.appData.selectedCurrencyType == .base &&
-            self.selectedCurrency == currTargetCurrency {
-            newBaseCurrency = self.selectedCurrency
+            self.tempSelectedCurrency == currTargetCurrency {
+            newBaseCurrency = self.tempSelectedCurrency
             newTargetCurrency = currBaseCurrency
         } else if self.appData.selectedCurrencyType == .base &&
-            self.selectedCurrency != currTargetCurrency {
-            newBaseCurrency = self.selectedCurrency
+            self.tempSelectedCurrency != currTargetCurrency {
+            newBaseCurrency = self.tempSelectedCurrency
             newTargetCurrency = currTargetCurrency
         } else if self.appData.selectedCurrencyType == .target &&
-            self.selectedCurrency == currBaseCurrency {
+            self.tempSelectedCurrency == currBaseCurrency {
             newBaseCurrency = currTargetCurrency
-            newTargetCurrency = self.selectedCurrency
+            newTargetCurrency = self.tempSelectedCurrency
         } else {
             newBaseCurrency = currBaseCurrency
-            newTargetCurrency = self.selectedCurrency
+            newTargetCurrency = self.tempSelectedCurrency
         }
         
         return [CurrencyType.base: newBaseCurrency, CurrencyType.target: newTargetCurrency]
@@ -107,7 +105,7 @@ struct CurrencyList: View {
          */
         appData.conversionInfo = ConversionInfoViewModel(conversionInfo: ConversionInfo(baseCurrencyAmt: 3, targetCurrencyAmt: 10, baseCurrency: "EUR", targetCurrency: "USD", rate: ["USD":1.6], mode: 0, pos: .zero))
         appData.selectedCurrencyType = .target
-        selectedCurrency = "EUR"
+        tempSelectedCurrency = "EUR"
         let newCurrencies = getNewCurrencies()
         if newCurrencies[CurrencyType.base] == "USD" &&
            newCurrencies[CurrencyType.target] == "EUR"{

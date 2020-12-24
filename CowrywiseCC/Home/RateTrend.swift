@@ -23,7 +23,7 @@ struct RateTrend: View {
     
     @EnvironmentObject var appData: AppData
     
-    //@State private var pos: CGPoint = .zero
+    @State private var pos: CGPoint = .zero
     @State private var x: String = ""
     @State private var y: String = ""
    // @State private var mode: Int = 0 // 30 days
@@ -37,16 +37,13 @@ struct RateTrend: View {
          return "1 \(appData.conversionInfo.baseCurrency) = \(y)"
     }
     
-    var showTooltip: Bool {
-         appData.conversionInfo.timeframeMode == 0
-    }
-
+     
     
     var activeDotPos: CGPoint {
         
         var x: CGFloat = 0
         var y: CGFloat = 0
-        let pos = appData.conversionInfo.tooltipPos
+       
         if pos.x > 0 {
             x = pos.x// - (dotWidth * 0.25)
         } else {
@@ -127,11 +124,11 @@ struct RateTrend: View {
             .padding(.horizontal, 32)
             .padding(.vertical, 32)
            
-            LineChart(entries: appData.conversionInfo.entries, pos: $appData.conversionInfo.tooltipPos, x: $x, y: $y)
+            LineChart(entries: appData.conversionInfo.entries, pos: $pos, x: $x, y: $y)
                 .overlay (
                     GeometryReader { proxy in
-                        if self.appData.conversionInfo.tooltipPos != .zero {
-                            Tooltip(x: self.x, y: self.tooltipBaseInfo, cornerRadius: 20, fill: .green, isFlipped: tooltipFlipped)
+                        if self.pos != .zero {
+                            Tooltip(x: self.x, y: self.tooltipBaseInfo, cornerRadius: 10, fill: .green, isFlipped: tooltipFlipped)
                                 // .frame(width: self.width)
                                 .position(self.tooltipPos)
                                 .offset(x: tooltipFlipped ? -140 : 0, y: 0)
@@ -148,12 +145,16 @@ struct RateTrend: View {
                             .position(self.activeDotPos)
                         }
                     }
-                   
             )
-            
         }
        .background(Color(red: 4/255, green: 96/255, blue: 209/255))
-       
+       .onReceive(appData.$exchangeName, perform: {  value in
+            // reset time series for new currencies
+            self.appData.updateConversionInfo(mode: 0)
+            self.appData.getRateTimeseries()
+            self.pos = .zero
+        })
+        
     }
     
     func shouldFlipTooltip() -> Bool {

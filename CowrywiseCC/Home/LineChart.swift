@@ -20,7 +20,7 @@ struct LineChart: UIViewRepresentable {
     let dateFormatter = DateFormatter()
 
     func makeUIView(context: Context) -> LineChartView {
-        
+      
         dateFormatter.locale = .current
         dateFormatter.dateStyle = .medium
         dateFormatter.dateFormat = "dd MMM"
@@ -40,6 +40,10 @@ struct LineChart: UIViewRepresentable {
         
          let dataSet = LineChartDataSet(entries: entries)
          let salesChartData = LineChartData(dataSet: dataSet)
+        
+        if self.pos == .zero {
+            uiView.highlightValue(nil)
+        }
      
         // customization
          uiView.data = salesChartData
@@ -157,7 +161,7 @@ class Coordinator: NSObject, ChartViewDelegate  {
         let date = Date(timeIntervalSince1970: timeInterval)
        
         representable.x = representable.dateFormatter.string(from: date)
-        representable.y = String(format: "%.3f", sales)
+        representable.y = String(format: "%.5f", sales)
     }
     
 }
