@@ -1,10 +1,12 @@
 //
-//  RateChart.swift
+//  LineChart.swift
 //  CowrywiseCC
 //
 //  Created by Admin on 12/19/20.
 //  Copyright © 2020 rapid interactive. All rights reserved.
-//
+/*
+ Abstract: A uikit view that displays a line chart in SwiftUI
+ */
 
 import SwiftUI
 import Charts
@@ -44,16 +46,13 @@ struct LineChart: UIViewRepresentable {
         if self.pos == .zero {
             uiView.highlightValue(nil)
         }
-     
-        // customization
+        
          uiView.data = salesChartData
          uiView.marker = Tooltip(representable: self)
          
-         
+         // customization
          configureChart(uiView)
-        formatDataset(dataSet)
-         /*formatCenter(uiView)
-         formatDescription(uiView.chartDescription) */
+         formatDataset(dataSet)
          formatLegend(uiView.legend)
          uiView.notifyDataSetChanged()
     }
@@ -159,7 +158,7 @@ class Coordinator: NSObject, ChartViewDelegate  {
         let timeInterval = entry.value(forKey: "x") as! Double
         let sales = entry.value(forKey: "y") as! Double
         let date = Date(timeIntervalSince1970: timeInterval)
-       
+        
         representable.x = representable.dateFormatter.string(from: date)
         representable.y = String(format: "%.5f", sales)
     }
@@ -167,8 +166,6 @@ class Coordinator: NSObject, ChartViewDelegate  {
 }
 
 func configureChart(_ uiView: LineChartView) {
-    
-    
     
     uiView.dragEnabled = false
     uiView.doubleTapToZoomEnabled = false
@@ -204,8 +201,6 @@ func formatDataset( _ dataset: LineChartDataSet) {
     dataset.drawFilledEnabled = true
     dataset.drawVerticalHighlightIndicatorEnabled = false
     dataset.drawHorizontalHighlightIndicatorEnabled = false
-    
-    
 }
 
 func formatLegend(_ uiView: Legend) {
@@ -221,8 +216,109 @@ struct LineChart_Previews: PreviewProvider {
     }
     
     static var previews: some View {
+        
+        /* {
+               "date": "1/1/2019",
+               "total_sales": 4745.181
+           },
+           {
+               "date": "1/10/2019",
+               "total_sales": 3560.949
+           },
+           {
+               "date": "1/11/2019",
+               "total_sales": 2114.9625
+           },
+           {
+               "date": "1/12/2019",
+               "total_sales": 5184.7635
+           },
+           {
+               "date": "1/13/2019",
+           "total_sales": 2451.204
+         },
+         {
+           "date": "1/14/2019",
+           "total_sales": 3966.6165
+         },
+         {
+           "date": "1/15/2019",
+           "total_sales": 5944.26
+         },
+         {
+           "date": "1/16/2019",
+           "total_sales": 4289.082
+         },
+         {
+           "date": "1/17/2019",
+           "total_sales": 3142.755
+         },
+         {
+           "date": "1/18/2019",
+           "total_sales": 2780.4735
+         },
+         {
+           "date": "1/19/2019",
+           "total_sales": 4914.7245
+         },
+         {
+           "date": "1/2/2019",
+           "total_sales": 1945.503
+         },
+         {
+           "date": "1/20/2019",
+           "total_sales": 3655.449
+         },
+         {
+           "date": "1/21/2019",
+           "total_sales": 2392.0995
+         },
+         {
+           "date": "1/22/2019",
+           "total_sales": 1704.7695
+         },
+         {
+           "date": "1/23/2019",
+           "total_sales": 5994.1875
+         },
+         {
+           "date": "1/24/2019",
+           "total_sales": 5402.0505
+         },
+         {
+           "date": "1/25/2019",
+           "total_sales": 4700.367
+         },
+         {
+           "date": "1/26/2019",
+           "total_sales": 4457.5125
+         },
+         {
+           "date": "1/27/2019",
+           "total_sales": 4635.897
+         },
+         {
+           "date": "1/28/2019",
+           "total_sales": 4999.7115
+         },
+         {
+           "date": "1/29/2019",
+           "total_sales": 3516.5655
+         },
+         {
+           "date": "1/3/2019",
+           "total_sales": 2078.1285
+         },
+         {
+           "date": "1/30/2019",
+           "total_sales": 2558.262
+         },
+         {
+           "date": "1/31/2019",
+           "total_sales": 5232.4965
+         }*/
      
-        print("showing")
+      //  print("showing")
      //   print(appData.conversionInfo.entries)
         return VStack {
             Text("Chart")

@@ -4,7 +4,9 @@
 //
 //  Created by Admin on 12/24/20.
 //  Copyright © 2020 rapid interactive. All rights reserved.
-//
+/*
+ A view that displays an hyperlink
+ */
 
 import Foundation
 import SwiftUI
@@ -19,12 +21,12 @@ struct Link: View {
     
     var body: some View {
          Button(action: {
-             if let url = URL(string: "") {
+            if let url = URL(string: self.destination) {
                 UIApplication.shared.open(url)
             }
          }) {
              Text(text)
-                .font(.subheadline)
+                .font(.caption)
                  .foregroundColor(textColor)
                  .background(
                      GeometryReader { proxy in

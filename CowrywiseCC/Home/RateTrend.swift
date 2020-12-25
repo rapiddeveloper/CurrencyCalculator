@@ -4,7 +4,11 @@
 //
 //  Created by Admin on 12/22/20.
 //  Copyright © 2020 rapid interactive. All rights reserved.
-//
+/*
+ Abstract: A view that shows a timeseries chart of the forex rate of
+ 1 unit for the selected base currency. The chart also shows an active dot and a tooltip
+ whenever a user tap on any point on the line
+ */
 
 import SwiftUI
 
@@ -23,22 +27,18 @@ struct RateTrend: View {
     
     @EnvironmentObject var appData: AppData
     
+    // position of user tap on chart on the cartesian grid
     @State private var pos: CGPoint = .zero
-    @State private var x: String = ""
-    @State private var y: String = ""
+    @State private var x: String = ""   // x value at the position
+    @State private var y: String = ""   //  y value at the position
     
-    @State private var linkText = "I see you ther"
- 
-    let width: CGFloat = 100
-    let height: CGFloat = 100
-    let dotWidth: CGFloat = 16
-    let dotHeight: CGFloat = 16
+    // active dot dimensions
+    let dotWidth: CGFloat = 8
+    let dotHeight: CGFloat = 8
     
     var tooltipBaseInfo: String {
          return "1 \(appData.conversionInfo.baseCurrency) = \(y)"
     }
-    
-     
     
     var activeDotPos: CGPoint {
         
@@ -58,7 +58,6 @@ struct RateTrend: View {
         }
         
         return CGPoint(x: x, y: y)
-        
     }
     
     var tooltipPos: CGPoint {
@@ -87,14 +86,15 @@ struct RateTrend: View {
     }
     
     var body: some View {
+        
         let tooltipFlipped = shouldFlipTooltip()
+        
         return VStack {
+            
             HStack {
                 Button(action: {
-                    
                     self.appData.updateConversionInfo(mode: 0)
                     self.appData.getRateTimeseries()
-
                 }, label: {
                     VStack(alignment: .center, spacing: 8) {
                         Text("30 Days Past")
@@ -107,8 +107,6 @@ struct RateTrend: View {
                 })
                 Spacer()
                 Button(action: {
-                    
-                    //self.mode = 1
                     self.appData.updateConversionInfo(mode: 1)
                     self.appData.getRateTimeseries()
                 }, label: {
@@ -130,23 +128,22 @@ struct RateTrend: View {
                     GeometryReader { proxy in
                         if self.pos != .zero {
                             Tooltip(x: self.x, y: self.tooltipBaseInfo, cornerRadius: 10, fill: .green, isFlipped: tooltipFlipped)
-                                // .frame(width: self.width)
-                                .position(self.tooltipPos)
+                                 .position(self.tooltipPos)
                                 .offset(x: tooltipFlipped ? -140 : 0, y: 0)
-                                 
                             Group {
                                 Circle()
                                     .fill(Color.green)
                                     .frame(width: self.dotWidth, height: self.dotHeight)
                                     .overlay(
                                         Circle()
-                                            .stroke(Color.white, lineWidth: 1.0)
+                                            .stroke(Color.white, lineWidth: 2.0)
                                 )
                             }
                             .position(self.activeDotPos)
                         }
                     }
             )
+            
             VStack {
                 Link(text: "Get rate alerts straight to your inbox", destination: "", lineColor: .white, textColor: .white, lineWidth: CGFloat(1.0))
             }
@@ -159,7 +156,7 @@ struct RateTrend: View {
                 .fill(Color(red: 4/255, green: 96/255, blue: 209/255))
         )
        .onReceive(appData.$exchangeName, perform: {  value in
-            // reset time series for new currencies
+            // reset time series and tapped position for new currencies
             self.appData.updateConversionInfo(mode: 0)
             self.appData.getRateTimeseries()
             self.pos = .zero
@@ -168,7 +165,6 @@ struct RateTrend: View {
     }
     
     func shouldFlipTooltip() -> Bool {
-        print("trying to flip")
         let screenWidth = UIScreen.main.bounds.size.width
         return (screenWidth - tooltipPos.x) < 50
     }
@@ -194,12 +190,11 @@ fileprivate struct Tooltip: View {
            Text(x)
                 .fontWeight(.medium)
            Text(y)
-           
         }
         .font(.caption)
         .foregroundColor(.white)
         .padding()
-         .background(
+        .background(
             RoundedCorner(radius: cornerRadius, corners: [isFlipped ? .bottomLeft : .bottomRight , .topLeft, .topRight])
             .fill(fill)
         )

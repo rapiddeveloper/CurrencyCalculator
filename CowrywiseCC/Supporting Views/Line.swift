@@ -4,7 +4,9 @@
 //
 //  Created by Admin on 12/24/20.
 //  Copyright © 2020 rapid interactive. All rights reserved.
-//
+/*
+ Abstract: A view that shows a line
+ */
 
 import SwiftUI
 

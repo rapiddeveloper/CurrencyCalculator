@@ -4,7 +4,9 @@
 //
 //  Created by Admin on 12/17/20.
 //  Copyright © 2020 rapid interactive. All rights reserved.
-//
+/*
+ Abstract: A view that shows a button that shows the base/target currency selected and allows the user perform a specified action
+ */
 
 import SwiftUI
 
@@ -16,12 +18,10 @@ struct CurrencyBtn<Content: View>: View {
     let label: Content
     let action: ()->()
     
-    init(currencyType: CurrencyType, @ViewBuilder label:()->Content, /*@ViewBuilder icon:()->Content,*/ action: @escaping ()->()) {
+    init(currencyType: CurrencyType, @ViewBuilder label:()->Content, action: @escaping ()->()) {
         self.currencyType = currencyType
         self.label = label()
-        //self.icon = icon()
         self.action = action
-      
     }
     
     var body: some View {
@@ -36,6 +36,7 @@ struct CurrencyBtn<Content: View>: View {
                 }
             }
             .font(.headline)
+            
             Button(action: {
                 self.action()
             }, label: {
@@ -48,8 +49,6 @@ struct CurrencyBtn<Content: View>: View {
             RoundedRectangle(cornerRadius: 2.0)
                 .stroke(Color(UIColor.systemGray5), lineWidth: 1.0)
         )
-        
-    
     }
 }
 
