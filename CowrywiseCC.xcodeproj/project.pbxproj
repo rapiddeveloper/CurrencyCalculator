@@ -26,6 +26,7 @@
 		84BDE5A825924D6200C0077B /* RateTrend.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84BDE5A725924D6200C0077B /* RateTrend.swift */; };
 		84FD467E2594D29A00202D1F /* Link.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84FD467D2594D29900202D1F /* Link.swift */; };
 		84FD4682259521F700202D1F /* Line.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84FD4681259521F700202D1F /* Line.swift */; };
+		84FD468625952BE200202D1F /* CurrencyTextField.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84FD468525952BE200202D1F /* CurrencyTextField.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -79,6 +80,7 @@
 		84BDE5A725924D6200C0077B /* RateTrend.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RateTrend.swift; sourceTree = "<group>"; };
 		84FD467D2594D29900202D1F /* Link.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Link.swift; sourceTree = "<group>"; };
 		84FD4681259521F700202D1F /* Line.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Line.swift; sourceTree = "<group>"; };
+		84FD468525952BE200202D1F /* CurrencyTextField.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CurrencyTextField.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -163,6 +165,7 @@
 			isa = PBXGroup;
 			children = (
 				847B326F258BCC2200C7C4F1 /* CurrencyBtn.swift */,
+				84FD468525952BE200202D1F /* CurrencyTextField.swift */,
 				84FD467D2594D29900202D1F /* Link.swift */,
 				84FD4681259521F700202D1F /* Line.swift */,
 			);
@@ -303,6 +306,7 @@
 			files = (
 				84B4F8D9258E3953001BDC81 /* LineChart.swift in Sources */,
 				846E682F2588FB3E00C71DA6 /* AppDelegate.swift in Sources */,
+				84FD468625952BE200202D1F /* CurrencyTextField.swift in Sources */,
 				84BDE5A825924D6200C0077B /* RateTrend.swift in Sources */,
 				84FD467E2594D29A00202D1F /* Link.swift in Sources */,
 				84B4F8EA258E3C42001BDC81 /* Wine.swift in Sources */,
