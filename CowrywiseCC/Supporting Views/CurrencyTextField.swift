@@ -25,7 +25,7 @@ struct CurrencyTextField: UIViewRepresentable {
     var label = UILabel(frame: CGRect(x: 300, y: 16, width: 200, height: 24))
     @Binding var text: String
     //@Binding var textviewHeight: CGFloat
-    @Binding var currencyPlaceHolder: String
+    var currencyPlaceHolder: String
     var onCommit: () -> ()
     
      func makeUIView(context: Context) -> UITextView {
@@ -34,7 +34,7 @@ struct CurrencyTextField: UIViewRepresentable {
         label.text = currencyPlaceHolder
         label.textColor = .systemGray3
         label.font = UIFont.systemFont(ofSize: 24, weight: .semibold)
-        
+        label.tag = 1
         
         if let labelText = label.text {
             let attributedString = NSMutableAttributedString(string: labelText)
@@ -45,9 +45,9 @@ struct CurrencyTextField: UIViewRepresentable {
 //        let attributedText = textview.textStorage
 //        attributedText.addAttribute(.foregroundColor, value: UIColor.red, range: NSRange(location: 0, length: 3))
 //
-        
-         textview.addSubview(label)
-         textview.textContainerInset = UIEdgeInsets(top: 16, left: 24.0 , bottom: 16, right: 32.0)
+        textview.text = text
+        textview.addSubview(label)
+        textview.textContainerInset = UIEdgeInsets(top: 16, left: 24.0 , bottom: 16, right: 32.0)
         
         textview.textColor = .gray
         textview.isScrollEnabled = false
@@ -55,15 +55,19 @@ struct CurrencyTextField: UIViewRepresentable {
         textview.backgroundColor =  UIColor(named: "textfield")
         textview.delegate = context.coordinator
         textview.showsVerticalScrollIndicator = false
-        
  
         return textview
     }
     
     func updateUIView(_ textView: UITextView, context: Context) {
-        textView.text = text
-        label.text = currencyPlaceHolder
-        
+         textView.text = text
+        for subview in textView.subviews {
+            if subview.tag == 1 {
+                let label = subview as! UILabel
+                label.text = currencyPlaceHolder
+            }
+        }
+
     }
     
     func makeCoordinator() -> CurrencyTextFieldCoordinator {
@@ -93,7 +97,7 @@ class CurrencyTextFieldCoordinator: NSObject, UITextViewDelegate {
            // representable.label.text = nil
 
             representable.text = userText
-            
+           
             
         }
         
@@ -106,7 +110,7 @@ class CurrencyTextFieldCoordinator: NSObject, UITextViewDelegate {
     
     
     func textView(_ textView: UITextView, shouldChangeTextIn range: NSRange, replacementText text: String) -> Bool {
-            
+
         // get the current text, or use an empty string if that failed
            let currentText = textView.text ?? ""
 
@@ -128,21 +132,11 @@ class CurrencyTextFieldCoordinator: NSObject, UITextViewDelegate {
 struct CurrencyTextField_Previews: PreviewProvider {
     static var previews: some View {
         VStack {
-            CurrencyTextField(text: .constant("500"), currencyPlaceHolder: .constant("NGN"), onCommit: {})
+            CurrencyTextField(text: .constant("500"), currencyPlaceHolder: "NGN", onCommit: {})
                 .frame(height: 56)
         }
        // .padding(.horizontal, 32)
     }
 }
 
-extension UITextView {
-
-    func centerVertically() {
-        let fittingSize = CGSize(width: bounds.width, height: CGFloat.greatestFiniteMagnitude)
-        let size = sizeThatFits(fittingSize)
-        let topOffset = (bounds.size.height - size.height * zoomScale) / 2
-        let positiveTopOffset = max(1, topOffset)
-        contentOffset.y = -positiveTopOffset
-    }
-
-}
+ 

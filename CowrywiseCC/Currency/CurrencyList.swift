@@ -26,24 +26,40 @@ struct CurrencyList: View {
                         let newTargetCurrency = newCurrencies[CurrencyType.target] {
                         self.appData.updateConversionInfo(newBaseCurrency: newBaseCurrency, newTargetCurrency: newTargetCurrency)
                         self.appData.setExchangeName()
+                        print(self.appData.conversionInfo!)
                     }
                     //self.appData.currencyListOpened = false
                     self.presentationMode.wrappedValue.dismiss()
                 })
             }
             .padding()
-            List {
-                ForEach(appData.conversionInfo.currencies, id: \.self) { currency in
-                    Text(currency)
-                        .font(.subheadline)
-                        .frame(minWidth: 0, maxWidth: .infinity, alignment: .leading)
-                        .contentShape(Rectangle())
-                        .onTapGesture {
-                            self.tempSelectedCurrency = currency
+            if self.appData.conversionInfo.currencies.isEmpty {
+                Button(action: {
+                    self.appData.loadCurrencies(url: self.appData.currenciesURL) { currencies in
+                        if let currencies = currencies {
+                            print(currencies)
+                            self.appData.updateConversionInfo(currencies: currencies.sorted(by: {$0.0 < $1.0 }) )
+                            self.appData.getRateTimeseries()
+                         }
                     }
-                    .listRowBackground(self.tempSelectedCurrency == currency ? Color.gray : Color.clear)
+                }, label:  {
+                    Text("Load Currencies")
+                })
+            } else {
+                List {
+                    ForEach(appData.conversionInfo.currencies, id: \.self) { currency in
+                        Text(currency)
+                            .font(.subheadline)
+                            .frame(minWidth: 0, maxWidth: .infinity, alignment: .leading)
+                            .contentShape(Rectangle())
+                            .onTapGesture {
+                                self.tempSelectedCurrency = currency
+                        }
+                        .listRowBackground(self.tempSelectedCurrency == currency ? Color.gray : Color.clear)
+                    }
                 }
             }
+           
         }
         .onAppear {
             if self.appData.selectedCurrencyType == .base {

@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		845CB01C25965A03000C31E9 /* MenuButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 845CB01B25965A03000C31E9 /* MenuButton.swift */; };
 		846E682F2588FB3E00C71DA6 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 846E682E2588FB3E00C71DA6 /* AppDelegate.swift */; };
 		846E68312588FB3E00C71DA6 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 846E68302588FB3E00C71DA6 /* SceneDelegate.swift */; };
 		846E68332588FB3E00C71DA6 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 846E68322588FB3E00C71DA6 /* ContentView.swift */; };
@@ -61,6 +62,7 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		845CB01B25965A03000C31E9 /* MenuButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MenuButton.swift; sourceTree = "<group>"; };
 		846E682B2588FB3E00C71DA6 /* CowrywiseCC.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = CowrywiseCC.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		846E682E2588FB3E00C71DA6 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		846E68302588FB3E00C71DA6 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -153,6 +155,7 @@
 			isa = PBXGroup;
 			children = (
 				847B326D258BBB9500C7C4F1 /* Home.swift */,
+				845CB01B25965A03000C31E9 /* MenuButton.swift */,
 				84B4F8E9258E3C42001BDC81 /* Wine.swift */,
 				84B4F8D8258E3953001BDC81 /* LineChart.swift */,
 				84BDE5A725924D6200C0077B /* RateTrend.swift */,
@@ -306,6 +309,7 @@
 			files = (
 				84B4F8D9258E3953001BDC81 /* LineChart.swift in Sources */,
 				846E682F2588FB3E00C71DA6 /* AppDelegate.swift in Sources */,
+				845CB01C25965A03000C31E9 /* MenuButton.swift in Sources */,
 				84FD468625952BE200202D1F /* CurrencyTextField.swift in Sources */,
 				84BDE5A825924D6200C0077B /* RateTrend.swift in Sources */,
 				84FD467E2594D29A00202D1F /* Link.swift in Sources */,

@@ -162,6 +162,7 @@ class AppData: ObservableObject {
     @Published var conversionInfo: ConversionInfoViewModel!
     @Published var currencyListOpened = false
     @Published var exchangeName = ""
+    @Published var conversionResult: Double? = 0.0
     var ratePublisher: AnyCancellable?
     
     
@@ -198,7 +199,7 @@ class AppData: ObservableObject {
         formatter.dateFormat = "yyyy-MM-dd"
         
         let today = Date()
-        let daysAgo = Date(timeIntervalSinceNow: TimeInterval(-daysPast * 24 * 60 * 60) )
+        let daysAgo =  Date(timeIntervalSinceNow: TimeInterval(-daysPast * 24 * 60 * 60) )
         let startDate = formatter.string(from: daysAgo)
         let endDate = formatter.string(from: today)
         
@@ -210,7 +211,7 @@ class AppData: ObservableObject {
     
     var rateEndpoint: String {
  
-        let today = Date()
+        let today = Date(timeIntervalSinceNow: TimeInterval(-1 * 24 * 60 * 60) ) //Date()
         let formatter = DateFormatter()
        
         formatter.dateStyle = .short
@@ -223,9 +224,8 @@ class AppData: ObservableObject {
     }
     
     init() {
-        
         currenciesURL = "http://data.fixer.io/api/\(currenciesEndpoint)?access_key=\(APIKey)"
-        self.conversionInfo = ConversionInfoViewModel(conversionInfo: ConversionInfo(baseCurrencyAmt: 1, targetCurrencyAmt: 10, baseCurrency: "EUR", targetCurrency: "NGN", rate: nil, mode: 0, pos: .zero))
+        self.conversionInfo = ConversionInfoViewModel(conversionInfo: ConversionInfo(baseCurrencyAmt: 0, targetCurrencyAmt: 0, baseCurrency: "EUR", targetCurrency: "NGN", rate: nil, mode: 0, pos: .zero))
 
         loadRate(url: rateEndpoint) { rate in
             self.updateConversionInfo(with: rate)
@@ -267,12 +267,16 @@ class AppData: ObservableObject {
         // validation
         if let baseAmt = Double(newBaseCurrencyAmt), baseAmt >= 0 {
             conversionInfo.conversionInfo.baseCurrencyAmt = baseAmt
+        } else if newBaseCurrencyAmt.isEmpty {
+            conversionInfo.conversionInfo.baseCurrencyAmt = 0.0
         } else {
             conversionInfo.conversionInfo.baseCurrencyAmt = nil
         }
         
         if let targetAmt = Double(newTargetCurrencyAmt), targetAmt >= 0 {
             conversionInfo.conversionInfo.targetCurrencyAmt = targetAmt
+        } else if newTargetCurrencyAmt.isEmpty {
+            conversionInfo.conversionInfo.targetCurrencyAmt = 0.0
         } else {
             conversionInfo.conversionInfo.targetCurrencyAmt = nil
         }
@@ -280,8 +284,8 @@ class AppData: ObservableObject {
     }
     
     func updateConversionInfo(newBaseCurrency: String, newTargetCurrency: String)  {
-         conversionInfo.conversionInfo.baseCurrency = newBaseCurrency
-         conversionInfo.conversionInfo.targetCurrency = newTargetCurrency
+        conversionInfo.conversionInfo.baseCurrency = newBaseCurrency
+        conversionInfo.conversionInfo.targetCurrency = newTargetCurrency
     }
     
     func updateConversionInfo(mode: Int) {
@@ -319,22 +323,25 @@ class AppData: ObservableObject {
               let exchangeRate = rate[conversionInfo.conversionInfo.targetCurrency] else {return}
         
         guard let baseAmt = conversionInfo.conversionInfo.baseCurrencyAmt,
-              let targetAmt = conversionInfo.conversionInfo.targetCurrencyAmt else {return}
+            let targetAmt = conversionInfo.conversionInfo.targetCurrencyAmt else { conversionResult = nil; return}
         
         // validation
         if conversionType == .baseToTarget {
             conversionInfo.conversionInfo.targetCurrencyAmt = baseAmt * exchangeRate
+            conversionResult = baseAmt * exchangeRate
         } else if conversionType == .targetToBase && exchangeRate == 0 {
             throw ConversionErrors.divisionByZero
         } else {
             conversionInfo.conversionInfo.baseCurrencyAmt = targetAmt / exchangeRate
+            conversionResult = targetAmt / exchangeRate
         }
     }
     
     func convertAmount(conversionType: ConversionType) {
+        
         self.loadRate(url: self.rateEndpoint) { rates in
-            
             self.updateConversionInfo(with: rates)
+            print(rates!)
             do {
               try self.convert(from: conversionType)
             }catch {
@@ -379,6 +386,7 @@ class AppData: ObservableObject {
     
     
     func loadRate(url: String, completed: @escaping ([String: Double]?)->()) {
+        print(url)
          if let url = URL(string: url) {
             let urlRequest = URLRequest(url: url)
             let session = URLSession.shared

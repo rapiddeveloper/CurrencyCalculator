@@ -156,7 +156,10 @@ struct RateTrend: View {
                 .fill(Color(red: 4/255, green: 96/255, blue: 209/255))
         )
        .onReceive(appData.$exchangeName, perform: {  value in
+        
             // reset time series and tapped position for new currencies
+//            print(self.appData.conversionInfo!.baseCurrencyAmount)
+//            self.appData.convertAmount(conversionType: .baseToTarget)
             self.appData.updateConversionInfo(mode: 0)
             self.appData.getRateTimeseries()
             self.pos = .zero

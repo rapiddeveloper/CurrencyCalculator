@@ -10,20 +10,43 @@ import SwiftUI
 import KingfisherSwiftUI
 import Charts
 
+class HomeData: ObservableObject {
+    @Published var baseCurrencyAmt: String = "1.0"
+    @Published var targetCurrencyAmt: String = "0.0"
+}
+
 struct Home: View {
     
-     @EnvironmentObject var appData: AppData
+    @EnvironmentObject var appData: AppData
+    //@ObservedObject var homeData = HomeData()
+    
+    @State var baseCurrencyAmt: String = "0.0"
+    @State var targetCurrencyAmt: String = "0.0"
     
     var body: some View {
-        ScrollView {
+       
+        return ScrollView {
             VStack {
                 HStack {
-                    Text("Menu")
+                    MenuButton(spacing: 5, lineWidth: 4, stroke: Color.red)
+                         .frame(width: 32)
+                    Spacer()
+                    
                     Text("Sign Up")
                 }
                 Text("Currency Calculator")
-                TextField("", text: .constant("Base"))
-                TextField("", text: .constant("Target"))
+                VStack {
+//                    TextField("", text: $homeData.baseCurrencyAmt)
+//                    TextField("", text: $homeData.targetCurrencyAmt)
+ 
+                    
+                    CurrencyTextField(text: $baseCurrencyAmt,
+                                      currencyPlaceHolder: appData.conversionInfo.baseCurrency, onCommit: {})
+
+                    CurrencyTextField(text:  $targetCurrencyAmt,
+                                      currencyPlaceHolder: appData.conversionInfo.targetCurrency,
+                                      onCommit: {})
+                }
                 HStack {
                     CurrencyBtn(
                         currencyType: .base,
@@ -37,8 +60,10 @@ struct Home: View {
                               self.appData.currencyListOpened = true
                         }
                     )
-                       
-                    
+                    Image(systemName: "chevron.left")
+                        .font(.subheadline)
+                    Image(systemName: "chevron.right")
+                        .font(.subheadline)
                     CurrencyBtn(
                         currencyType: .target,
                         label: {
@@ -51,9 +76,16 @@ struct Home: View {
                               self.appData.currencyListOpened = true
                         }
                     )
-                   
                 }
+                
                 Button(action: {
+                 
+                    self.appData.updateConversionInfo(newBaseCurrencyAmt: self.baseCurrencyAmt,
+                                           newTargetCurrencyAmt: self.targetCurrencyAmt
+//                    self.appData.updateConversionInfo(newBaseCurrencyAmt: self.homeData.baseCurrencyAmt,
+//                        newTargetCurrencyAmt: self.homeData.targetCurrencyAmt
+                    )
+                   self.appData.convertAmount(conversionType: .baseToTarget)
                     
                 }, label: {
                     Text("Convert")
@@ -63,19 +95,34 @@ struct Home: View {
                 }
                 RateTrend()
                     .frame(height: 560)
-               // PieTrend()
+                
                 
                 Spacer()
             }
+            .onReceive(appData.$conversionResult, perform: { value in
+                // update amount to show result of conversion
+             
+                var temp = ""
+                if let result = value {
+                    temp = String(result)
+                }
+                
+                // select currency textfield to put result
+                if self.appData.conversionType == .baseToTarget {
+                    self.targetCurrencyAmt = temp
+                } else {
+                    self.baseCurrencyAmt = temp
+                }
+            })
         }
     }
 }
 
-struct Home_Previews: PreviewProvider {
-    static var previews: some View {
-        Home().environmentObject(AppData())
-    }
-}
+//struct Home_Previews: PreviewProvider {
+//    static var previews: some View {
+//        Home().environmentObject(AppData())
+//    }
+//}
 
 struct CurrencyHistoryTrend: View {
     
