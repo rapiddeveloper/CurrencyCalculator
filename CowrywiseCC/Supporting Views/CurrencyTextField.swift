@@ -45,10 +45,11 @@ struct CurrencyTextField: UIViewRepresentable {
 //        let attributedText = textview.textStorage
 //        attributedText.addAttribute(.foregroundColor, value: UIColor.red, range: NSRange(location: 0, length: 3))
 //
+        textview.keyboardType = .numberPad
         textview.text = text
         textview.addSubview(label)
-        textview.textContainerInset = UIEdgeInsets(top: 16, left: 24.0 , bottom: 16, right: 32.0)
-        
+        textview.textContainerInset = UIEdgeInsets(top: 16, left: 24.0 , bottom: 18, right: 32.0)
+    
         textview.textColor = .gray
         textview.isScrollEnabled = false
         textview.font = UIFont.systemFont(ofSize: 24, weight: .bold)
@@ -88,24 +89,17 @@ class CurrencyTextFieldCoordinator: NSObject, UITextViewDelegate {
     func textViewDidChange(_ textView: UITextView) {
        
         if let userText = textView.text {
-            
-            /*
-            let sizeToFitIn = CGSize(width: textView.bounds.size.width, height: CGFloat(MAXFLOAT))
-            let newSize = textView.sizeThatFits(sizeToFitIn)
-            self.representable.textviewHeight = newSize.height*/
-            
-           // representable.label.text = nil
 
             representable.text = userText
            
             
         }
         
-        /*
-        if let userText = textView.text, userText.isEmpty {
-            
-             representable.label.text = "Add A task"
-         }*/
+        
+//        if let userText = textView.text, userText.isEmpty {
+//
+//             representable.text = "0.0"
+//         }
     }
     
     
@@ -135,7 +129,7 @@ struct CurrencyTextField_Previews: PreviewProvider {
             CurrencyTextField(text: .constant("500"), currencyPlaceHolder: "NGN", onCommit: {})
                 .frame(height: 56)
         }
-       // .padding(.horizontal, 32)
+       
     }
 }
 

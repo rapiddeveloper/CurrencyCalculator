@@ -20,7 +20,7 @@ struct Home: View {
     @EnvironmentObject var appData: AppData
     //@ObservedObject var homeData = HomeData()
     
-    @State var baseCurrencyAmt: String = "0.0"
+    @State var baseCurrencyAmt: String = "1.0"
     @State var targetCurrencyAmt: String = "0.0"
     
     var body: some View {
@@ -101,7 +101,6 @@ struct Home: View {
             }
             .onReceive(appData.$conversionResult, perform: { value in
                 // update amount to show result of conversion
-             
                 var temp = ""
                 if let result = value {
                     temp = String(result)
@@ -113,6 +112,16 @@ struct Home: View {
                 } else {
                     self.baseCurrencyAmt = temp
                 }
+            })
+            .onReceive(appData.$exchangeName, perform: { value in
+            
+                    self.appData.updateConversionInfo(newBaseCurrencyAmt: self.baseCurrencyAmt, newTargetCurrencyAmt: self.targetCurrencyAmt)
+                
+                self.appData.loadRate(url: self.appData.rateEndpoint, completed: {rate in
+                    self.appData.updateConversionInfo(with: rate)
+                    try? self.appData.convert(from: .baseToTarget)
+                    self.appData.getRateTimeseries()
+                })
             })
         }
     }

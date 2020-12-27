@@ -26,7 +26,7 @@ struct CurrencyList: View {
                         let newTargetCurrency = newCurrencies[CurrencyType.target] {
                         self.appData.updateConversionInfo(newBaseCurrency: newBaseCurrency, newTargetCurrency: newTargetCurrency)
                         self.appData.setExchangeName()
-                        print(self.appData.conversionInfo!)
+                       
                     }
                     //self.appData.currencyListOpened = false
                     self.presentationMode.wrappedValue.dismiss()

@@ -264,19 +264,19 @@ class AppData: ObservableObject {
     
     func updateConversionInfo(newBaseCurrencyAmt: String, newTargetCurrencyAmt: String) {
         
+    
+        
         // validation
         if let baseAmt = Double(newBaseCurrencyAmt), baseAmt >= 0 {
             conversionInfo.conversionInfo.baseCurrencyAmt = baseAmt
-        } else if newBaseCurrencyAmt.isEmpty {
-            conversionInfo.conversionInfo.baseCurrencyAmt = 0.0
         } else {
             conversionInfo.conversionInfo.baseCurrencyAmt = nil
         }
         
         if let targetAmt = Double(newTargetCurrencyAmt), targetAmt >= 0 {
             conversionInfo.conversionInfo.targetCurrencyAmt = targetAmt
-        } else if newTargetCurrencyAmt.isEmpty {
-            conversionInfo.conversionInfo.targetCurrencyAmt = 0.0
+        } else if newTargetCurrencyAmt.isEmpty  && !newBaseCurrencyAmt.isEmpty {
+            conversionInfo.conversionInfo.targetCurrencyAmt = 0
         } else {
             conversionInfo.conversionInfo.targetCurrencyAmt = nil
         }
@@ -359,7 +359,7 @@ class AppData: ObservableObject {
                ratePublisher = session.dataTaskPublisher(for: urlRequest)
                .tryMap({ data, response -> Data? in
                    if let res = response as? HTTPURLResponse {
-                       print(res.statusCode)
+                       
                        if res.statusCode == 200 { // returned anything
                            return data
                        }
@@ -386,14 +386,14 @@ class AppData: ObservableObject {
     
     
     func loadRate(url: String, completed: @escaping ([String: Double]?)->()) {
-        print(url)
+       
          if let url = URL(string: url) {
             let urlRequest = URLRequest(url: url)
             let session = URLSession.shared
             ratePublisher = session.dataTaskPublisher(for: urlRequest)
             .tryMap({ data, response -> Data? in
                 if let res = response as? HTTPURLResponse {
-                    print(res.statusCode)
+                   
                     if res.statusCode == 200 { // returned anything
                         return data
                     }
@@ -407,6 +407,7 @@ class AppData: ObservableObject {
                 if let responseData = data,
                     let result = try? decoder.decode(RateResponse.self, from: responseData) {
                     completed(result.rates)
+                    
                 }
  
             })
@@ -420,7 +421,7 @@ class AppData: ObservableObject {
                ratePublisher = session.dataTaskPublisher(for: urlRequest)
                .tryMap({ data, response -> Data? in
                    if let res = response as? HTTPURLResponse {
-                       print(res.statusCode)
+                       
                        if res.statusCode == 200 { // returned anything
                            return data
                        }
@@ -447,7 +448,7 @@ class AppData: ObservableObject {
                ratePublisher = session.dataTaskPublisher(for: urlRequest)
                .tryMap({ data, response -> Data? in
                    if let res = response as? HTTPURLResponse {
-                       print(res.statusCode)
+                      
                        if res.statusCode == 200 { // returned anything
                            return data
                        }
