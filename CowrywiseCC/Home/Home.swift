@@ -22,6 +22,9 @@ struct Home: View {
     
     @State var baseCurrencyAmt: String = "1.0"
     @State var targetCurrencyAmt: String = "0.0"
+    let inputFieldWidth: CGFloat = UIScreen.main.bounds.width * 0.95
+    
+                   
     
     var body: some View {
        
@@ -39,14 +42,25 @@ struct Home: View {
 //                    TextField("", text: $homeData.baseCurrencyAmt)
 //                    TextField("", text: $homeData.targetCurrencyAmt)
  
+                
+                        CurrencyTextField(text: self.$baseCurrencyAmt,
+                                          currencyPlaceHolder: self.appData.conversionInfo.baseCurrency,
+                                          width: inputFieldWidth,
+                                          onCommit: {})
+                            .cornerRadius(5)
+                            .frame(width: inputFieldWidth, height: 56)
                     
-                    CurrencyTextField(text: $baseCurrencyAmt,
-                                      currencyPlaceHolder: appData.conversionInfo.baseCurrency, onCommit: {})
-
-                    CurrencyTextField(text:  $targetCurrencyAmt,
-                                      currencyPlaceHolder: appData.conversionInfo.targetCurrency,
-                                      onCommit: {})
+                        
+                        CurrencyTextField(
+                                    text:  self.$targetCurrencyAmt,
+                                    currencyPlaceHolder: self.appData.conversionInfo.targetCurrency,
+                                     width: inputFieldWidth,
+                                    onCommit: {})
+                            .cornerRadius(5)
+                            .frame(width: inputFieldWidth, height: 56)
+                    
                 }
+               
                 HStack {
                     CurrencyBtn(
                         currencyType: .base,
@@ -60,10 +74,12 @@ struct Home: View {
                               self.appData.currencyListOpened = true
                         }
                     )
+                    
                     Image(systemName: "chevron.left")
                         .font(.subheadline)
                     Image(systemName: "chevron.right")
                         .font(.subheadline)
+                    
                     CurrencyBtn(
                         currencyType: .target,
                         label: {
@@ -85,21 +101,24 @@ struct Home: View {
 //                    self.appData.updateConversionInfo(newBaseCurrencyAmt: self.homeData.baseCurrencyAmt,
 //                        newTargetCurrencyAmt: self.homeData.targetCurrencyAmt
                     )
-                   self.appData.convertAmount(conversionType: .baseToTarget)
+                    self.appData.convertAmount(conversionType: .baseToTarget)
                     
                 }, label: {
                     Text("Convert")
                 })
+                .disabled((baseCurrencyAmt == "" && targetCurrencyAmt == "") || baseCurrencyAmt == "")
+                
                 HStack {
                     Text("link")
                 }
                 RateTrend()
                     .frame(height: 560)
-                
-                
                 Spacer()
             }
+           
+           //.padding()
             .onReceive(appData.$conversionResult, perform: { value in
+                
                 // update amount to show result of conversion
                 var temp = ""
                 if let result = value {
@@ -114,9 +133,9 @@ struct Home: View {
                 }
             })
             .onReceive(appData.$exchangeName, perform: { value in
-            
-                    self.appData.updateConversionInfo(newBaseCurrencyAmt: self.baseCurrencyAmt, newTargetCurrencyAmt: self.targetCurrencyAmt)
-                
+
+                self.appData.updateConversionInfo(newBaseCurrencyAmt: self.baseCurrencyAmt, newTargetCurrencyAmt: self.targetCurrencyAmt)
+
                 self.appData.loadRate(url: self.appData.rateEndpoint, completed: {rate in
                     self.appData.updateConversionInfo(with: rate)
                     try? self.appData.convert(from: .baseToTarget)
@@ -124,7 +143,7 @@ struct Home: View {
                 })
             })
         }
-    }
+     }
 }
 
 //struct Home_Previews: PreviewProvider {

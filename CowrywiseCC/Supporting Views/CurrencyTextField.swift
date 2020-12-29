@@ -19,23 +19,27 @@ import UIKit
 import SwiftUI
 
 struct CurrencyTextField: UIViewRepresentable {
-     
-    var textview = UITextView()
-
-    var label = UILabel(frame: CGRect(x: 300, y: 16, width: 200, height: 24))
+    
+ 
+    var textview = UITextField()
+    
+    
+    
+  //  var label = UILabel(frame: CGRect(x: width * 0.7, y: 14, width: 72, height: 24))
     @Binding var text: String
-    //@Binding var textviewHeight: CGFloat
+  
     var currencyPlaceHolder: String
+    var width: CGFloat
     var onCommit: () -> ()
     
-     func makeUIView(context: Context) -> UITextView {
-       
+     func makeUIView(context: Context) -> UITextField {
         
+        let label = UILabel(frame: CGRect(x: width - 72, y: 14, width: 72, height: 24))
         label.text = currencyPlaceHolder
         label.textColor = .systemGray3
         label.font = UIFont.systemFont(ofSize: 24, weight: .semibold)
         label.tag = 1
-        
+ 
         if let labelText = label.text {
             let attributedString = NSMutableAttributedString(string: labelText)
             attributedString.addAttribute(.kern, value: 2.0, range: NSRange(location: 0, length: attributedString.length))
@@ -46,22 +50,25 @@ struct CurrencyTextField: UIViewRepresentable {
 //        attributedText.addAttribute(.foregroundColor, value: UIColor.red, range: NSRange(location: 0, length: 3))
 //
         textview.keyboardType = .numberPad
+      
         textview.text = text
+        textview.setRightPadding(padding: 72)
+        textview.setLeftPadding(padding: 16)
         textview.addSubview(label)
-        textview.textContainerInset = UIEdgeInsets(top: 16, left: 24.0 , bottom: 18, right: 32.0)
-    
+        
         textview.textColor = .gray
-        textview.isScrollEnabled = false
-        textview.font = UIFont.systemFont(ofSize: 24, weight: .bold)
-        textview.backgroundColor =  UIColor(named: "textfield")
+         textview.font = UIFont.systemFont(ofSize: 24, weight: .bold)
+        textview.backgroundColor = UIColor(named: "textfield")// UIColor.red 
         textview.delegate = context.coordinator
-        textview.showsVerticalScrollIndicator = false
+
  
         return textview
     }
     
-    func updateUIView(_ textView: UITextView, context: Context) {
+    func updateUIView(_ textView: UITextField, context: Context) {
          textView.text = text
+       
+
         for subview in textView.subviews {
             if subview.tag == 1 {
                 let label = subview as! UILabel
@@ -78,7 +85,7 @@ struct CurrencyTextField: UIViewRepresentable {
     
 }
 
-class CurrencyTextFieldCoordinator: NSObject, UITextViewDelegate {
+class CurrencyTextFieldCoordinator: NSObject, UITextFieldDelegate {
     
     var representable: CurrencyTextField
     
@@ -89,20 +96,13 @@ class CurrencyTextFieldCoordinator: NSObject, UITextViewDelegate {
     func textViewDidChange(_ textView: UITextView) {
        
         if let userText = textView.text {
-
             representable.text = userText
            
             
         }
-        
-        
-//        if let userText = textView.text, userText.isEmpty {
-//
-//             representable.text = "0.0"
-//         }
     }
     
-    
+    /*
     func textView(_ textView: UITextView, shouldChangeTextIn range: NSRange, replacementText text: String) -> Bool {
 
         // get the current text, or use an empty string if that failed
@@ -116,9 +116,27 @@ class CurrencyTextFieldCoordinator: NSObject, UITextViewDelegate {
 
            // make sure the result is under 16 characters
            return updatedText.count <= 5
-    }
+    }*/
  
 }
+
+extension UITextField {
+    
+    func setLeftPadding(padding: CGFloat) {
+        let paddingView = UIView(frame: CGRect(x: 0, y: 0, width: padding, height: self.frame.size.height))
+        self.leftView = paddingView
+        self.leftViewMode = .always
+    }
+
+    func setRightPadding(padding: CGFloat) {
+        let paddingView = UIView(frame: CGRect(x: 0, y: 0, width: padding, height: self.frame.size.height))
+        self.rightView = paddingView
+        self.rightViewMode = .always
+    }
+}
+
+ 
+ 
 
 
  
@@ -126,11 +144,18 @@ class CurrencyTextFieldCoordinator: NSObject, UITextViewDelegate {
 struct CurrencyTextField_Previews: PreviewProvider {
     static var previews: some View {
         VStack {
-            CurrencyTextField(text: .constant("500"), currencyPlaceHolder: "NGN", onCommit: {})
-                .frame(height: 56)
+          
+           // GeometryReader { proxy in
+            CurrencyTextField(text: .constant("500"), currencyPlaceHolder: "NGN", width: 360, onCommit: {})
+                    .cornerRadius(5)
+                    .frame(width: 350, height: 56)
+            //}
         }
+        .previewDevice("iPhone8")
+        // .padding(.horizontal, 16)
        
     }
+   
 }
 
  

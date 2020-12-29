@@ -233,7 +233,7 @@ class AppData: ObservableObject {
             self.loadCurrencies(url: self.currenciesURL) { currencies in
                 if let currencies = currencies {
                     self.updateConversionInfo(currencies: currencies.sorted(by: {$0.0 < $1.0 }) )
-                    self.getRateTimeseries()
+                   // self.getRateTimeseries()
                  }
             }
         }
@@ -250,6 +250,7 @@ class AppData: ObservableObject {
         }
     }
     
+    
     func getRateTimeseries() {
         let url = rateTimeseriesURL(daysPast: conversionInfo.conversionInfo.mode == 0 ? 30 : 90)
            self.loadRateTimeseries(url: url) { rates in
@@ -259,6 +260,7 @@ class AppData: ObservableObject {
                }
            }
        }
+     
     
     
     
@@ -337,6 +339,7 @@ class AppData: ObservableObject {
         }
     }
     
+    
     func convertAmount(conversionType: ConversionType) {
         
         self.loadRate(url: self.rateEndpoint) { rates in
@@ -350,6 +353,7 @@ class AppData: ObservableObject {
            
         }
     }
+  
     
     func loadRateTimeseries(url: String, completed: @escaping ([String: [String:Double]]?)->()) {
         
