@@ -9,6 +9,7 @@
 import SwiftUI
 import KingfisherSwiftUI
 import Charts
+import Alamofire
 
 class HomeData: ObservableObject {
     @Published var baseCurrencyAmt: String = "1.0"
@@ -115,10 +116,9 @@ struct Home: View {
                     .frame(height: 560)
                 Spacer()
             }
-           
            //.padding()
             .onReceive(appData.$conversionResult, perform: { value in
-                
+              
                 // update amount to show result of conversion
                 var temp = ""
                 if let result = value {
@@ -133,13 +133,28 @@ struct Home: View {
                 }
             })
             .onReceive(appData.$exchangeName, perform: { value in
+              
+                let group = DispatchGroup()
+                let queue = DispatchQueue.global()
 
                 self.appData.updateConversionInfo(newBaseCurrencyAmt: self.baseCurrencyAmt, newTargetCurrencyAmt: self.targetCurrencyAmt)
-
-                self.appData.loadRate(url: self.appData.rateEndpoint, completed: {rate in
-                    self.appData.updateConversionInfo(with: rate)
-                    try? self.appData.convert(from: .baseToTarget)
-                    self.appData.getRateTimeseries()
+                
+                group.enter()
+                queue.async(group: group, execute: {
+                    self.appData.loadConversionRate {
+                        group.leave()
+                    }
+                })
+                
+                group.enter()
+                queue.async(group: group, execute: {
+                    self.appData.loadRateTimeseries {
+                        group.leave()
+                    }
+                })
+                
+                group.notify(queue: .main, execute: {
+                    print("Tasks complete")
                 })
             })
         }
@@ -151,13 +166,6 @@ struct Home: View {
 //        Home().environmentObject(AppData())
 //    }
 //}
-
-struct CurrencyHistoryTrend: View {
-    
-    var body: some View {
-        Text("Currency Btn")
-    }
-}
 
 struct PieTrend: View {
     

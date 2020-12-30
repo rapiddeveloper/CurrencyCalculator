@@ -19,6 +19,11 @@ struct ContentView: View {
                     .sheet(isPresented: $appData.currencyListOpened, content: {
                         CurrencyList().environmentObject(self.appData)
                      })
+                    .alert(isPresented: $appData.errorMsgDisplayed, content: {
+                        Alert(title: Text(self.appData.error.title), message:  Text(self.appData.error.message), dismissButton: .default(Text("OK"), action: {
+                           // self.appData.toggleErrorMsg()
+                        }))
+                    })
             }
       }
     

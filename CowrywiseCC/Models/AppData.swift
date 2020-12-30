@@ -9,6 +9,7 @@
 import Foundation
 import Combine
 import Charts
+import Alamofire
 
 enum ConversionType: Int, Hashable {
     case baseToTarget = 1
@@ -20,6 +21,22 @@ enum CurrencyType: String, Hashable {
     case base = "base"
 }
 
+// known errors that could occur in the app and for formatting error title and message in the ErrorViewModel
+enum ErrorType: String {
+    case rate = "rate"
+    case timeseries = "timeseries"
+    case networkFailure = "network"
+}
+
+enum RateError: Int {
+    
+    case code104 = 104
+    case code106 = 106
+    case code102 = 102
+    case code201 = 201
+    
+}
+
 
 struct RateResponse: Codable {
     var success: Bool
@@ -29,6 +46,62 @@ struct RateResponse: Codable {
     var date: String
     var rates: [String: Double]
  }
+
+struct RateResponseError: Codable {
+    var code: Int
+    var type: String
+}
+
+struct ResponseSuccess: Codable {
+    var success: Bool 
+}
+
+struct RateFailureResponse: Codable {
+    var success: Bool
+    var error: RateResponseError
+}
+
+struct ErrorViewModel {
+    
+    var rateError: RateResponseError
+   // var networkError: Error?
+    var errorType: ErrorType
+    
+    var message: String {
+        var msg = ""
+        switch errorType {
+            case .rate:
+                 let temp = rateError.type.replacingOccurrences(of: "_", with: " ")
+                 msg = temp.capitalized
+            case .timeseries:
+                 msg = "No results available"
+            case .networkFailure:
+                 msg = "Cuurency Converter seems to be offline"
+           
+        }
+       
+        return msg
+    }
+    
+    var title: String {
+        
+        var title = ""
+        
+        switch errorType {
+            case .rate:
+                 title = "Conversion Rate Error"
+            case .timeseries:
+                title = "Timeseries Error"
+            case .networkFailure:
+                title = "Network Failure"
+          
+        }
+        
+        return title
+    }
+    
+    
+}
 
 struct CurrenciesResponse: Codable {
    var success: Bool
@@ -163,16 +236,27 @@ class AppData: ObservableObject {
     @Published var currencyListOpened = false
     @Published var exchangeName = ""
     @Published var conversionResult: Double? = 0.0
+    
+    
+ 
+    @Published var errorMsgDisplayed = false
+    @Published var error: ErrorViewModel = ErrorViewModel(
+                                                            rateError: RateResponseError(code: 0, type: ""),
+                                                          //  networkError: Error,
+                                                            errorType: .rate
+                                                          
+                                                        )
+
+    
     var ratePublisher: AnyCancellable?
-    
-    
     var conversionType: ConversionType = .baseToTarget
+   
     let APIKey = "1d4bb84c085abdc2dd12645046fb3ab3" //"9e01c5fa47031db88531e4fb4bffa919"
-    
     let timeSeriesEndpoint = "timeseries"
     let currenciesEndpoint = "symbols"
     var currenciesURL = "" 
     var selectedCurrencyType: CurrencyType = .base
+    var isOffline = false
     
     
     var baseCurrencyFlagURL: String {
@@ -226,7 +310,8 @@ class AppData: ObservableObject {
     init() {
         currenciesURL = "http://data.fixer.io/api/\(currenciesEndpoint)?access_key=\(APIKey)"
         self.conversionInfo = ConversionInfoViewModel(conversionInfo: ConversionInfo(baseCurrencyAmt: 0, targetCurrencyAmt: 0, baseCurrency: "EUR", targetCurrency: "NGN", rate: nil, mode: 0, pos: .zero))
-
+        
+        
         loadRate(url: rateEndpoint) { rate in
             self.updateConversionInfo(with: rate)
             // print(self.conversionInfo)
@@ -238,6 +323,14 @@ class AppData: ObservableObject {
             }
         }
         
+    }
+    
+//    func setErrorMsg(errorCode: RateError)  {
+//         errorMsg = "The only supported base currency is Euro (EUR)"
+//    }
+    
+    func toggleErrorMsg() {
+        errorMsgDisplayed.toggle()
     }
     
     func getRateTimeseries(daysPast: Int) {
@@ -260,6 +353,56 @@ class AppData: ObservableObject {
                }
            }
        }
+    
+    ///  Fetches timeseries of an exchange rate using the timeseries url and execute the completion handler
+    func loadRateTimeseries(completion: @escaping ()->()) {
+        let url = rateTimeseriesURL(daysPast: conversionInfo.conversionInfo.mode == 0 ? 30 : 90)
+        Alamofire.request(url).response { response in
+            if let error = response.error {
+                self.updateError(newNetworkError: error)
+                if !self.isErrorAlertDisplayed() {
+                    self.toggleErrorMsg()
+                }
+            }
+            
+            let decoder = JSONDecoder()
+            if let responseData = response.data,
+                let result = try? decoder.decode(TimeseriesResponse.self, from: responseData) {
+                if result.success {
+                    self.conversionInfo.conversionInfo.rates = result.rates
+                }
+            }
+            completion()
+        }
+    }
+    
+    /// Fetches conversion rate using the conversion rate url and updates conversionInfo view model with it
+    
+    func loadConversionRate(completion: @escaping ()->()) {
+         
+        Alamofire.request(rateEndpoint).response { response in
+            if let error = response.error {
+                self.updateError(newNetworkError: error)
+                if !self.isErrorAlertDisplayed() {
+                    self.toggleErrorMsg()
+                }
+            }
+            
+            let decoder = JSONDecoder()
+            if let responseData = response.data {
+                if let result = try? decoder.decode(RateResponse.self, from: responseData) {
+                    self.updateConversionInfo(with: result.rates)
+                    if ((try? self.convert(from: .baseToTarget)) == nil) {
+                        self.updateConversionInfo(with: nil)
+                    }
+                } else if let result = try? decoder.decode(RateFailureResponse.self, from: responseData) {
+                    self.updateError(newRateError: result.error)
+                    self.toggleErrorMsg()
+                } else {}
+            }
+            completion()
+        }
+    }
      
     
     
@@ -344,7 +487,7 @@ class AppData: ObservableObject {
         
         self.loadRate(url: self.rateEndpoint) { rates in
             self.updateConversionInfo(with: rates)
-            print(rates!)
+           // print(rates!)
             do {
               try self.convert(from: conversionType)
             }catch {
@@ -471,6 +614,20 @@ class AppData: ObservableObject {
                })
            }
        }
+    
+    // updates error view model with error from rate conversion endpoint
+    func updateError(newRateError: RateResponseError) {
+        error.errorType = .rate
+        error.rateError = newRateError
+    }
+    
+    func updateError(newNetworkError: Error?) {
+        error.errorType = .networkFailure
+    }
+    
+    func isErrorAlertDisplayed()->Bool {
+       return errorMsgDisplayed
+    }
     
  
     
