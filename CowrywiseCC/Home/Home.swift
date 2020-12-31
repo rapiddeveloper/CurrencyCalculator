@@ -113,7 +113,7 @@ struct Home: View {
                     Text("link")
                 }
                 RateTrend()
-                    .frame(height: 560)
+                   // .frame(height: 560)
                 Spacer()
             }
            //.padding()
@@ -136,7 +136,7 @@ struct Home: View {
               
                 let group = DispatchGroup()
                 let queue = DispatchQueue.global()
-
+               
                 self.appData.updateConversionInfo(newBaseCurrencyAmt: self.baseCurrencyAmt, newTargetCurrencyAmt: self.targetCurrencyAmt)
                 
                 group.enter()

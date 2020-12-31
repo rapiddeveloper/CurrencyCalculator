@@ -26,6 +26,7 @@ enum ErrorType: String {
     case rate = "rate"
     case timeseries = "timeseries"
     case networkFailure = "network"
+    case currencies = "currencies"
 }
 
 enum RateError: Int {
@@ -47,7 +48,7 @@ struct RateResponse: Codable {
     var rates: [String: Double]
  }
 
-struct RateResponseError: Codable {
+struct ErrorInfo: Codable {
     var code: Int
     var type: String
 }
@@ -56,27 +57,30 @@ struct ResponseSuccess: Codable {
     var success: Bool 
 }
 
-struct RateFailureResponse: Codable {
+struct FailureResponse: Codable {
     var success: Bool
-    var error: RateResponseError
+    var error: ErrorInfo
 }
 
 struct ErrorViewModel {
     
-    var rateError: RateResponseError
+    var error: ErrorInfo
    // var networkError: Error?
-    var errorType: ErrorType
+    var type: ErrorType
     
     var message: String {
         var msg = ""
-        switch errorType {
+        switch type {
             case .rate:
-                 let temp = rateError.type.replacingOccurrences(of: "_", with: " ")
+                 let temp = error.type.replacingOccurrences(of: "_", with: " ")
                  msg = temp.capitalized
             case .timeseries:
                  msg = "No results available"
             case .networkFailure:
                  msg = "Cuurency Converter seems to be offline"
+            case .currencies:
+                        let temp = error.type.replacingOccurrences(of: "_", with: " ")
+                        msg = temp.capitalized
            
         }
        
@@ -87,13 +91,15 @@ struct ErrorViewModel {
         
         var title = ""
         
-        switch errorType {
+        switch type {
             case .rate:
-                 title = "Conversion Rate Error"
+                 title = "Conversion Rate Unavailable"
             case .timeseries:
-                title = "Timeseries Error"
+                title = "Timeseries Unavailable"
             case .networkFailure:
                 title = "Network Failure"
+            case .currencies:
+                title = "Currencies Unavailable"
           
         }
         
@@ -241,11 +247,12 @@ class AppData: ObservableObject {
  
     @Published var errorMsgDisplayed = false
     @Published var error: ErrorViewModel = ErrorViewModel(
-                                                            rateError: RateResponseError(code: 0, type: ""),
+                                                            error: ErrorInfo(code: 0, type: ""),
                                                           //  networkError: Error,
-                                                            errorType: .rate
+                                                            type: .rate
                                                           
                                                         )
+    @Published var currenciesErrorDisplayed = false
 
     
     var ratePublisher: AnyCancellable?
@@ -314,13 +321,13 @@ class AppData: ObservableObject {
         
         loadRate(url: rateEndpoint) { rate in
             self.updateConversionInfo(with: rate)
-            // print(self.conversionInfo)
-            self.loadCurrencies(url: self.currenciesURL) { currencies in
-                if let currencies = currencies {
-                    self.updateConversionInfo(currencies: currencies.sorted(by: {$0.0 < $1.0 }) )
-                   // self.getRateTimeseries()
-                 }
-            }
+          
+//            self.loadCurrencies(url: self.currenciesURL) { currencies in
+//                if let currencies = currencies {
+//                    self.updateConversionInfo(currencies: currencies.sorted(by: {$0.0 < $1.0 }) )
+//
+//                 }
+//            }
         }
         
     }
@@ -328,6 +335,28 @@ class AppData: ObservableObject {
 //    func setErrorMsg(errorCode: RateError)  {
 //         errorMsg = "The only supported base currency is Euro (EUR)"
 //    }
+    
+    func loadCurrencies(completion: @escaping ()->()) {
+        
+        Alamofire.request(currenciesURL).response { response in
+            // check if there was an error reaching the server and network error is currently not displayed
+            if let networkError = response.error  {
+                self.updateError(newNetworkError: networkError)
+                self.currenciesErrorDisplayed = true
+            }
+            
+            let decoder = JSONDecoder()
+            if let data = response.data {
+                  if  let result = try? decoder.decode(CurrenciesResponse.self, from: data) {
+                    self.updateConversionInfo(currencies: result.symbols.sorted(by: {$0.0 < $1.0 }))
+                } else if let result = try? decoder.decode(FailureResponse.self, from: data) {
+                    self.updateError(newRateError: result.error)
+                    self.currenciesErrorDisplayed.toggle()
+                } else {}
+            }
+             
+        }
+    }
     
     func toggleErrorMsg() {
         errorMsgDisplayed.toggle()
@@ -361,7 +390,9 @@ class AppData: ObservableObject {
             if let error = response.error {
                 self.updateError(newNetworkError: error)
                 if !self.isErrorAlertDisplayed() {
+                     
                     self.toggleErrorMsg()
+                    
                 }
             }
             
@@ -370,6 +401,8 @@ class AppData: ObservableObject {
                 let result = try? decoder.decode(TimeseriesResponse.self, from: responseData) {
                 if result.success {
                     self.conversionInfo.conversionInfo.rates = result.rates
+                } else  {
+                    self.conversionInfo.conversionInfo.rates = nil
                 }
             }
             completion()
@@ -384,7 +417,9 @@ class AppData: ObservableObject {
             if let error = response.error {
                 self.updateError(newNetworkError: error)
                 if !self.isErrorAlertDisplayed() {
+                         
                     self.toggleErrorMsg()
+                
                 }
             }
             
@@ -395,7 +430,7 @@ class AppData: ObservableObject {
                     if ((try? self.convert(from: .baseToTarget)) == nil) {
                         self.updateConversionInfo(with: nil)
                     }
-                } else if let result = try? decoder.decode(RateFailureResponse.self, from: responseData) {
+                } else if let result = try? decoder.decode(FailureResponse.self, from: responseData) {
                     self.updateError(newRateError: result.error)
                     self.toggleErrorMsg()
                 } else {}
@@ -616,19 +651,26 @@ class AppData: ObservableObject {
        }
     
     // updates error view model with error from rate conversion endpoint
-    func updateError(newRateError: RateResponseError) {
-        error.errorType = .rate
-        error.rateError = newRateError
+    func updateError(newRateError: ErrorInfo) {
+        error.type = .rate
+        error.error = newRateError
     }
     
+    func updateError(newCurrenciesError: ErrorInfo) {
+           error.type = .currencies
+           error.error = newCurrenciesError
+       }
+    
     func updateError(newNetworkError: Error?) {
-        error.errorType = .networkFailure
+        error.type = .networkFailure
+        //Alamofire.SessionManager.default.session.invalidateAndCancel()
     }
     
     func isErrorAlertDisplayed()->Bool {
        return errorMsgDisplayed
     }
     
+  
  
     
     /*

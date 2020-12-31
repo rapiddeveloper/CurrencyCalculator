@@ -91,58 +91,63 @@ struct RateTrend: View {
         
         return VStack {
             
-            HStack {
-                Button(action: {
-                    self.appData.updateConversionInfo(mode: 0)
-                    self.appData.getRateTimeseries()
-                }, label: {
-                    VStack(alignment: .center, spacing: 8) {
-                        Text("30 Days Past")
-                            .fontWeight(.medium)
-                            .foregroundColor(mode == 0 ? Color.white : Color.gray)
-                        Circle()
-                            .fill(mode == 0 ? Color.green : Color.clear)
-                            .frame(width: 10, height: 10)
-                    }
-                })
-                Spacer()
-                Button(action: {
-                    self.appData.updateConversionInfo(mode: 1)
-                    self.appData.getRateTimeseries()
-                }, label: {
-                    VStack(alignment: .center, spacing: 8) {
-                        Text("90 Days Past")
-                            .fontWeight(.medium)
-                            .foregroundColor(mode == 1 ? Color.white : Color.gray)
-                        Circle()
-                            .fill(mode == 1 ? Color.green : Color.clear)
-                            .frame(width: 10, height: 10)
-                    }
-                })
+            if appData.conversionInfo.entries.isEmpty {
+                Text("Timeseries data not available")
+            } else {
+                HStack {
+                           Button(action: {
+                               self.appData.updateConversionInfo(mode: 0)
+                                self.appData.loadRateTimeseries(completion: {})
+                              
+                           }, label: {
+                               VStack(alignment: .center, spacing: 8) {
+                                   Text("30 Days Past")
+                                       .fontWeight(.medium)
+                                       .foregroundColor(mode == 0 ? Color.white : Color.gray)
+                                   Circle()
+                                       .fill(mode == 0 ? Color.green : Color.clear)
+                                       .frame(width: 10, height: 10)
+                               }
+                           })
+                           Spacer()
+                           Button(action: {
+                               self.appData.updateConversionInfo(mode: 1)
+                              self.appData.loadRateTimeseries(completion: {})
+                           }, label: {
+                               VStack(alignment: .center, spacing: 8) {
+                                   Text("90 Days Past")
+                                       .fontWeight(.medium)
+                                       .foregroundColor(mode == 1 ? Color.white : Color.gray)
+                                   Circle()
+                                       .fill(mode == 1 ? Color.green : Color.clear)
+                                       .frame(width: 10, height: 10)
+                               }
+                           })
+                       }
+                       .padding(.horizontal, 32)
+                       .padding(.vertical, 32)
+                       
+                       LineChart(entries: appData.conversionInfo.entries, pos: $pos, x: $x, y: $y)
+                           .overlay (
+                               GeometryReader { proxy in
+                                   if self.pos != .zero {
+                                       Tooltip(x: self.x, y: self.tooltipBaseInfo, cornerRadius: 10, fill: .green, isFlipped: tooltipFlipped)
+                                            .position(self.tooltipPos)
+                                           .offset(x: tooltipFlipped ? -140 : 0, y: 0)
+                                       Group {
+                                           Circle()
+                                               .fill(Color.green)
+                                               .frame(width: self.dotWidth, height: self.dotHeight)
+                                               .overlay(
+                                                   Circle()
+                                                       .stroke(Color.white, lineWidth: 2.0)
+                                           )
+                                       }
+                                       .position(self.activeDotPos)
+                                   }
+                               }
+                       )
             }
-            .padding(.horizontal, 32)
-            .padding(.vertical, 32)
-           
-            LineChart(entries: appData.conversionInfo.entries, pos: $pos, x: $x, y: $y)
-                .overlay (
-                    GeometryReader { proxy in
-                        if self.pos != .zero {
-                            Tooltip(x: self.x, y: self.tooltipBaseInfo, cornerRadius: 10, fill: .green, isFlipped: tooltipFlipped)
-                                 .position(self.tooltipPos)
-                                .offset(x: tooltipFlipped ? -140 : 0, y: 0)
-                            Group {
-                                Circle()
-                                    .fill(Color.green)
-                                    .frame(width: self.dotWidth, height: self.dotHeight)
-                                    .overlay(
-                                        Circle()
-                                            .stroke(Color.white, lineWidth: 2.0)
-                                )
-                            }
-                            .position(self.activeDotPos)
-                        }
-                    }
-            )
             
             VStack {
                 Link(text: "Get rate alerts straight to your inbox", destination: "", lineColor: .white, textColor: .white, lineWidth: CGFloat(1.0))
@@ -151,6 +156,8 @@ struct RateTrend: View {
             .padding(.bottom, 48)
           
         }
+        .frame(height: 560)
+        .frame(minWidth: 0, maxWidth: .infinity)
         .background(
             RoundedRectangle(cornerRadius: 20)
                 .fill(Color(red: 4/255, green: 96/255, blue: 209/255))
@@ -159,9 +166,6 @@ struct RateTrend: View {
         
             // reset time series and tapped position for new currencies
             self.appData.updateConversionInfo(mode: 0)
-//            DispatchQueue.main.async {
-//                 self.appData.getRateTimeseries()
-//            }
             self.pos = .zero
         })
         

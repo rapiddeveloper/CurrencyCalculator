@@ -15,15 +15,20 @@ struct ContentView: View {
     var body: some View {
              print("home view")
            return  NavigationView {
-                 Home()
+                Home()
                     .sheet(isPresented: $appData.currencyListOpened, content: {
                         CurrencyList().environmentObject(self.appData)
-                     })
-                    .alert(isPresented: $appData.errorMsgDisplayed, content: {
-                        Alert(title: Text(self.appData.error.title), message:  Text(self.appData.error.message), dismissButton: .default(Text("OK"), action: {
-                           // self.appData.toggleErrorMsg()
-                        }))
+                            .alert(isPresented: self.$appData.currenciesErrorDisplayed, content: {
+                                Alert(title: Text(self.appData.error.title), message:  Text(self.appData.error.message), dismissButton: .default(Text("OK"), action: {
+                                    
+                                }))
+                            })
                     })
+                    .alert(isPresented: self.$appData.errorMsgDisplayed, content: {
+                            Alert(title: Text(self.appData.error.title), message:  Text(self.appData.error.message), dismissButton: .default(Text("OK"), action: {
+                                // self.appData.toggleErrorMsg()
+                            }))
+                        })
             }
       }
     

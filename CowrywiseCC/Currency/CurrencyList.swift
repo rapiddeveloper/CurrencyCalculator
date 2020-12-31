@@ -35,13 +35,17 @@ struct CurrencyList: View {
             .padding()
             if self.appData.conversionInfo.currencies.isEmpty {
                 Button(action: {
+                    self.appData.loadCurrencies {
+                          
+                    }
+                    /*
                     self.appData.loadCurrencies(url: self.appData.currenciesURL) { currencies in
                         if let currencies = currencies {
                             print(currencies)
                             self.appData.updateConversionInfo(currencies: currencies.sorted(by: {$0.0 < $1.0 }) )
                             self.appData.getRateTimeseries()
                          }
-                    }
+                    }*/
                 }, label:  {
                     Text("Load Currencies")
                 })
