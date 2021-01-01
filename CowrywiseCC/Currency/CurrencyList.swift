@@ -9,11 +9,21 @@
  */
 
 import SwiftUI
+import ActivityIndicatorView
 
 struct CurrencyList: View {
     @EnvironmentObject var appData: AppData
     @State private var tempSelectedCurrency: String = ""
     @Environment(\.presentationMode) var presentationMode
+    
+    var showLoadingIndicator: Binding<Bool> {
+              Binding(get: {
+                return self.appData.timeseriesNetworkStatus == .pending
+               },
+                set: {
+                    self.appData.timeseriesNetworkStatus =  $0 ? .pending : .completed
+              })
+    }
     
     var body: some View {
         VStack(alignment: .leading) {
@@ -28,27 +38,20 @@ struct CurrencyList: View {
                         self.appData.setExchangeName()
                        
                     }
-                    //self.appData.currencyListOpened = false
                     self.presentationMode.wrappedValue.dismiss()
                 })
             }
             .padding()
-            if self.appData.conversionInfo.currencies.isEmpty {
-                Button(action: {
-                    self.appData.loadCurrencies {
-                          
-                    }
-                    /*
-                    self.appData.loadCurrencies(url: self.appData.currenciesURL) { currencies in
-                        if let currencies = currencies {
-                            print(currencies)
-                            self.appData.updateConversionInfo(currencies: currencies.sorted(by: {$0.0 < $1.0 }) )
-                            self.appData.getRateTimeseries()
-                         }
-                    }*/
-                }, label:  {
-                    Text("Load Currencies")
-                })
+            if self.appData.currenciesNetworkStatus == .pending {
+                ActivityIndicatorView(isVisible: showLoadingIndicator, type: .default)
+                    .frame(width: 32.0, height: 32.0)
+                    .foregroundColor(.gray)
+                Spacer()
+            } else if appData.currenciesNetworkStatus == .failed {
+                CurrenciesError(msg: self.appData.error.message)
+            } else if appData.currenciesNetworkStatus == .completed &&
+                appData.conversionInfo.currencies.isEmpty {
+                CurrenciesError(msg: "Currencies Data Unavailable")
             } else {
                 List {
                     ForEach(appData.conversionInfo.currencies, id: \.self) { currency in
@@ -71,10 +74,6 @@ struct CurrencyList: View {
             } else {
                 self.tempSelectedCurrency = self.appData.conversionInfo.targetCurrency
             }
-        }
-        
-        .onDisappear {
-            // todo:
         }
     }
     

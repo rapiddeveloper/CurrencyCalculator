@@ -327,17 +327,7 @@ class AppData: ObservableObject {
         currenciesURL = "http://data.fixer.io/api/\(currenciesEndpoint)?access_key=\(APIKey)"
         self.conversionInfo = ConversionInfoViewModel(conversionInfo: ConversionInfo(baseCurrencyAmt: 0, targetCurrencyAmt: 0, baseCurrency: "EUR", targetCurrency: "NGN", rate: nil, mode: 0, pos: .zero))
         
-        
-//        loadRate(url: rateEndpoint) { rate in
-//            self.updateConversionInfo(with: rate)
-//          
-//            self.loadCurrencies(url: self.currenciesURL) { currencies in
-//                if let currencies = currencies {
-//                    self.updateConversionInfo(currencies: currencies.sorted(by: {$0.0 < $1.0 }) )
-//
-//                 }
-//            }
-//        }
+        loadCurrencies(completion: {})
         
     }
     
@@ -347,23 +337,33 @@ class AppData: ObservableObject {
     
     func loadCurrencies(completion: @escaping ()->()) {
         
+        DispatchQueue.main.async {
+            self.currenciesNetworkStatus = .pending
+        }
+        
         Alamofire.request(currenciesURL).response { response in
             // check if there was an error reaching the server and network error is currently not displayed
             if let networkError = response.error  {
                 self.updateError(newNetworkError: networkError)
-                self.currenciesErrorDisplayed = true
+                self.currenciesNetworkStatus = .failed
+               // self.currenciesErrorDisplayed = true
             }
             
             let decoder = JSONDecoder()
             if let data = response.data {
                   if  let result = try? decoder.decode(CurrenciesResponse.self, from: data) {
                     self.updateConversionInfo(currencies: result.symbols.sorted(by: {$0.0 < $1.0 }))
+                    self.currenciesNetworkStatus = .completed
                 } else if let result = try? decoder.decode(FailureResponse.self, from: data) {
                     self.updateError(newRateError: result.error)
-                    self.currenciesErrorDisplayed.toggle()
+                     self.currenciesNetworkStatus = .completed
+                   // self.currenciesErrorDisplayed.toggle()
                 } else {}
+                
+               
             }
-             
+            
+            completion()
         }
     }
     
