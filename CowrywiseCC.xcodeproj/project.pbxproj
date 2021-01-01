@@ -16,6 +16,7 @@
 		846E68382588FB4500C71DA6 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 846E68372588FB4500C71DA6 /* Preview Assets.xcassets */; };
 		846E683B2588FB4500C71DA6 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 846E68392588FB4500C71DA6 /* LaunchScreen.storyboard */; };
 		846E68462588FD5800C71DA6 /* AppData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 846E68452588FD5800C71DA6 /* AppData.swift */; };
+		84716F8E259F5A1B00A3CF22 /* ActivityIndicatorView in Frameworks */ = {isa = PBXBuildFile; productRef = 84716F8D259F5A1B00A3CF22 /* ActivityIndicatorView */; };
 		847B326E258BBB9500C7C4F1 /* Home.swift in Sources */ = {isa = PBXBuildFile; fileRef = 847B326D258BBB9500C7C4F1 /* Home.swift */; };
 		847B3270258BCC2200C7C4F1 /* CurrencyBtn.swift in Sources */ = {isa = PBXBuildFile; fileRef = 847B326F258BCC2200C7C4F1 /* CurrencyBtn.swift */; };
 		847B3273258CD39300C7C4F1 /* CurrencyList.swift in Sources */ = {isa = PBXBuildFile; fileRef = 847B3272258CD39300C7C4F1 /* CurrencyList.swift */; };
@@ -93,6 +94,7 @@
 			files = (
 				8449DA48259B358100594B74 /* Alamofire in Frameworks */,
 				84B4F8D7258E0090001BDC81 /* KingfisherSwiftUI in Frameworks */,
+				84716F8E259F5A1B00A3CF22 /* ActivityIndicatorView in Frameworks */,
 				84B4F8E6258E3AD8001BDC81 /* Charts.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -228,6 +230,7 @@
 			packageProductDependencies = (
 				84B4F8D6258E0090001BDC81 /* KingfisherSwiftUI */,
 				8449DA47259B358100594B74 /* Alamofire */,
+				84716F8D259F5A1B00A3CF22 /* ActivityIndicatorView */,
 			);
 			productName = CowrywiseCC;
 			productReference = 846E682B2588FB3E00C71DA6 /* CowrywiseCC.app */;
@@ -260,6 +263,7 @@
 			packageReferences = (
 				84B4F8D5258E0090001BDC81 /* XCRemoteSwiftPackageReference "Kingfisher" */,
 				8449DA46259B358100594B74 /* XCRemoteSwiftPackageReference "Alamofire" */,
+				84716F8C259F5A1B00A3CF22 /* XCRemoteSwiftPackageReference "ActivityIndicatorView" */,
 			);
 			productRefGroup = 846E682C2588FB3E00C71DA6 /* Products */;
 			projectDirPath = "";
@@ -529,6 +533,14 @@
 				minimumVersion = 4.0.0;
 			};
 		};
+		84716F8C259F5A1B00A3CF22 /* XCRemoteSwiftPackageReference "ActivityIndicatorView" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/exyte/ActivityIndicatorView.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 0.0.6;
+			};
+		};
 		84B4F8D5258E0090001BDC81 /* XCRemoteSwiftPackageReference "Kingfisher" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/onevcat/Kingfisher.git";
@@ -544,6 +556,11 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 8449DA46259B358100594B74 /* XCRemoteSwiftPackageReference "Alamofire" */;
 			productName = Alamofire;
+		};
+		84716F8D259F5A1B00A3CF22 /* ActivityIndicatorView */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 84716F8C259F5A1B00A3CF22 /* XCRemoteSwiftPackageReference "ActivityIndicatorView" */;
+			productName = ActivityIndicatorView;
 		};
 		84B4F8D6258E0090001BDC81 /* KingfisherSwiftUI */ = {
 			isa = XCSwiftPackageProductDependency;

@@ -136,6 +136,7 @@ struct Home: View {
               
                 let group = DispatchGroup()
                 let queue = DispatchQueue.global()
+              //  let queue = DispatchQueue(label: "queue", qos: .userInteractive)
                
                 self.appData.updateConversionInfo(newBaseCurrencyAmt: self.baseCurrencyAmt, newTargetCurrencyAmt: self.targetCurrencyAmt)
                 

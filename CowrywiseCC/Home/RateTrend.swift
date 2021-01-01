@@ -11,6 +11,7 @@
  */
 
 import SwiftUI
+import ActivityIndicatorView
 
 struct RoundedCorner: SwiftUI.Shape {
     
@@ -31,7 +32,16 @@ struct RateTrend: View {
     @State private var pos: CGPoint = .zero
     @State private var x: String = ""   // x value at the position
     @State private var y: String = ""   //  y value at the position
+    //@State private var showLoadingIndicator = true
     
+    var showLoadingIndicator: Binding<Bool> {
+              Binding(get: {
+                return self.appData.timeseriesNetworkStatus == .pending
+               },
+                set: {
+                    self.appData.timeseriesNetworkStatus =  $0 ? .pending : .completed
+              })
+    }
     // active dot dimensions
     let dotWidth: CGFloat = 8
     let dotHeight: CGFloat = 8
@@ -90,70 +100,80 @@ struct RateTrend: View {
         let tooltipFlipped = shouldFlipTooltip()
         
         return VStack {
-            
-            if appData.conversionInfo.entries.isEmpty {
-                Text("Timeseries data not available")
-            } else {
                 HStack {
-                           Button(action: {
-                               self.appData.updateConversionInfo(mode: 0)
-                                self.appData.loadRateTimeseries(completion: {})
-                              
-                           }, label: {
-                               VStack(alignment: .center, spacing: 8) {
-                                   Text("30 Days Past")
-                                       .fontWeight(.medium)
-                                       .foregroundColor(mode == 0 ? Color.white : Color.gray)
-                                   Circle()
-                                       .fill(mode == 0 ? Color.green : Color.clear)
-                                       .frame(width: 10, height: 10)
-                               }
-                           })
-                           Spacer()
-                           Button(action: {
-                               self.appData.updateConversionInfo(mode: 1)
-                              self.appData.loadRateTimeseries(completion: {})
-                           }, label: {
-                               VStack(alignment: .center, spacing: 8) {
-                                   Text("90 Days Past")
-                                       .fontWeight(.medium)
-                                       .foregroundColor(mode == 1 ? Color.white : Color.gray)
-                                   Circle()
-                                       .fill(mode == 1 ? Color.green : Color.clear)
-                                       .frame(width: 10, height: 10)
-                               }
-                           })
-                       }
-                       .padding(.horizontal, 32)
-                       .padding(.vertical, 32)
-                       
-                       LineChart(entries: appData.conversionInfo.entries, pos: $pos, x: $x, y: $y)
-                           .overlay (
-                               GeometryReader { proxy in
-                                   if self.pos != .zero {
-                                       Tooltip(x: self.x, y: self.tooltipBaseInfo, cornerRadius: 10, fill: .green, isFlipped: tooltipFlipped)
-                                            .position(self.tooltipPos)
-                                           .offset(x: tooltipFlipped ? -140 : 0, y: 0)
-                                       Group {
-                                           Circle()
-                                               .fill(Color.green)
-                                               .frame(width: self.dotWidth, height: self.dotHeight)
-                                               .overlay(
-                                                   Circle()
-                                                       .stroke(Color.white, lineWidth: 2.0)
-                                           )
-                                       }
-                                       .position(self.activeDotPos)
-                                   }
-                               }
-                       )
-            }
+                    Button(action: {
+                        self.appData.updateConversionInfo(mode: 0)
+                        self.appData.loadRateTimeseries(completion: {})
+                        
+                    }, label: {
+                        VStack(alignment: .center, spacing: 8) {
+                            Text("30 Days Past")
+                                .fontWeight(.medium)
+                                .foregroundColor(mode == 0 ? Color.white : Color.gray)
+                            Circle()
+                                .fill(mode == 0 ? Color.green : Color.clear)
+                                .frame(width: 10, height: 10)
+                        }
+                    })
+                    Spacer()
+                    Button(action: {
+                        self.appData.updateConversionInfo(mode: 1)
+                        self.appData.loadRateTimeseries(completion: {})
+                    }, label: {
+                        VStack(alignment: .center, spacing: 8) {
+                            Text("90 Days Past")
+                                .fontWeight(.medium)
+                                .foregroundColor(mode == 1 ? Color.white : Color.gray)
+                            Circle()
+                                .fill(mode == 1 ? Color.green : Color.clear)
+                                .frame(width: 10, height: 10)
+                        }
+                    })
+                }
+                .padding(.horizontal, 32)
+                .padding(.vertical, 32)
             
-            VStack {
-                Link(text: "Get rate alerts straight to your inbox", destination: "", lineColor: .white, textColor: .white, lineWidth: CGFloat(1.0))
-            }
-            .padding(.top, 32)
-            .padding(.bottom, 48)
+                if showLoadingIndicator.wrappedValue {
+                    ActivityIndicatorView(isVisible: showLoadingIndicator, type: .default)
+                        .frame(width: 32.0, height: 32.0)
+                        .foregroundColor(.white)
+                    Spacer()
+                } else if appData.timeseriesNetworkStatus == .failed {
+                    Text(appData.error.message)
+                        .font(.subheadline)
+                        .foregroundColor(.white)
+                    Spacer()
+                } else if appData.timeseriesNetworkStatus == .completed &&
+                    appData.conversionInfo.entries.isEmpty {
+                     Text("Timeseries Data Unavailable")
+                        .font(.subheadline)
+                        .foregroundColor(.white)
+                    Spacer()
+                } else {
+                    LineChart(entries: appData.conversionInfo.entries, pos: $pos, x: $x, y: $y)
+                        .overlay (
+                            GeometryReader { proxy in
+                                if self.pos != .zero {
+                                    Tooltip(x: self.x, y: self.tooltipBaseInfo, cornerRadius: 10, fill: .green, isFlipped: tooltipFlipped)
+                                        .position(self.tooltipPos)
+                                        .offset(x: tooltipFlipped ? -140 : 0, y: 0)
+                                    Group {
+                                        Circle()
+                                            .fill(Color.green)
+                                            .frame(width: self.dotWidth, height: self.dotHeight)
+                                            .overlay(
+                                                Circle()
+                                                    .stroke(Color.white, lineWidth: 2.0)
+                                        )
+                                    }
+                                    .position(self.activeDotPos)
+                                }
+                            }
+                    )
+                     Link(text: "Get rate alerts straight to your inbox", destination: "", lineColor: .white, textColor: .white, lineWidth: CGFloat(1.0))
+                        .padding(.top, 32)
+                        .padding(.bottom, 48)
+                }
           
         }
         .frame(height: 560)
@@ -164,7 +184,7 @@ struct RateTrend: View {
         )
        .onReceive(appData.$exchangeName, perform: {  value in
         
-            // reset time series and tapped position for new currencies
+            // reset time series and tooltip position for new currencies
             self.appData.updateConversionInfo(mode: 0)
             self.pos = .zero
         })

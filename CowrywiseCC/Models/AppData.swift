@@ -21,6 +21,12 @@ enum CurrencyType: String, Hashable {
     case base = "base"
 }
 
+enum NetworkStatus: String {
+    case pending = "pending"
+    case failed = "failed"
+    case completed = "completed"
+}
+
 // known errors that could occur in the app and for formatting error title and message in the ErrorViewModel
 enum ErrorType: String {
     case rate = "rate"
@@ -244,7 +250,10 @@ class AppData: ObservableObject {
     @Published var conversionResult: Double? = 0.0
     
     
- 
+    @Published var timeseriesNetworkStatus: NetworkStatus = .completed
+    @Published var currenciesNetworkStatus: NetworkStatus = .completed
+    @Published var rateNetworkStatus: NetworkStatus = .completed
+
     @Published var errorMsgDisplayed = false
     @Published var error: ErrorViewModel = ErrorViewModel(
                                                             error: ErrorInfo(code: 0, type: ""),
@@ -319,16 +328,16 @@ class AppData: ObservableObject {
         self.conversionInfo = ConversionInfoViewModel(conversionInfo: ConversionInfo(baseCurrencyAmt: 0, targetCurrencyAmt: 0, baseCurrency: "EUR", targetCurrency: "NGN", rate: nil, mode: 0, pos: .zero))
         
         
-        loadRate(url: rateEndpoint) { rate in
-            self.updateConversionInfo(with: rate)
-          
+//        loadRate(url: rateEndpoint) { rate in
+//            self.updateConversionInfo(with: rate)
+//          
 //            self.loadCurrencies(url: self.currenciesURL) { currencies in
 //                if let currencies = currencies {
 //                    self.updateConversionInfo(currencies: currencies.sorted(by: {$0.0 < $1.0 }) )
 //
 //                 }
 //            }
-        }
+//        }
         
     }
     
@@ -385,15 +394,17 @@ class AppData: ObservableObject {
     
     ///  Fetches timeseries of an exchange rate using the timeseries url and execute the completion handler
     func loadRateTimeseries(completion: @escaping ()->()) {
+        
+        DispatchQueue.main.async {
+            self.timeseriesNetworkStatus = .pending
+        }
+        
         let url = rateTimeseriesURL(daysPast: conversionInfo.conversionInfo.mode == 0 ? 30 : 90)
         Alamofire.request(url).response { response in
             if let error = response.error {
                 self.updateError(newNetworkError: error)
-                if !self.isErrorAlertDisplayed() {
-                     
-                    self.toggleErrorMsg()
-                    
-                }
+                self.conversionInfo.conversionInfo.rates = nil
+                self.timeseriesNetworkStatus = .failed
             }
             
             let decoder = JSONDecoder()
@@ -404,6 +415,7 @@ class AppData: ObservableObject {
                 } else  {
                     self.conversionInfo.conversionInfo.rates = nil
                 }
+                self.timeseriesNetworkStatus = .completed
             }
             completion()
         }
