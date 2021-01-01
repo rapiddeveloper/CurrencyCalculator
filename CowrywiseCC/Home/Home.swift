@@ -113,7 +113,6 @@ struct Home: View {
                     Text("link")
                 }
                 RateTrend()
-                   // .frame(height: 560)
                 Spacer()
             }
            //.padding()

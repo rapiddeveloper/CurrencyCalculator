@@ -274,6 +274,10 @@ class AppData: ObservableObject {
     var selectedCurrencyType: CurrencyType = .base
     var isOffline = false
     
+    var showHomescreen: Bool {
+        currenciesNetworkStatus == .completed
+    }
+    
     
     var baseCurrencyFlagURL: String {
         let currency = conversionInfo.baseCurrency.lowercased()
@@ -346,7 +350,7 @@ class AppData: ObservableObject {
             if let networkError = response.error  {
                 self.updateError(newNetworkError: networkError)
                 self.currenciesNetworkStatus = .failed
-               // self.currenciesErrorDisplayed = true
+            
             }
             
             let decoder = JSONDecoder()
@@ -357,8 +361,7 @@ class AppData: ObservableObject {
                 } else if let result = try? decoder.decode(FailureResponse.self, from: data) {
                     self.updateError(newRateError: result.error)
                      self.currenciesNetworkStatus = .completed
-                   // self.currenciesErrorDisplayed.toggle()
-                } else {}
+                 } else {}
                 
                
             }
@@ -371,27 +374,9 @@ class AppData: ObservableObject {
         errorMsgDisplayed.toggle()
     }
     
-    func getRateTimeseries(daysPast: Int) {
-        let url = rateTimeseriesURL(daysPast: daysPast)
-        self.loadRateTimeseries(url: url) { rates in
-            if let rates = rates {
-                self.conversionInfo.conversionInfo.rates = rates
-               // print(self.conversionInfo.entries)
-            }
-        }
-    }
     
     
-    func getRateTimeseries() {
-        let url = rateTimeseriesURL(daysPast: conversionInfo.conversionInfo.mode == 0 ? 30 : 90)
-           self.loadRateTimeseries(url: url) { rates in
-               if let rates = rates {
-                   self.conversionInfo.conversionInfo.rates = rates
-                  // print(self.conversionInfo.entries)
-               }
-           }
-       }
-    
+     
     ///  Fetches timeseries of an exchange rate using the timeseries url and execute the completion handler
     func loadRateTimeseries(completion: @escaping ()->()) {
         
@@ -530,84 +515,6 @@ class AppData: ObservableObject {
     }
     
     
-    func convertAmount(conversionType: ConversionType) {
-        
-        self.loadRate(url: self.rateEndpoint) { rates in
-            self.updateConversionInfo(with: rates)
-           // print(rates!)
-            do {
-              try self.convert(from: conversionType)
-            }catch {
-               self.updateConversionInfo(with: nil)
-            }
-           
-        }
-    }
-  
-    
-    func loadRateTimeseries(url: String, completed: @escaping ([String: [String:Double]]?)->()) {
-        
-            if let url = URL(string: url) {
-               let urlRequest = URLRequest(url: url)
-               let session = URLSession.shared
-               ratePublisher = session.dataTaskPublisher(for: urlRequest)
-               .tryMap({ data, response -> Data? in
-                   if let res = response as? HTTPURLResponse {
-                       
-                       if res.statusCode == 200 { // returned anything
-                           return data
-                       }
-                   }
-                   return nil
-               })
-               .receive(on: RunLoop.main)
-               .assertNoFailure()
-               .sink(receiveValue: { data in
-                   let decoder = JSONDecoder()
-                    if let responseData = data {
-                        do {
-                           let result = try decoder.decode(TimeseriesResponse.self, from: responseData)
-                            completed(result.rates)
-                        } catch {
-                            print(error)
-                        }
-                    }
-                 
-               })
-           }
-       }
-       
-    
-    
-    func loadRate(url: String, completed: @escaping ([String: Double]?)->()) {
-       
-         if let url = URL(string: url) {
-            let urlRequest = URLRequest(url: url)
-            let session = URLSession.shared
-            ratePublisher = session.dataTaskPublisher(for: urlRequest)
-            .tryMap({ data, response -> Data? in
-                if let res = response as? HTTPURLResponse {
-                   
-                    if res.statusCode == 200 { // returned anything
-                        return data
-                    }
-                }
-                return nil
-            })
-            .receive(on: RunLoop.main)
-            .assertNoFailure()
-            .sink(receiveValue: { data in
-                let decoder = JSONDecoder()
-                if let responseData = data,
-                    let result = try? decoder.decode(RateResponse.self, from: responseData) {
-                    completed(result.rates)
-                    
-                }
- 
-            })
-        }
-    }
-    
     func loadFlag(url: String, completed: @escaping (Flag?) -> ()) {
             if let url = URL(string: url) {
                let urlRequest = URLRequest(url: url)
@@ -635,34 +542,7 @@ class AppData: ObservableObject {
            }
        }
     
-    func loadCurrencies(url: String, completed: @escaping ([String: String]?)->()) {
-            if let url = URL(string: url) {
-               let urlRequest = URLRequest(url: url)
-               let session = URLSession.shared
-               ratePublisher = session.dataTaskPublisher(for: urlRequest)
-               .tryMap({ data, response -> Data? in
-                   if let res = response as? HTTPURLResponse {
-                      
-                       if res.statusCode == 200 { // returned anything
-                           return data
-                       }
-                   }
-                   return nil
-               })
-               .receive(on: RunLoop.main)
-               .assertNoFailure()
-               .sink(receiveValue: { data in
-                   let decoder = JSONDecoder()
-                   if let responseData = data,
-                       let result = try? decoder.decode(CurrenciesResponse.self, from: responseData) {
-                       completed(result.symbols)
-                   }
-    
-               })
-           }
-       }
-    
-    // updates error view model with error from rate conversion endpoint
+    /// updates error view model with error from rate conversion endpoint
     func updateError(newRateError: ErrorInfo) {
         error.type = .rate
         error.error = newRateError
@@ -675,7 +555,6 @@ class AppData: ObservableObject {
     
     func updateError(newNetworkError: Error?) {
         error.type = .networkFailure
-        //Alamofire.SessionManager.default.session.invalidateAndCancel()
     }
     
     func isErrorAlertDisplayed()->Bool {

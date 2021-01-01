@@ -13,8 +13,18 @@ struct ContentView: View {
     @EnvironmentObject var appData: AppData
     
     var body: some View {
-             print("home view")
            return  NavigationView {
+            if !appData.showHomescreen {
+                VStack(alignment: .center) {
+                    Text("Currency Converter is not connected to the internet. Go online to get started")
+                        .font(.subheadline)
+                        .foregroundColor(.gray)
+                        .multilineTextAlignment(.center)
+                    
+                }
+               .padding(64)
+               .padding(.top, 128)
+            } else {
                 Home()
                     .sheet(isPresented: $appData.currencyListOpened, content: {
                         CurrencyList().environmentObject(self.appData)
@@ -25,10 +35,10 @@ struct ContentView: View {
                             })
                     })
                     .alert(isPresented: self.$appData.errorMsgDisplayed, content: {
-                            Alert(title: Text(self.appData.error.title), message:  Text(self.appData.error.message), dismissButton: .default(Text("OK"), action: {
-                                // self.appData.toggleErrorMsg()
-                            }))
-                        })
+                        Alert(title: Text(self.appData.error.title), message:  Text(self.appData.error.message), dismissButton: .default(Text("OK")))
+                    })
+            }
+              
             }
       }
     
