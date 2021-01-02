@@ -23,8 +23,6 @@ struct CurrencyTextField: UIViewRepresentable {
  
     var textview = UITextField()
     
-    
-    
   //  var label = UILabel(frame: CGRect(x: width * 0.7, y: 14, width: 72, height: 24))
     @Binding var text: String
   
@@ -93,30 +91,15 @@ class CurrencyTextFieldCoordinator: NSObject, UITextFieldDelegate {
         self.representable = representable
     }
     
-    func textViewDidChange(_ textView: UITextView) {
-       
-        if let userText = textView.text {
+    
+    
+    func textFieldDidChangeSelection(_ textField: UITextField) {
+        print(textField.text!)
+        if let userText = textField.text {
             representable.text = userText
-           
             
         }
     }
-    
-    /*
-    func textView(_ textView: UITextView, shouldChangeTextIn range: NSRange, replacementText text: String) -> Bool {
-
-        // get the current text, or use an empty string if that failed
-           let currentText = textView.text ?? ""
-
-           // attempt to read the range they are trying to change, or exit if we can't
-           guard let stringRange = Range(range, in: currentText) else { return false }
-
-           // add their new text to the existing text
-           let updatedText = currentText.replacingCharacters(in: stringRange, with: text)
-
-           // make sure the result is under 16 characters
-           return updatedText.count <= 5
-    }*/
  
 }
 

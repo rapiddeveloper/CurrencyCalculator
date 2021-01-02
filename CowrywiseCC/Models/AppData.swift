@@ -424,7 +424,7 @@ class AppData: ObservableObject {
             if let responseData = response.data {
                 if let result = try? decoder.decode(RateResponse.self, from: responseData) {
                     self.updateConversionInfo(with: result.rates)
-                    if ((try? self.convert(from: .baseToTarget)) == nil) {
+                    if (try? self.convert(from: .baseToTarget)) == nil {
                         self.updateConversionInfo(with: nil)
                     }
                 } else if let result = try? decoder.decode(FailureResponse.self, from: responseData) {
@@ -512,6 +512,18 @@ class AppData: ObservableObject {
             conversionInfo.conversionInfo.baseCurrencyAmt = targetAmt / exchangeRate
             conversionResult = targetAmt / exchangeRate
         }
+    }
+    
+    
+    func convertAmount(conversionType: ConversionType) {
+        loadConversionRate {
+            try! self.convert(from: conversionType)
+        }
+//        do {
+//            try convert(from: conversionType)
+//        } catch {
+//            <#statements#>
+//        }
     }
     
     

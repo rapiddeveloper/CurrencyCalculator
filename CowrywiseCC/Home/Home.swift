@@ -102,7 +102,10 @@ struct Home: View {
 //                    self.appData.updateConversionInfo(newBaseCurrencyAmt: self.homeData.baseCurrencyAmt,
 //                        newTargetCurrencyAmt: self.homeData.targetCurrencyAmt
                     )
-                    self.appData.convertAmount(conversionType: .baseToTarget)
+                   // self.appData.convertAmount(conversionType: .baseToTarget)
+                    if (try? self.appData.convert(from: .baseToTarget)) == nil {
+                        self.appData.updateConversionInfo(with: nil)
+                    }
                     
                 }, label: {
                     Text("Convert")
