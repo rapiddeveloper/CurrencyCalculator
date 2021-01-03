@@ -29,94 +29,125 @@ struct Home: View {
     var body: some View {
        
         return ScrollView {
-            VStack {
-                HStack {
-                    MenuButton(spacing: 5, lineWidth: 4, stroke: Color.red)
-                         .frame(width: 32)
-                    Spacer()
-                    
-                    Text("Sign Up")
-                }
-                Text("Currency Calculator")
-                VStack {
-//                    TextField("", text: $homeData.baseCurrencyAmt)
-//                    TextField("", text: $homeData.targetCurrencyAmt)
- 
+            Group {
                 
+                VStack {
+                    HStack {
+                        MenuButton(spacing: 5, lineWidth: 4, stroke: Color.red)
+                            .frame(width: 32)
+                        Spacer()
+                        
+                        Text("Sign Up")
+                    }
+                    VStack(alignment: .leading, spacing: 4) {
+                        Text("Currency")
+                           
+                        HStack {
+                            Text("Calculator")
+                            Circle()
+                                .fill(Color.red)
+                                .frame(width: 8, height: 8)
+                        }
+                        
+                    }
+                    .font(.custom("MontserratAlternates-SemiBold", size: 32))
+                   // .font(.system(size: 48))
+                    VStack {
+                        //                    TextField("", text: $homeData.baseCurrencyAmt)
+                        //                    TextField("", text: $homeData.targetCurrencyAmt)
+                        
+                        
                         CurrencyTextField(text: self.$baseCurrencyAmt,
                                           currencyPlaceHolder: self.appData.conversionInfo.baseCurrency,
                                           width: inputFieldWidth,
                                           onCommit: {})
                             .cornerRadius(5)
                             .frame(width: inputFieldWidth, height: 56)
-                    
+                        
                         
                         CurrencyTextField(
-                                    text:  self.$targetCurrencyAmt,
-                                    currencyPlaceHolder: self.appData.conversionInfo.targetCurrency,
-                                     width: inputFieldWidth,
-                                    onCommit: {})
+                            text:  self.$targetCurrencyAmt,
+                            currencyPlaceHolder: self.appData.conversionInfo.targetCurrency,
+                            width: inputFieldWidth,
+                            onCommit: {})
                             .cornerRadius(5)
                             .frame(width: inputFieldWidth, height: 56)
-                    
-                }
-               
-                HStack {
-                    CurrencyBtn(
-                        currencyType: .base,
-                        label: {
-                            KFImage(URL(string: appData.baseCurrencyFlagURL))
-                                .frame(width: 32, height: 32)
-                                .clipShape(Circle())
-                        },
-                        action: {
-                              self.appData.selectedCurrencyType = .base
-                              self.appData.currencyListOpened = true
-                        }
-                    )
-                    
-                    Image(systemName: "chevron.left")
-                        .font(.subheadline)
-                    Image(systemName: "chevron.right")
-                        .font(.subheadline)
-                    
-                    CurrencyBtn(
-                        currencyType: .target,
-                        label: {
-                               KFImage(URL(string: appData.targetCurrencyFlagURL))
-                                .frame(width: 32, height: 32)
-                                .clipShape(Circle())
-                        },
-                        action: {
-                              self.appData.selectedCurrencyType = .target
-                              self.appData.currencyListOpened = true
-                        }
-                    )
-                }
-                
-                Button(action: {
-                 
-                    self.appData.updateConversionInfo(newBaseCurrencyAmt: self.baseCurrencyAmt,
-                                           newTargetCurrencyAmt: self.targetCurrencyAmt
-//                    self.appData.updateConversionInfo(newBaseCurrencyAmt: self.homeData.baseCurrencyAmt,
-//                        newTargetCurrencyAmt: self.homeData.targetCurrencyAmt
-                    )
-                    self.appData.loadConversionRate {
-                        if self.appData.rateNetworkStatus == .completed && self.appData.isRateAvailable {
-                            self.appData.convert(from: .baseToTarget)
-                        }  else {
-                            self.targetCurrencyAmt = ""
-                            self.appData.updateConversionInfo(newBaseCurrencyAmt: self.baseCurrencyAmt, newTargetCurrencyAmt: self.targetCurrencyAmt)
-                        }
+                        
                     }
                     
-                }, label: {
-                    Text("Convert")
-                })
-                .disabled((baseCurrencyAmt == "" && targetCurrencyAmt == "") || baseCurrencyAmt == "")
-                
-                HStack {
-                    Text("link")
+                    HStack {
+                        CurrencyBtn(
+                            currencyType: .base,
+                            label: {
+                                KFImage(URL(string: appData.baseCurrencyFlagURL))
+                                    .frame(width: 32, height: 32)
+                                    .clipShape(Circle())
+                        },
+                            action: {
+                                self.appData.selectedCurrencyType = .base
+                                self.appData.currencyListOpened = true
+                        }
+                        )
+                        Spacer()
+                        Image(systemName: "chevron.left")
+                            .font(.subheadline)
+                        Image(systemName: "chevron.right")
+                            .font(.subheadline)
+                        Spacer()
+                        CurrencyBtn(
+                            currencyType: .target,
+                            label: {
+                                KFImage(URL(string: appData.targetCurrencyFlagURL))
+                                    .frame(width: 32, height: 32)
+                                    .clipShape(Circle())
+                        },
+                            action: {
+                                self.appData.selectedCurrencyType = .target
+                                self.appData.currencyListOpened = true
+                        }
+                        )
+                    }
+                    .frame(minWidth: 0, maxWidth: .infinity)
+                    
+                    Button(action: {
+                        
+                        self.appData.updateConversionInfo(newBaseCurrencyAmt: self.baseCurrencyAmt,
+                                                          newTargetCurrencyAmt: self.targetCurrencyAmt
+                            //                    self.appData.updateConversionInfo(newBaseCurrencyAmt: self.homeData.baseCurrencyAmt,
+                            //                        newTargetCurrencyAmt: self.homeData.targetCurrencyAmt
+                        )
+                        self.appData.loadConversionRate {
+                            if self.appData.rateNetworkStatus == .completed && self.appData.isRateAvailable {
+                                self.appData.convert(from: .baseToTarget)
+                            }  else {
+                                self.targetCurrencyAmt = ""
+                                self.appData.updateConversionInfo(newBaseCurrencyAmt: self.baseCurrencyAmt, newTargetCurrencyAmt: self.targetCurrencyAmt)
+                            }
+                        }
+                        
+                    }, label: {
+                        Text("Convert")
+                    })
+                        .frame(minWidth: 0, maxWidth: .infinity)
+                        .frame(height: 48)
+                        .disabled((baseCurrencyAmt == "" && targetCurrencyAmt == "") || baseCurrencyAmt == "")
+                    
+                    
+                    HStack(spacing: 16) {
+                        Link(text: "Mid-market exchange rate at 13:38 UTC", destination: "", lineColor: .blue, textColor: .blue, lineWidth: 1.0)
+                        Group {
+                            Image(systemName: "info")
+                                .font(.caption)
+                                .foregroundColor(.blue)
+                                .background(
+                                    Circle()
+                                        .fill(Color.gray)
+                                        .frame(width: 18,height: 18)
+                            )
+                        }
+                        
+                        
+                    }
                 }
                 RateTrend()
                 Spacer()
@@ -172,30 +203,9 @@ struct Home: View {
      }
 }
 
-//struct Home_Previews: PreviewProvider {
-//    static var previews: some View {
-//        Home().environmentObject(AppData())
-//    }
-//}
-
-struct PieTrend: View {
-    
-    @State private var pieChartEntries: [PieChartDataEntry] = []
-    @State private var category: Wine.Category = .variety
-    
-    var body: some View {
-        VStack {
-            PieChart(entries: Wine.entriesForWines(Wine.allWines, category: category), category: $category)
-                .scaledToFit()
-                .frame(width: 400)
-            Picker("Category", selection: $category, content: {
-                Text(Wine.Category.variety.rawValue.uppercased())
-                    .tag(Wine.Category.variety)
-                Text(Wine.Category.winery.rawValue.uppercased())
-                    .tag(Wine.Category.winery)
-            })
-            .pickerStyle(SegmentedPickerStyle())
-        }
+struct Home_Previews: PreviewProvider {
+    static var previews: some View {
+        Home().environmentObject(AppData())
     }
 }
 
