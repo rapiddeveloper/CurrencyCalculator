@@ -20,8 +20,7 @@ struct Home: View {
     
     @EnvironmentObject var appData: AppData
     //@ObservedObject var homeData = HomeData()
-    
-    @State var baseCurrencyAmt: String = "1.0"
+    @State var baseCurrencyAmt: String = "1"
     @State var targetCurrencyAmt: String = "0.0"
     let inputFieldWidth: CGFloat = UIScreen.main.bounds.width * 0.95
     
@@ -102,9 +101,13 @@ struct Home: View {
 //                    self.appData.updateConversionInfo(newBaseCurrencyAmt: self.homeData.baseCurrencyAmt,
 //                        newTargetCurrencyAmt: self.homeData.targetCurrencyAmt
                     )
-                   // self.appData.convertAmount(conversionType: .baseToTarget)
-                    if (try? self.appData.convert(from: .baseToTarget)) == nil {
-                        self.appData.updateConversionInfo(with: nil)
+                    self.appData.loadConversionRate {
+                        if self.appData.rateNetworkStatus == .completed && self.appData.isRateAvailable {
+                            self.appData.convert(from: .baseToTarget)
+                        }  else {
+                            self.targetCurrencyAmt = ""
+                            self.appData.updateConversionInfo(newBaseCurrencyAmt: self.baseCurrencyAmt, newTargetCurrencyAmt: self.targetCurrencyAmt)
+                        }
                     }
                     
                 }, label: {
@@ -118,7 +121,6 @@ struct Home: View {
                 RateTrend()
                 Spacer()
             }
-           //.padding()
             .onReceive(appData.$conversionResult, perform: { value in
               
                 // update amount to show result of conversion
@@ -138,13 +140,19 @@ struct Home: View {
               
                 let group = DispatchGroup()
                 let queue = DispatchQueue.global()
-              //  let queue = DispatchQueue(label: "queue", qos: .userInteractive)
                
                 self.appData.updateConversionInfo(newBaseCurrencyAmt: self.baseCurrencyAmt, newTargetCurrencyAmt: self.targetCurrencyAmt)
                 
                 group.enter()
                 queue.async(group: group, execute: {
                     self.appData.loadConversionRate {
+                        if self.appData.rateNetworkStatus == .completed && self.appData.isRateAvailable {
+                            self.appData.convert(from: .baseToTarget)
+                        }
+                        else {
+                            self.targetCurrencyAmt = ""
+                            self.appData.updateConversionInfo(newBaseCurrencyAmt: self.baseCurrencyAmt, newTargetCurrencyAmt: self.targetCurrencyAmt)
+                        }
                         group.leave()
                     }
                 })

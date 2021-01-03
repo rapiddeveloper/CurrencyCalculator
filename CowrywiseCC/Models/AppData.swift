@@ -235,6 +235,15 @@ struct ConversionInfoViewModel {
             return ratelist
         }
     
+    var rate: String {
+        var result = ""
+        
+        if let rate = conversionInfo.rate, let rateValue = rate[targetCurrency] {
+            result = String(rateValue)
+        }
+        return result
+    }
+    
   }
        
 
@@ -267,12 +276,14 @@ class AppData: ObservableObject {
     var ratePublisher: AnyCancellable?
     var conversionType: ConversionType = .baseToTarget
    
-    let APIKey = "1d4bb84c085abdc2dd12645046fb3ab3" //"9e01c5fa47031db88531e4fb4bffa919"
+   // let APIKey = "1d4bb84c085abdc2dd12645046fb3ab3" //"9e01c5fa47031db88531e4fb4bffa919"
     let timeSeriesEndpoint = "timeseries"
     let currenciesEndpoint = "symbols"
     var currenciesURL = "" 
     var selectedCurrencyType: CurrencyType = .base
     var isOffline = false
+    
+    var APIKey = ""
     
     var showHomescreen: Bool {
         currenciesNetworkStatus == .completed
@@ -327,11 +338,23 @@ class AppData: ObservableObject {
         return   "http://data.fixer.io/api/\(formattedDate)?access_key=\(APIKey)&base=\(conversionInfo.baseCurrency)&symbols=\(conversionInfo.targetCurrency)"
     }
     
+    var isRateAvailable: Bool {
+         conversionInfo.conversionInfo.rate != nil
+    }
+    
     init() {
+        
+        let plistFilename = "FIXER-Info"
+        let plistKey = "FIXER-APIKEY"
+        
+        APIKey = loadApiKey(plistKey: plistKey, plistFilename: plistFilename)
+        
         currenciesURL = "http://data.fixer.io/api/\(currenciesEndpoint)?access_key=\(APIKey)"
         self.conversionInfo = ConversionInfoViewModel(conversionInfo: ConversionInfo(baseCurrencyAmt: 0, targetCurrencyAmt: 0, baseCurrency: "EUR", targetCurrency: "NGN", rate: nil, mode: 0, pos: .zero))
         
         loadCurrencies(completion: {})
+        
+        
         
     }
     
@@ -374,6 +397,20 @@ class AppData: ObservableObject {
         errorMsgDisplayed.toggle()
     }
     
+    func loadApiKey(plistKey: String, plistFilename: String) -> String {
+        
+        guard let filePath = Bundle.main.path(forResource: plistFilename , ofType: "plist") else {
+            fatalError("File \(plistFilename) does not exist")
+        }
+        
+        let plist = NSDictionary(contentsOfFile: filePath)
+        guard let value = plist?.object(forKey: plistKey) as? String else {
+            fatalError("Couldn't find API_KEY \(plistKey) in \(plistFilename).plist")
+        }
+        
+        return value
+    }
+    
     
     
      
@@ -409,32 +446,39 @@ class AppData: ObservableObject {
     /// Fetches conversion rate using the conversion rate url and updates conversionInfo view model with it
     
     func loadConversionRate(completion: @escaping ()->()) {
+        
+        DispatchQueue.main.async {
+            self.rateNetworkStatus = .pending
+        }
          
         Alamofire.request(rateEndpoint).response { response in
             if let error = response.error {
+                self.updateConversionInfo(with: nil)
                 self.updateError(newNetworkError: error)
                 if !self.isErrorAlertDisplayed() {
                          
                     self.toggleErrorMsg()
-                
                 }
+                self.rateNetworkStatus = .failed
             }
             
             let decoder = JSONDecoder()
             if let responseData = response.data {
                 if let result = try? decoder.decode(RateResponse.self, from: responseData) {
                     self.updateConversionInfo(with: result.rates)
-                    if (try? self.convert(from: .baseToTarget)) == nil {
-                        self.updateConversionInfo(with: nil)
-                    }
                 } else if let result = try? decoder.decode(FailureResponse.self, from: responseData) {
+                    self.updateConversionInfo(with: nil)
                     self.updateError(newRateError: result.error)
                     self.toggleErrorMsg()
                 } else {}
+                
+                  self.rateNetworkStatus = .completed
             }
             completion()
         }
     }
+    
+    
      
     
     
@@ -494,7 +538,7 @@ class AppData: ObservableObject {
      e.g .baseToTarget converts baseCurrencyAmount from base currency to target currency and updates the targetCurrencyAmount
      of conversionInfo
      */
-    func convert(from conversionType: ConversionType) throws {
+    func convert(from conversionType: ConversionType) {
         
         guard let rate = conversionInfo.conversionInfo.rate,
               let exchangeRate = rate[conversionInfo.conversionInfo.targetCurrency] else {return}
@@ -506,8 +550,6 @@ class AppData: ObservableObject {
         if conversionType == .baseToTarget {
             conversionInfo.conversionInfo.targetCurrencyAmt = baseAmt * exchangeRate
             conversionResult = baseAmt * exchangeRate
-        } else if conversionType == .targetToBase && exchangeRate == 0 {
-            throw ConversionErrors.divisionByZero
         } else {
             conversionInfo.conversionInfo.baseCurrencyAmt = targetAmt / exchangeRate
             conversionResult = targetAmt / exchangeRate
@@ -517,7 +559,7 @@ class AppData: ObservableObject {
     
     func convertAmount(conversionType: ConversionType) {
         loadConversionRate {
-            try! self.convert(from: conversionType)
+             self.convert(from: conversionType)
         }
 //        do {
 //            try convert(from: conversionType)

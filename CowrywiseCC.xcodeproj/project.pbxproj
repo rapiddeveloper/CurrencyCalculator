@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		84117F9B25A0B21C00BE711B /* FIXER-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 84117F9A25A0B21C00BE711B /* FIXER-Info.plist */; };
 		8449DA48259B358100594B74 /* Alamofire in Frameworks */ = {isa = PBXBuildFile; productRef = 8449DA47259B358100594B74 /* Alamofire */; };
 		845CB01C25965A03000C31E9 /* MenuButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 845CB01B25965A03000C31E9 /* MenuButton.swift */; };
 		846E682F2588FB3E00C71DA6 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 846E682E2588FB3E00C71DA6 /* AppDelegate.swift */; };
@@ -65,6 +66,7 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		84117F9A25A0B21C00BE711B /* FIXER-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "FIXER-Info.plist"; sourceTree = "<group>"; };
 		845CB01B25965A03000C31E9 /* MenuButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MenuButton.swift; sourceTree = "<group>"; };
 		846E682B2588FB3E00C71DA6 /* CowrywiseCC.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = CowrywiseCC.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		846E682E2588FB3E00C71DA6 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -137,6 +139,7 @@
 				846E68392588FB4500C71DA6 /* LaunchScreen.storyboard */,
 				846E683C2588FB4500C71DA6 /* Info.plist */,
 				846E68362588FB4500C71DA6 /* Preview Content */,
+				84117F9A25A0B21C00BE711B /* FIXER-Info.plist */,
 			);
 			path = CowrywiseCC;
 			sourceTree = "<group>";
@@ -306,6 +309,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				846E683B2588FB4500C71DA6 /* LaunchScreen.storyboard in Resources */,
+				84117F9B25A0B21C00BE711B /* FIXER-Info.plist in Resources */,
 				846E68382588FB4500C71DA6 /* Preview Assets.xcassets in Resources */,
 				846E68352588FB4500C71DA6 /* Assets.xcassets in Resources */,
 			);
