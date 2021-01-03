@@ -21,21 +21,25 @@ import SwiftUI
 struct CurrencyTextField: UIViewRepresentable {
     
  
-    var textview = UITextField()
+    var textview = UITextField(frame: .zero)
     
   //  var label = UILabel(frame: CGRect(x: width * 0.7, y: 14, width: 72, height: 24))
     @Binding var text: String
   
     var currencyPlaceHolder: String
-    var width: CGFloat
+    //var width: CGFloat
     var onCommit: () -> ()
     
      func makeUIView(context: Context) -> UITextField {
         
-        let label = UILabel(frame: CGRect(x: width - 72, y: 14, width: 72, height: 24))
-        label.text = currencyPlaceHolder
+       // let label = UILabel(frame: CGRect(x: width - 72, y: 14, width: 72, height: 24))
+        
+        let label = UILabel(frame: CGRect(x: textview.frame.size.width, y: 14, width: 72, height: 24))
+         
         label.textColor = .systemGray3
-        label.font = UIFont.systemFont(ofSize: 24, weight: .semibold)
+        label.font = UIFont(name: "MontserratAlternates-SemiBold", size: 24)
+        label.text = currencyPlaceHolder
+
         label.tag = 1
  
         if let labelText = label.text {
@@ -47,16 +51,21 @@ struct CurrencyTextField: UIViewRepresentable {
 //        let attributedText = textview.textStorage
 //        attributedText.addAttribute(.foregroundColor, value: UIColor.red, range: NSRange(location: 0, length: 3))
 //
+        textview.setContentCompressionResistancePriority(.defaultLow, for: .horizontal)
         textview.keyboardType = .numberPad
       
         textview.text = text
-        textview.setRightPadding(padding: 72)
+        textview.clearButtonMode = .whileEditing
+        textview.returnKeyType = .done
+       // textview.setRightPadding(padding: 72)
+        //textview.setRightPadding(padding: 16)
+
         textview.setLeftPadding(padding: 16)
         textview.addSubview(label)
         
         textview.textColor = .gray
          textview.font = UIFont.systemFont(ofSize: 24, weight: .bold)
-        textview.backgroundColor = UIColor(named: "textfield")// UIColor.red 
+        textview.backgroundColor = UIColor(named: "textfield")
         textview.delegate = context.coordinator
 
  
@@ -71,6 +80,8 @@ struct CurrencyTextField: UIViewRepresentable {
             if subview.tag == 1 {
                 let label = subview as! UILabel
                 label.text = currencyPlaceHolder
+                print(textview.frame.size.width)
+                label.frame = CGRect(x: textview.frame.size.width, y: 14, width: 72, height: 24)
             }
         }
 
@@ -129,7 +140,8 @@ struct CurrencyTextField_Previews: PreviewProvider {
         VStack {
           
            // GeometryReader { proxy in
-            CurrencyTextField(text: .constant("500"), currencyPlaceHolder: "NGN", width: 360, onCommit: {})
+//            CurrencyTextField(text: .constant("500"), currencyPlaceHolder: "NGN", width: 360, onCommit: {})
+            CurrencyTextField(text: .constant("500"), currencyPlaceHolder: "NGN", onCommit: {})
                     .cornerRadius(5)
                     .frame(width: 350, height: 56)
             //}

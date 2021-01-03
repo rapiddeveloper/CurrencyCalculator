@@ -22,7 +22,7 @@ struct Home: View {
     //@ObservedObject var homeData = HomeData()
     @State var baseCurrencyAmt: String = "1"
     @State var targetCurrencyAmt: String = "0.0"
-    let inputFieldWidth: CGFloat = UIScreen.main.bounds.width * 0.95
+    let inputFieldWidth: CGFloat = UIScreen.main.bounds.width * 0.75
     
                    
     
@@ -30,50 +30,73 @@ struct Home: View {
        
         return ScrollView {
             Group {
-                
                 VStack {
                     HStack {
-                        MenuButton(spacing: 5, lineWidth: 4, stroke: Color.red)
-                            .frame(width: 32)
+                        MenuButton(spacing: 5, lineWidth: 4, stroke: Color("PrimaryColor"))
+                            .frame(width: 24)
+                        
                         Spacer()
                         
-                        Text("Sign Up")
+                        Text("Sign up")
+                          .font(.custom("MontserratAlternates-SemiBold", size: 17))
+                        .foregroundColor(Color("PrimaryColor"))
                     }
+                    
                     VStack(alignment: .leading, spacing: 4) {
                         Text("Currency")
                            
-                        HStack {
+                        HStack(alignment: .bottom) {
                             Text("Calculator")
                             Circle()
-                                .fill(Color.red)
+                                .fill(Color("PrimaryColor"))
                                 .frame(width: 8, height: 8)
+                                .offset(x: -8, y: -8)
                         }
                         
                     }
-                    .font(.custom("MontserratAlternates-SemiBold", size: 32))
-                   // .font(.system(size: 48))
+                    .font(.custom("MontserratAlternates-Bold", size: 34))
+                    .foregroundColor(Color("SecondaryColor"))
+                    .frame(minWidth: 0, maxWidth: .infinity, alignment: .leading)
+                    
                     VStack {
                         //                    TextField("", text: $homeData.baseCurrencyAmt)
                         //                    TextField("", text: $homeData.targetCurrencyAmt)
                         
-                        
                         CurrencyTextField(text: self.$baseCurrencyAmt,
                                           currencyPlaceHolder: self.appData.conversionInfo.baseCurrency,
-                                          width: inputFieldWidth,
                                           onCommit: {})
                             .cornerRadius(5)
-                            .frame(width: inputFieldWidth, height: 56)
+                            .frame(minWidth: 0, maxWidth: .infinity)
+                            .frame(height: 56)
+                                              
                         
-                        
+//                        CurrencyTextField(text: self.$baseCurrencyAmt,
+//                                          currencyPlaceHolder: self.appData.conversionInfo.baseCurrency,
+//                                          width: inputFieldWidth,
+//                                          onCommit: {})
+//                            .cornerRadius(5)
+//                            .frame(minWidth: 0, maxWidth: .infinity)
+//                            .frame(height: 56)
+//
+ 
                         CurrencyTextField(
                             text:  self.$targetCurrencyAmt,
                             currencyPlaceHolder: self.appData.conversionInfo.targetCurrency,
-                            width: inputFieldWidth,
                             onCommit: {})
                             .cornerRadius(5)
                             .frame(width: inputFieldWidth, height: 56)
                         
                     }
+                        
+//                        CurrencyTextField(
+//                            text:  self.$targetCurrencyAmt,
+//                            currencyPlaceHolder: self.appData.conversionInfo.targetCurrency,
+//                            width: inputFieldWidth,
+//                            onCommit: {})
+//                            .cornerRadius(5)
+//                            .frame(width: inputFieldWidth, height: 56)
+//
+//                    }
                     
                     HStack {
                         CurrencyBtn(
@@ -127,10 +150,12 @@ struct Home: View {
                         
                     }, label: {
                         Text("Convert")
+                         .font(.custom("MontserratAlternates-SemiBold", size: 17))
                     })
-                        .frame(minWidth: 0, maxWidth: .infinity)
-                        .frame(height: 48)
-                        .disabled((baseCurrencyAmt == "" && targetCurrencyAmt == "") || baseCurrencyAmt == "")
+                    .frame(minWidth: 0, maxWidth: .infinity)
+                    .frame(height: 48)
+                        .background(Color.gray)
+                    .disabled((baseCurrencyAmt == "" && targetCurrencyAmt == "") || baseCurrencyAmt == "")
                     
                     
                     HStack(spacing: 16) {
@@ -149,9 +174,13 @@ struct Home: View {
                         
                     }
                 }
+                .padding(16.0)
+                //.frame(minWidth: 0, maxWidth: .infinity)
+                //.padding(.horizontal, 32)
                 RateTrend()
                 Spacer()
             }
+ 
             .onReceive(appData.$conversionResult, perform: { value in
               
                 // update amount to show result of conversion

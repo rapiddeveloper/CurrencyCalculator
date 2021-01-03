@@ -6,6 +6,7 @@
 	<array>
 		<string>MontserratAlternates-Medium.ttf</string>
 		<string>MontserratAlternates-SemiBold.ttf</string>
+		<string>MontserratAlternates-Bold.ttf</string>
 	</array>
 	<key>NSAppTransportSecurity</key>
 	<dict>
