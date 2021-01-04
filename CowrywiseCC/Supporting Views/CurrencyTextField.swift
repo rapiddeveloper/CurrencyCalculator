@@ -18,12 +18,60 @@ import Foundation
 import UIKit
 import SwiftUI
 
+class CustomTextField: UITextField {
+
+    let padding = UIEdgeInsets(top: 0, left: 16, bottom: 0, right: 0);
+    var width: CGFloat = 0
+    
+    override func rightViewRect(forBounds bounds: CGRect) -> CGRect {
+        let rightBounds = CGRect(x: bounds.maxX - 76 , y: bounds.origin.y, width: bounds.width, height: bounds.height)
+        return rightBounds
+    }
+
+    override func textRect(forBounds bounds: CGRect) -> CGRect {
+        return UIEdgeInsetsInsetRect(bounds, padding)
+    }
+
+    override func placeholderRect(forBounds bounds: CGRect) -> CGRect {
+        return UIEdgeInsetsInsetRect(bounds, padding)
+    }
+
+    override func editingRect(forBounds bounds: CGRect) -> CGRect {
+        return UIEdgeInsetsInsetRect(bounds, padding)
+    }
+}
+
+ 
+
+class InsetLabel: UILabel {
+
+    var contentInsets = UIEdgeInsets.zero
+
+    override func drawText(in rect: CGRect) {
+        let insetRect = UIEdgeInsetsInsetRect(rect, contentInsets)
+        super.drawText(in: insetRect)
+    }
+
+    override var intrinsicContentSize: CGSize {
+        return addInsets(to: super.intrinsicContentSize)
+    }
+
+    override func sizeThatFits(_ size: CGSize) -> CGSize {
+        return addInsets(to: super.sizeThatFits(size))
+    }
+
+    private func addInsets(to size: CGSize) -> CGSize {
+        let width = size.width + contentInsets.left + contentInsets.right
+        let height = size.height + contentInsets.top + contentInsets.bottom
+        return CGSize(width: width, height: height)
+    }
+
+}
+
 struct CurrencyTextField: UIViewRepresentable {
     
  
-    var textview = UITextField(frame: .zero)
-    
-  //  var label = UILabel(frame: CGRect(x: width * 0.7, y: 14, width: 72, height: 24))
+    var textField = CustomTextField(frame: .zero) //UITextField(frame: .zero)
     @Binding var text: String
   
     var currencyPlaceHolder: String
@@ -32,15 +80,12 @@ struct CurrencyTextField: UIViewRepresentable {
     
      func makeUIView(context: Context) -> UITextField {
         
-       // let label = UILabel(frame: CGRect(x: width - 72, y: 14, width: 72, height: 24))
-        
-        let label = UILabel(frame: CGRect(x: textview.frame.size.width, y: 14, width: 72, height: 24))
-         
+        let label = UILabel(frame: .zero)
         label.textColor = .systemGray3
-        label.font = UIFont(name: "MontserratAlternates-SemiBold", size: 24)
+        label.font =  UIFont.boldSystemFont(ofSize: 24)
         label.text = currencyPlaceHolder
-
         label.tag = 1
+        label.sizeToFit()
  
         if let labelText = label.text {
             let attributedString = NSMutableAttributedString(string: labelText)
@@ -51,39 +96,30 @@ struct CurrencyTextField: UIViewRepresentable {
 //        let attributedText = textview.textStorage
 //        attributedText.addAttribute(.foregroundColor, value: UIColor.red, range: NSRange(location: 0, length: 3))
 //
-        textview.setContentCompressionResistancePriority(.defaultLow, for: .horizontal)
-        textview.keyboardType = .numberPad
+        // prevent textfield from stretching
+        textField.setContentCompressionResistancePriority(.defaultLow, for: .horizontal)
+        textField.keyboardType = .numberPad
       
-        textview.text = text
-        textview.clearButtonMode = .whileEditing
-        textview.returnKeyType = .done
-       // textview.setRightPadding(padding: 72)
-        //textview.setRightPadding(padding: 16)
-
-        textview.setLeftPadding(padding: 16)
-        textview.addSubview(label)
+        textField.text = text
+        textField.clearButtonMode = .whileEditing
+        textField.returnKeyType = .done
+       
+        textField.rightViewMode = .always
+        textField.rightView = label
         
-        textview.textColor = .gray
-         textview.font = UIFont.systemFont(ofSize: 24, weight: .bold)
-        textview.backgroundColor = UIColor(named: "textfield")
-        textview.delegate = context.coordinator
-
+        textField.textColor = .gray
+        textField.font = UIFont.systemFont(ofSize: 24, weight: .bold)
+        textField.backgroundColor = UIColor(named: "textfield")
+        textField.delegate = context.coordinator
  
-        return textview
+        return textField
     }
     
     func updateUIView(_ textView: UITextField, context: Context) {
          textView.text = text
        
 
-        for subview in textView.subviews {
-            if subview.tag == 1 {
-                let label = subview as! UILabel
-                label.text = currencyPlaceHolder
-                print(textview.frame.size.width)
-                label.frame = CGRect(x: textview.frame.size.width, y: 14, width: 72, height: 24)
-            }
-        }
+      
 
     }
     
@@ -105,7 +141,7 @@ class CurrencyTextFieldCoordinator: NSObject, UITextFieldDelegate {
     
     
     func textFieldDidChangeSelection(_ textField: UITextField) {
-        print(textField.text!)
+        
         if let userText = textField.text {
             representable.text = userText
             
@@ -128,6 +164,8 @@ extension UITextField {
         self.rightViewMode = .always
     }
 }
+
+ 
 
  
  

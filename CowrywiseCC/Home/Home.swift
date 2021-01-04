@@ -69,34 +69,16 @@ struct Home: View {
                             .frame(minWidth: 0, maxWidth: .infinity)
                             .frame(height: 56)
                                               
-                        
-//                        CurrencyTextField(text: self.$baseCurrencyAmt,
-//                                          currencyPlaceHolder: self.appData.conversionInfo.baseCurrency,
-//                                          width: inputFieldWidth,
-//                                          onCommit: {})
-//                            .cornerRadius(5)
-//                            .frame(minWidth: 0, maxWidth: .infinity)
-//                            .frame(height: 56)
-//
- 
+                
                         CurrencyTextField(
                             text:  self.$targetCurrencyAmt,
                             currencyPlaceHolder: self.appData.conversionInfo.targetCurrency,
                             onCommit: {})
                             .cornerRadius(5)
-                            .frame(width: inputFieldWidth, height: 56)
+                            .frame(minWidth: 0, maxWidth: .infinity)
+                            .frame(height: 56)
                         
                     }
-                        
-//                        CurrencyTextField(
-//                            text:  self.$targetCurrencyAmt,
-//                            currencyPlaceHolder: self.appData.conversionInfo.targetCurrency,
-//                            width: inputFieldWidth,
-//                            onCommit: {})
-//                            .cornerRadius(5)
-//                            .frame(width: inputFieldWidth, height: 56)
-//
-//                    }
                     
                     HStack {
                         CurrencyBtn(
