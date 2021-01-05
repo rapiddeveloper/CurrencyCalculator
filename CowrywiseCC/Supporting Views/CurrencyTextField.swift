@@ -20,11 +20,11 @@ import SwiftUI
 
 class CustomTextField: UITextField {
 
-    let padding = UIEdgeInsets(top: 0, left: 16, bottom: 0, right: 0);
+    let padding = UIEdgeInsets(top: 0, left: 16, bottom: 0, right: 80);
     var width: CGFloat = 0
     
     override func rightViewRect(forBounds bounds: CGRect) -> CGRect {
-        let rightBounds = CGRect(x: bounds.maxX - 76 , y: bounds.origin.y, width: bounds.width, height: bounds.height)
+        let rightBounds = CGRect(x: bounds.maxX - 72 , y: bounds.origin.y, width: bounds.width, height: bounds.height)
         return rightBounds
     }
 
@@ -41,33 +41,6 @@ class CustomTextField: UITextField {
     }
 }
 
- 
-
-class InsetLabel: UILabel {
-
-    var contentInsets = UIEdgeInsets.zero
-
-    override func drawText(in rect: CGRect) {
-        let insetRect = UIEdgeInsetsInsetRect(rect, contentInsets)
-        super.drawText(in: insetRect)
-    }
-
-    override var intrinsicContentSize: CGSize {
-        return addInsets(to: super.intrinsicContentSize)
-    }
-
-    override func sizeThatFits(_ size: CGSize) -> CGSize {
-        return addInsets(to: super.sizeThatFits(size))
-    }
-
-    private func addInsets(to size: CGSize) -> CGSize {
-        let width = size.width + contentInsets.left + contentInsets.right
-        let height = size.height + contentInsets.top + contentInsets.bottom
-        return CGSize(width: width, height: height)
-    }
-
-}
-
 struct CurrencyTextField: UIViewRepresentable {
     
  
@@ -75,7 +48,9 @@ struct CurrencyTextField: UIViewRepresentable {
     @Binding var text: String
   
     var currencyPlaceHolder: String
-    //var width: CGFloat
+  
+    var isResultDisplayed: Bool
+     
     var onCommit: () -> ()
     
      func makeUIView(context: Context) -> UITextField {
@@ -92,41 +67,61 @@ struct CurrencyTextField: UIViewRepresentable {
             attributedString.addAttribute(.kern, value: 2.0, range: NSRange(location: 0, length: attributedString.length))
             label.attributedText = attributedString
         }
-        
-//        let attributedText = textview.textStorage
-//        attributedText.addAttribute(.foregroundColor, value: UIColor.red, range: NSRange(location: 0, length: 3))
-//
-        // prevent textfield from stretching
+    
         textField.setContentCompressionResistancePriority(.defaultLow, for: .horizontal)
+        
         textField.keyboardType = .numberPad
-      
         textField.text = text
         textField.clearButtonMode = .whileEditing
         textField.returnKeyType = .done
-       
+ 
         textField.rightViewMode = .always
         textField.rightView = label
-        
         textField.textColor = .gray
         textField.font = UIFont.systemFont(ofSize: 24, weight: .bold)
         textField.backgroundColor = UIColor(named: "textfield")
         textField.delegate = context.coordinator
+        
  
         return textField
     }
     
     func updateUIView(_ textView: UITextField, context: Context) {
-         textView.text = text
+        
+        for subview in textView.subviews {
+            if subview.tag ==  1 {
+                if let label = subview as? UILabel {
+                    label.text = currencyPlaceHolder
+                }
+            }
+        }
        
-
-      
-
+        if !isResultDisplayed {
+            textView.text = text
+        } else {
+            
+            textView.text = text
+            
+            let result = text.split(separator: ".")
+            let fractionalPart = result.count == 2 ? String(result[1]) : ""
+            if fractionalPart.count > 3 {
+                let thirdCharFromEndIdx = 3
+                let attributedString = NSMutableAttributedString(string: fractionalPart)
+                attributedString.addAttribute(.foregroundColor, value: UIColor.systemGray4,
+                                              range: NSRange(location: thirdCharFromEndIdx,
+                                                             length: fractionalPart.count - thirdCharFromEndIdx))
+                
+                let attributedString0 = NSMutableAttributedString(string: String(result[0])+".")
+                attributedString0.append(attributedString)
+                textView.attributedText = attributedString0
+            }
+        }
+        
     }
     
     func makeCoordinator() -> CurrencyTextFieldCoordinator {
         return CurrencyTextFieldCoordinator(representable: self)
     }
-    
     
 }
 
@@ -138,54 +133,50 @@ class CurrencyTextFieldCoordinator: NSObject, UITextFieldDelegate {
         self.representable = representable
     }
     
-    
-    
     func textFieldDidChangeSelection(_ textField: UITextField) {
-        
+
         if let userText = textField.text {
             representable.text = userText
-            
         }
     }
- 
-}
-
-extension UITextField {
     
-    func setLeftPadding(padding: CGFloat) {
-        let paddingView = UIView(frame: CGRect(x: 0, y: 0, width: padding, height: self.frame.size.height))
-        self.leftView = paddingView
-        self.leftViewMode = .always
-    }
+     
+    
+    
+    /*
+    func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
+         if let userText = textField.text {
+                    representable.text = userText
+                }
+        return true
+        /*
+        // get the current text, or use an empty string if that failed
+        let currentText = textField.text ?? ""
 
-    func setRightPadding(padding: CGFloat) {
-        let paddingView = UIView(frame: CGRect(x: 0, y: 0, width: padding, height: self.frame.size.height))
-        self.rightView = paddingView
-        self.rightViewMode = .always
-    }
+        // attempt to read the range they are trying to change, or exit if we can't
+        guard let stringRange = Range(range, in: currentText) else { return false }
+
+        // add their new text to the existing text
+        let updatedText = currentText.replacingCharacters(in: stringRange, with: string)
+
+        // make sure the result is under 16 characters
+          return updatedText.count <= 9*/
+        
+       
+    }*/
+    
+ 
 }
-
- 
-
- 
- 
-
-
- 
 
 struct CurrencyTextField_Previews: PreviewProvider {
     static var previews: some View {
         VStack {
-          
-           // GeometryReader { proxy in
-//            CurrencyTextField(text: .constant("500"), currencyPlaceHolder: "NGN", width: 360, onCommit: {})
-            CurrencyTextField(text: .constant("500"), currencyPlaceHolder: "NGN", onCommit: {})
+            CurrencyTextField(text: .constant("500888"), currencyPlaceHolder: "NGN", isResultDisplayed: false, onCommit: {})
                     .cornerRadius(5)
                     .frame(width: 350, height: 56)
-            //}
         }
         .previewDevice("iPhone8")
-        // .padding(.horizontal, 16)
+        
        
     }
    

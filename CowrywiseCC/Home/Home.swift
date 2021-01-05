@@ -64,7 +64,9 @@ struct Home: View {
                         
                         CurrencyTextField(text: self.$baseCurrencyAmt,
                                           currencyPlaceHolder: self.appData.conversionInfo.baseCurrency,
-                                          onCommit: {})
+                                          isResultDisplayed: false,
+                                          onCommit: {}
+                        )
                             .cornerRadius(5)
                             .frame(minWidth: 0, maxWidth: .infinity)
                             .frame(height: 56)
@@ -73,11 +75,12 @@ struct Home: View {
                         CurrencyTextField(
                             text:  self.$targetCurrencyAmt,
                             currencyPlaceHolder: self.appData.conversionInfo.targetCurrency,
-                            onCommit: {})
+                            isResultDisplayed: true,
+                            onCommit: {}
+                        )
                             .cornerRadius(5)
                             .frame(minWidth: 0, maxWidth: .infinity)
                             .frame(height: 56)
-                        
                     }
                     
                     HStack {
@@ -87,15 +90,16 @@ struct Home: View {
                                 KFImage(URL(string: appData.baseCurrencyFlagURL))
                                     .frame(width: 32, height: 32)
                                     .clipShape(Circle())
-                        },
-                            action: {
-                                self.appData.selectedCurrencyType = .base
-                                self.appData.currencyListOpened = true
-                        }
+                            },
+                                action: {
+                                    self.appData.selectedCurrencyType = .base
+                                    self.appData.currencyListOpened = true
+                            }
                         )
                         Spacer()
                         Image(systemName: "chevron.left")
                             .font(.subheadline)
+                        Spacer()
                         Image(systemName: "chevron.right")
                             .font(.subheadline)
                         Spacer()
@@ -152,8 +156,6 @@ struct Home: View {
                                         .frame(width: 18,height: 18)
                             )
                         }
-                        
-                        
                     }
                 }
                 .padding(16.0)
@@ -168,7 +170,7 @@ struct Home: View {
                 // update amount to show result of conversion
                 var temp = ""
                 if let result = value {
-                    temp = String(result)
+                    temp = String(format: "%.6f",  result)
                 }
                 
                 // select currency textfield to put result

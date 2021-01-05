@@ -102,6 +102,7 @@ struct RateTrend: View {
         return VStack {
                 HStack {
                     Button(action: {
+                        self.pos = .zero
                         self.appData.updateConversionInfo(mode: 0)
                         self.appData.loadRateTimeseries(completion: {})
                         
@@ -117,6 +118,7 @@ struct RateTrend: View {
                     })
                     Spacer()
                     Button(action: {
+                        self.pos = .zero
                         self.appData.updateConversionInfo(mode: 1)
                         self.appData.loadRateTimeseries(completion: {})
                     }, label: {
