@@ -16,8 +16,6 @@
 		84117FAD25A22F6500BE711B /* MontserratAlternates-Bold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 84117FA625A22F6500BE711B /* MontserratAlternates-Bold.ttf */; };
 		84117FAE25A22F6500BE711B /* MontserratAlternates-Light.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 84117FA725A22F6500BE711B /* MontserratAlternates-Light.ttf */; };
 		84117FB025A23CC000BE711B /* Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84117FAF25A23CC000BE711B /* Extensions.swift */; };
-		844726F925A6272D0029777A /* Charts.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 844726F625A626F20029777A /* Charts.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
-		844726FA25A627380029777A /* Charts.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 844726F625A626F20029777A /* Charts.framework */; };
 		8449DA48259B358100594B74 /* Alamofire in Frameworks */ = {isa = PBXBuildFile; productRef = 8449DA47259B358100594B74 /* Alamofire */; };
 		845CB01C25965A03000C31E9 /* MenuButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 845CB01B25965A03000C31E9 /* MenuButton.swift */; };
 		846E682F2588FB3E00C71DA6 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 846E682E2588FB3E00C71DA6 /* AppDelegate.swift */; };
@@ -44,16 +42,16 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
-		844726F525A626F20029777A /* PBXContainerItemProxy */ = {
+		8447270A25A6299D0029777A /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
-			containerPortal = 844726F025A626F20029777A /* Charts.xcodeproj */;
+			containerPortal = 8447270525A6299D0029777A /* Charts.xcodeproj */;
 			proxyType = 2;
 			remoteGlobalIDString = 65AD9E95D9ED4DC0BD73A743;
 			remoteInfo = Charts;
 		};
-		844726F725A626F20029777A /* PBXContainerItemProxy */ = {
+		8447270C25A6299D0029777A /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
-			containerPortal = 844726F025A626F20029777A /* Charts.xcodeproj */;
+			containerPortal = 8447270525A6299D0029777A /* Charts.xcodeproj */;
 			proxyType = 2;
 			remoteGlobalIDString = 1CBBC58C6CE1EBEE9852CE41;
 			remoteInfo = ChartsTests;
@@ -67,7 +65,6 @@
 			dstPath = "";
 			dstSubfolderSpec = 10;
 			files = (
-				844726F925A6272D0029777A /* Charts.framework in Embed Frameworks */,
 			);
 			name = "Embed Frameworks";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -84,7 +81,7 @@
 		84117FA625A22F6500BE711B /* MontserratAlternates-Bold.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "MontserratAlternates-Bold.ttf"; sourceTree = "<group>"; };
 		84117FA725A22F6500BE711B /* MontserratAlternates-Light.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "MontserratAlternates-Light.ttf"; sourceTree = "<group>"; };
 		84117FAF25A23CC000BE711B /* Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Extensions.swift; sourceTree = "<group>"; };
-		844726F025A626F20029777A /* Charts.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; path = Charts.xcodeproj; sourceTree = "<group>"; };
+		8447270525A6299D0029777A /* Charts.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; path = Charts.xcodeproj; sourceTree = "<group>"; };
 		845CB01B25965A03000C31E9 /* MenuButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MenuButton.swift; sourceTree = "<group>"; };
 		846E682B2588FB3E00C71DA6 /* CowrywiseCC.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = CowrywiseCC.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		846E682E2588FB3E00C71DA6 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -114,7 +111,6 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				844726FA25A627380029777A /* Charts.framework in Frameworks */,
 				8449DA48259B358100594B74 /* Alamofire in Frameworks */,
 				84B4F8D7258E0090001BDC81 /* KingfisherSwiftUI in Frameworks */,
 				84716F8E259F5A1B00A3CF22 /* ActivityIndicatorView in Frameworks */,
@@ -138,11 +134,11 @@
 			path = Resources;
 			sourceTree = "<group>";
 		};
-		844726F125A626F20029777A /* Products */ = {
+		8447270625A6299D0029777A /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				844726F625A626F20029777A /* Charts.framework */,
-				844726F825A626F20029777A /* ChartsTests.xctest */,
+				8447270B25A6299D0029777A /* Charts.framework */,
+				8447270D25A6299D0029777A /* ChartsTests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -150,7 +146,6 @@
 		846E68222588FB3E00C71DA6 = {
 			isa = PBXGroup;
 			children = (
-				844726F025A626F20029777A /* Charts.xcodeproj */,
 				84B4F8DA258E39F0001BDC81 /* Source */,
 				846E682D2588FB3E00C71DA6 /* CowrywiseCC */,
 				846E682C2588FB3E00C71DA6 /* Products */,
@@ -169,6 +164,7 @@
 		846E682D2588FB3E00C71DA6 /* CowrywiseCC */ = {
 			isa = PBXGroup;
 			children = (
+				8447270525A6299D0029777A /* Charts.xcodeproj */,
 				84117F9E25A22CE600BE711B /* Resources */,
 				847B3271258CD36D00C7C4F1 /* Currency */,
 				846E68442588FBD200C71DA6 /* Supporting Views */,
@@ -310,8 +306,8 @@
 			projectDirPath = "";
 			projectReferences = (
 				{
-					ProductGroup = 844726F125A626F20029777A /* Products */;
-					ProjectRef = 844726F025A626F20029777A /* Charts.xcodeproj */;
+					ProductGroup = 8447270625A6299D0029777A /* Products */;
+					ProjectRef = 8447270525A6299D0029777A /* Charts.xcodeproj */;
 				},
 			);
 			projectRoot = "";
@@ -322,18 +318,18 @@
 /* End PBXProject section */
 
 /* Begin PBXReferenceProxy section */
-		844726F625A626F20029777A /* Charts.framework */ = {
+		8447270B25A6299D0029777A /* Charts.framework */ = {
 			isa = PBXReferenceProxy;
 			fileType = wrapper.framework;
 			path = Charts.framework;
-			remoteRef = 844726F525A626F20029777A /* PBXContainerItemProxy */;
+			remoteRef = 8447270A25A6299D0029777A /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
-		844726F825A626F20029777A /* ChartsTests.xctest */ = {
+		8447270D25A6299D0029777A /* ChartsTests.xctest */ = {
 			isa = PBXReferenceProxy;
 			fileType = wrapper.cfbundle;
 			path = ChartsTests.xctest;
-			remoteRef = 844726F725A626F20029777A /* PBXContainerItemProxy */;
+			remoteRef = 8447270C25A6299D0029777A /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
 /* End PBXReferenceProxy section */
