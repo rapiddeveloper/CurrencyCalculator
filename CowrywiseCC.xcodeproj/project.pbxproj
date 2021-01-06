@@ -16,6 +16,8 @@
 		84117FAD25A22F6500BE711B /* MontserratAlternates-Bold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 84117FA625A22F6500BE711B /* MontserratAlternates-Bold.ttf */; };
 		84117FAE25A22F6500BE711B /* MontserratAlternates-Light.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 84117FA725A22F6500BE711B /* MontserratAlternates-Light.ttf */; };
 		84117FB025A23CC000BE711B /* Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84117FAF25A23CC000BE711B /* Extensions.swift */; };
+		844726F925A6272D0029777A /* Charts.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 844726F625A626F20029777A /* Charts.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		844726FA25A627380029777A /* Charts.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 844726F625A626F20029777A /* Charts.framework */; };
 		8449DA48259B358100594B74 /* Alamofire in Frameworks */ = {isa = PBXBuildFile; productRef = 8449DA47259B358100594B74 /* Alamofire */; };
 		845CB01C25965A03000C31E9 /* MenuButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 845CB01B25965A03000C31E9 /* MenuButton.swift */; };
 		846E682F2588FB3E00C71DA6 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 846E682E2588FB3E00C71DA6 /* AppDelegate.swift */; };
@@ -65,6 +67,7 @@
 			dstPath = "";
 			dstSubfolderSpec = 10;
 			files = (
+				844726F925A6272D0029777A /* Charts.framework in Embed Frameworks */,
 			);
 			name = "Embed Frameworks";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -111,6 +114,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				844726FA25A627380029777A /* Charts.framework in Frameworks */,
 				8449DA48259B358100594B74 /* Alamofire in Frameworks */,
 				84B4F8D7258E0090001BDC81 /* KingfisherSwiftUI in Frameworks */,
 				84716F8E259F5A1B00A3CF22 /* ActivityIndicatorView in Frameworks */,
