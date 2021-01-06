@@ -44,7 +44,7 @@ class CustomTextField: UITextField {
 struct CurrencyTextField: UIViewRepresentable {
     
  
-    var textField = CustomTextField(frame: .zero) //UITextField(frame: .zero)
+    var textField = CustomTextField(frame: .zero)  
     @Binding var text: String
   
     var currencyPlaceHolder: String
@@ -81,12 +81,14 @@ struct CurrencyTextField: UIViewRepresentable {
         textField.font = UIFont.systemFont(ofSize: 24, weight: .bold)
         textField.backgroundColor = UIColor(named: "textfield")
         textField.delegate = context.coordinator
-        
+        textField.adjustsFontSizeToFitWidth = true
  
         return textField
     }
     
     func updateUIView(_ textView: UITextField, context: Context) {
+        
+         
         
         for subview in textView.subviews {
             if subview.tag ==  1 {
@@ -100,14 +102,14 @@ struct CurrencyTextField: UIViewRepresentable {
             textView.text = text
         } else {
             
+            //  UIColor.systemGray4
             textView.text = text
-            
             let result = text.split(separator: ".")
             let fractionalPart = result.count == 2 ? String(result[1]) : ""
             if fractionalPart.count > 3 {
                 let thirdCharFromEndIdx = 3
                 let attributedString = NSMutableAttributedString(string: fractionalPart)
-                attributedString.addAttribute(.foregroundColor, value: UIColor.systemGray4,
+                attributedString.setAttributes([NSAttributedString.Key.foregroundColor: UIColor.systemGray4],
                                               range: NSRange(location: thirdCharFromEndIdx,
                                                              length: fractionalPart.count - thirdCharFromEndIdx))
                 
@@ -115,6 +117,8 @@ struct CurrencyTextField: UIViewRepresentable {
                 attributedString0.append(attributedString)
                 textView.attributedText = attributedString0
             }
+            
+           
         }
         
     }
@@ -130,14 +134,52 @@ class CurrencyTextFieldCoordinator: NSObject, UITextFieldDelegate {
     var representable: CurrencyTextField
     
     init(representable: CurrencyTextField) {
+        
         self.representable = representable
     }
     
     func textFieldDidChangeSelection(_ textField: UITextField) {
+        
 
         if let userText = textField.text {
             representable.text = userText
         }
+    }
+    
+    
+    
+    func textFieldDidEndEditing(_ textField: UITextField) {
+             
+             guard let text = textField.text else { return }
+             
+            if representable.isResultDisplayed {
+               
+                let result = text.split(separator: ".")
+                let fractionalPart = result.count == 2 ? String(result[1]) : ""
+                
+                textField.textColor = .systemGray
+                textField.text = ""
+                if fractionalPart.count > 3 {
+                    let thirdCharFromEndIdx = 3
+                    let attributedString = NSMutableAttributedString(string: fractionalPart)
+                    
+                    attributedString.setAttributes([NSAttributedString.Key.foregroundColor: UIColor.systemGray4],
+                                                   range: NSRange(location: thirdCharFromEndIdx,
+                                                                  length: fractionalPart.count - thirdCharFromEndIdx))
+                    
+                    let wholePartWithPoint = String(result[0]) + "."
+                    textField.text = ""
+                    textField.attributedText = nil
+ 
+                    let attributedString0 = NSMutableAttributedString(string: wholePartWithPoint)
+                    
+                    attributedString0.append(attributedString)
+                    
+                    textField.attributedText = attributedString0
+                }
+          
+            }
+         
     }
     
      
@@ -164,6 +206,9 @@ class CurrencyTextFieldCoordinator: NSObject, UITextFieldDelegate {
         
        
     }*/
+    
+   
+    
     
  
 }

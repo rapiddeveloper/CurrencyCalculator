@@ -22,14 +22,13 @@ struct Home: View {
     //@ObservedObject var homeData = HomeData()
     @State var baseCurrencyAmt: String = "1"
     @State var targetCurrencyAmt: String = "0.0"
-    let inputFieldWidth: CGFloat = UIScreen.main.bounds.width * 0.75
     
                    
     
     var body: some View {
        
         return ScrollView {
-            Group {
+            
                 VStack {
                     HStack {
                         MenuButton(spacing: 5, lineWidth: 4, stroke: Color("PrimaryColor"))
@@ -56,9 +55,10 @@ struct Home: View {
                     }
                     .font(.custom("MontserratAlternates-Bold", size: 34))
                     .foregroundColor(Color("SecondaryColor"))
+                    .padding(.vertical, 48)
                     .frame(minWidth: 0, maxWidth: .infinity, alignment: .leading)
                     
-                    VStack {
+                    VStack(spacing: 16) {
                         //                    TextField("", text: $homeData.baseCurrencyAmt)
                         //                    TextField("", text: $homeData.targetCurrencyAmt)
                         
@@ -116,6 +116,7 @@ struct Home: View {
                         }
                         )
                     }
+                    .padding(.vertical, 32)
                     .frame(minWidth: 0, maxWidth: .infinity)
                     
                     Button(action: {
@@ -136,15 +137,19 @@ struct Home: View {
                         
                     }, label: {
                         Text("Convert")
-                         .font(.custom("MontserratAlternates-SemiBold", size: 17))
+                            .foregroundColor(.white)
+                            .font(.custom("MontserratAlternates-SemiBold", size: 17))
+                            .frame(minWidth: 0, maxWidth: .infinity)
+                            .frame(height: 48)
+                            .background(
+                                Color("PrimaryColor")
+                            )
+                             .cornerRadius(5)
                     })
-                    .frame(minWidth: 0, maxWidth: .infinity)
-                    .frame(height: 48)
-                        .background(Color.gray)
                     .disabled((baseCurrencyAmt == "" && targetCurrencyAmt == "") || baseCurrencyAmt == "")
                     
                     
-                    HStack(spacing: 16) {
+                    HStack(spacing: 32) {
                         Link(text: "Mid-market exchange rate at 13:38 UTC", destination: "", lineColor: .blue, textColor: .blue, lineWidth: 1.0)
                         Group {
                             Image(systemName: "info")
@@ -152,73 +157,79 @@ struct Home: View {
                                 .foregroundColor(.blue)
                                 .background(
                                     Circle()
-                                        .fill(Color.gray)
+                                        .fill(Color(UIColor.systemGray3))
                                         .frame(width: 18,height: 18)
                             )
                         }
                     }
+                    .padding(.vertical, 16)
                 }
                 .padding(16.0)
-                //.frame(minWidth: 0, maxWidth: .infinity)
-                //.padding(.horizontal, 32)
+            
                 RateTrend()
-                Spacer()
-            }
- 
-            .onReceive(appData.$conversionResult, perform: { value in
-              
-                // update amount to show result of conversion
-                var temp = ""
-                if let result = value {
-                    temp = String(format: "%.6f",  result)
-                }
-                
-                // select currency textfield to put result
-                if self.appData.conversionType == .baseToTarget {
-                    self.targetCurrencyAmt = temp
-                } else {
-                    self.baseCurrencyAmt = temp
-                }
-            })
-            .onReceive(appData.$exchangeName, perform: { value in
-              
-                let group = DispatchGroup()
-                let queue = DispatchQueue.global()
-               
-                self.appData.updateConversionInfo(newBaseCurrencyAmt: self.baseCurrencyAmt, newTargetCurrencyAmt: self.targetCurrencyAmt)
-                
-                group.enter()
-                queue.async(group: group, execute: {
-                    self.appData.loadConversionRate {
-                        if self.appData.rateNetworkStatus == .completed && self.appData.isRateAvailable {
-                            self.appData.convert(from: .baseToTarget)
-                        }
-                        else {
-                            self.targetCurrencyAmt = ""
-                            self.appData.updateConversionInfo(newBaseCurrencyAmt: self.baseCurrencyAmt, newTargetCurrencyAmt: self.targetCurrencyAmt)
-                        }
-                        group.leave()
-                    }
-                })
-                
-                group.enter()
-                queue.async(group: group, execute: {
-                    self.appData.loadRateTimeseries {
-                        group.leave()
-                    }
-                })
-                
-                group.notify(queue: .main, execute: {
-                    print("Tasks complete")
-                })
-            })
+            
+               // Spacer()
+           
+             
         }
+        .padding(.top, 56)
+        .edgesIgnoringSafeArea(.top)
+        .onReceive(appData.$conversionResult, perform: { value in
+          
+            // update amount to show result of conversion
+            var temp = ""
+            if let result = value {
+                temp = String(format: "%.6f",  result)
+            }
+            
+            // select currency textfield to put result
+            if self.appData.conversionType == .baseToTarget {
+                self.targetCurrencyAmt = temp
+            } else {
+                self.baseCurrencyAmt = temp
+            }
+        })
+        .onReceive(appData.$exchangeName, perform: { value in
+          
+            let group = DispatchGroup()
+            let queue = DispatchQueue.global()
+           
+            self.appData.updateConversionInfo(newBaseCurrencyAmt: self.baseCurrencyAmt, newTargetCurrencyAmt: self.targetCurrencyAmt)
+            
+            group.enter()
+            queue.async(group: group, execute: {
+                self.appData.loadConversionRate {
+                    if self.appData.rateNetworkStatus == .completed && self.appData.isRateAvailable {
+                        self.appData.convert(from: .baseToTarget)
+                    }
+                    else {
+                        self.targetCurrencyAmt = ""
+                        self.appData.updateConversionInfo(newBaseCurrencyAmt: self.baseCurrencyAmt, newTargetCurrencyAmt: self.targetCurrencyAmt)
+                    }
+                    group.leave()
+                }
+            })
+            
+            group.enter()
+            queue.async(group: group, execute: {
+                self.appData.loadRateTimeseries {
+                    group.leave()
+                }
+            })
+            
+            group.notify(queue: .main, execute: {
+                print("Tasks complete")
+            })
+        })
+        //.edgesIgnoringSafeArea(.all)
      }
 }
 
 struct Home_Previews: PreviewProvider {
     static var previews: some View {
-        Home().environmentObject(AppData())
+        NavigationView {
+            Home().environmentObject(AppData())
+        }
     }
 }
 
