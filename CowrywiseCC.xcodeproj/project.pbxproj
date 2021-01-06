@@ -30,8 +30,6 @@
 		847B326E258BBB9500C7C4F1 /* Home.swift in Sources */ = {isa = PBXBuildFile; fileRef = 847B326D258BBB9500C7C4F1 /* Home.swift */; };
 		847B3270258BCC2200C7C4F1 /* CurrencyBtn.swift in Sources */ = {isa = PBXBuildFile; fileRef = 847B326F258BCC2200C7C4F1 /* CurrencyBtn.swift */; };
 		847B3273258CD39300C7C4F1 /* CurrencyList.swift in Sources */ = {isa = PBXBuildFile; fileRef = 847B3272258CD39300C7C4F1 /* CurrencyList.swift */; };
-		848078F225A6334E0043DABD /* Charts.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 848078EE25A633190043DABD /* Charts.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
-		848078F325A633560043DABD /* Charts.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 848078EE25A633190043DABD /* Charts.framework */; };
 		84B4F8D7258E0090001BDC81 /* KingfisherSwiftUI in Frameworks */ = {isa = PBXBuildFile; productRef = 84B4F8D6258E0090001BDC81 /* KingfisherSwiftUI */; };
 		84B4F8D9258E3953001BDC81 /* LineChart.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84B4F8D8258E3953001BDC81 /* LineChart.swift */; };
 		84BDE5A825924D6200C0077B /* RateTrend.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84BDE5A725924D6200C0077B /* RateTrend.swift */; };
@@ -43,23 +41,6 @@
 		84FD468625952BE200202D1F /* CurrencyTextField.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84FD468525952BE200202D1F /* CurrencyTextField.swift */; };
 /* End PBXBuildFile section */
 
-/* Begin PBXContainerItemProxy section */
-		848078ED25A633190043DABD /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 848078E825A633190043DABD /* Charts.xcodeproj */;
-			proxyType = 2;
-			remoteGlobalIDString = 65AD9E95D9ED4DC0BD73A743;
-			remoteInfo = Charts;
-		};
-		848078EF25A633190043DABD /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 848078E825A633190043DABD /* Charts.xcodeproj */;
-			proxyType = 2;
-			remoteGlobalIDString = 1CBBC58C6CE1EBEE9852CE41;
-			remoteInfo = ChartsTests;
-		};
-/* End PBXContainerItemProxy section */
-
 /* Begin PBXCopyFilesBuildPhase section */
 		842E317225A630CE00629497 /* Embed Frameworks */ = {
 			isa = PBXCopyFilesBuildPhase;
@@ -67,7 +48,6 @@
 			dstPath = "";
 			dstSubfolderSpec = 10;
 			files = (
-				848078F225A6334E0043DABD /* Charts.framework in Embed Frameworks */,
 			);
 			name = "Embed Frameworks";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -98,7 +78,6 @@
 		847B326D258BBB9500C7C4F1 /* Home.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Home.swift; sourceTree = "<group>"; };
 		847B326F258BCC2200C7C4F1 /* CurrencyBtn.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CurrencyBtn.swift; sourceTree = "<group>"; };
 		847B3272258CD39300C7C4F1 /* CurrencyList.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CurrencyList.swift; sourceTree = "<group>"; };
-		848078E825A633190043DABD /* Charts.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = Charts.xcodeproj; path = "../../../../../Downloads/Charts-master/Charts.xcodeproj"; sourceTree = "<group>"; };
 		84B4F8D8258E3953001BDC81 /* LineChart.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LineChart.swift; sourceTree = "<group>"; };
 		84BDE5A725924D6200C0077B /* RateTrend.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RateTrend.swift; sourceTree = "<group>"; };
 		84D997CF25A5EC100004F203 /* ConversionInfo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConversionInfo.swift; sourceTree = "<group>"; };
@@ -114,7 +93,6 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				848078F325A633560043DABD /* Charts.framework in Frameworks */,
 				8449DA48259B358100594B74 /* Alamofire in Frameworks */,
 				84B4F8D7258E0090001BDC81 /* KingfisherSwiftUI in Frameworks */,
 				84716F8E259F5A1B00A3CF22 /* ActivityIndicatorView in Frameworks */,
@@ -159,7 +137,6 @@
 		846E682D2588FB3E00C71DA6 /* CowrywiseCC */ = {
 			isa = PBXGroup;
 			children = (
-				848078E825A633190043DABD /* Charts.xcodeproj */,
 				84117F9E25A22CE600BE711B /* Resources */,
 				847B3271258CD36D00C7C4F1 /* Currency */,
 				846E68442588FBD200C71DA6 /* Supporting Views */,
@@ -226,15 +203,6 @@
 				84716F91259F95DD00A3CF22 /* CurrenciesError.swift */,
 			);
 			path = Currency;
-			sourceTree = "<group>";
-		};
-		848078E925A633190043DABD /* Products */ = {
-			isa = PBXGroup;
-			children = (
-				848078EE25A633190043DABD /* Charts.framework */,
-				848078F025A633190043DABD /* ChartsTests.xctest */,
-			);
-			name = Products;
 			sourceTree = "<group>";
 		};
 		84B4F8DA258E39F0001BDC81 /* Source */ = {
@@ -308,35 +276,12 @@
 			);
 			productRefGroup = 846E682C2588FB3E00C71DA6 /* Products */;
 			projectDirPath = "";
-			projectReferences = (
-				{
-					ProductGroup = 848078E925A633190043DABD /* Products */;
-					ProjectRef = 848078E825A633190043DABD /* Charts.xcodeproj */;
-				},
-			);
 			projectRoot = "";
 			targets = (
 				846E682A2588FB3E00C71DA6 /* CowrywiseCC */,
 			);
 		};
 /* End PBXProject section */
-
-/* Begin PBXReferenceProxy section */
-		848078EE25A633190043DABD /* Charts.framework */ = {
-			isa = PBXReferenceProxy;
-			fileType = wrapper.framework;
-			path = Charts.framework;
-			remoteRef = 848078ED25A633190043DABD /* PBXContainerItemProxy */;
-			sourceTree = BUILT_PRODUCTS_DIR;
-		};
-		848078F025A633190043DABD /* ChartsTests.xctest */ = {
-			isa = PBXReferenceProxy;
-			fileType = wrapper.cfbundle;
-			path = ChartsTests.xctest;
-			remoteRef = 848078EF25A633190043DABD /* PBXContainerItemProxy */;
-			sourceTree = BUILT_PRODUCTS_DIR;
-		};
-/* End PBXReferenceProxy section */
 
 /* Begin PBXResourcesBuildPhase section */
 		846E68292588FB3E00C71DA6 /* Resources */ = {
@@ -517,6 +462,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_ENTITLEMENTS = CowrywiseCC/CowrywiseCC.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_ASSET_PATHS = "\"CowrywiseCC/Preview Content\"";
 				DEVELOPMENT_TEAM = WR7NNB87D5;
@@ -528,6 +474,7 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = dev.rapidi.CowrywiseCC;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SUPPORTS_MACCATALYST = NO;
 				SWIFT_VERSION = 4.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
@@ -537,6 +484,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_ENTITLEMENTS = CowrywiseCC/CowrywiseCC.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_ASSET_PATHS = "\"CowrywiseCC/Preview Content\"";
 				DEVELOPMENT_TEAM = WR7NNB87D5;
@@ -548,6 +496,7 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = dev.rapidi.CowrywiseCC;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SUPPORTS_MACCATALYST = NO;
 				SWIFT_VERSION = 4.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
