@@ -17,6 +17,8 @@
 		84117FAE25A22F6500BE711B /* MontserratAlternates-Light.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 84117FA725A22F6500BE711B /* MontserratAlternates-Light.ttf */; };
 		84117FB025A23CC000BE711B /* Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84117FAF25A23CC000BE711B /* Extensions.swift */; };
 		8449DA48259B358100594B74 /* Alamofire in Frameworks */ = {isa = PBXBuildFile; productRef = 8449DA47259B358100594B74 /* Alamofire */; };
+		845AF5FD25A64E1100AEB04A /* Charts.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 845AF5FA25A64D5E00AEB04A /* Charts.framework */; };
+		845AF5FE25A64E1100AEB04A /* Charts.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 845AF5FA25A64D5E00AEB04A /* Charts.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		845CB01C25965A03000C31E9 /* MenuButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 845CB01B25965A03000C31E9 /* MenuButton.swift */; };
 		846E682F2588FB3E00C71DA6 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 846E682E2588FB3E00C71DA6 /* AppDelegate.swift */; };
 		846E68312588FB3E00C71DA6 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 846E68302588FB3E00C71DA6 /* SceneDelegate.swift */; };
@@ -41,6 +43,23 @@
 		84FD468625952BE200202D1F /* CurrencyTextField.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84FD468525952BE200202D1F /* CurrencyTextField.swift */; };
 /* End PBXBuildFile section */
 
+/* Begin PBXContainerItemProxy section */
+		845AF5F925A64D5E00AEB04A /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 845AF5F425A64D5E00AEB04A /* Charts.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 65AD9E95D9ED4DC0BD73A743;
+			remoteInfo = Charts;
+		};
+		845AF5FB25A64D5E00AEB04A /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 845AF5F425A64D5E00AEB04A /* Charts.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 1CBBC58C6CE1EBEE9852CE41;
+			remoteInfo = ChartsTests;
+		};
+/* End PBXContainerItemProxy section */
+
 /* Begin PBXCopyFilesBuildPhase section */
 		842E317225A630CE00629497 /* Embed Frameworks */ = {
 			isa = PBXCopyFilesBuildPhase;
@@ -48,6 +67,7 @@
 			dstPath = "";
 			dstSubfolderSpec = 10;
 			files = (
+				845AF5FE25A64E1100AEB04A /* Charts.framework in Embed Frameworks */,
 			);
 			name = "Embed Frameworks";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -64,6 +84,7 @@
 		84117FA625A22F6500BE711B /* MontserratAlternates-Bold.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "MontserratAlternates-Bold.ttf"; sourceTree = "<group>"; };
 		84117FA725A22F6500BE711B /* MontserratAlternates-Light.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "MontserratAlternates-Light.ttf"; sourceTree = "<group>"; };
 		84117FAF25A23CC000BE711B /* Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Extensions.swift; sourceTree = "<group>"; };
+		845AF5F425A64D5E00AEB04A /* Charts.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = Charts.xcodeproj; path = "Charts-master/Charts.xcodeproj"; sourceTree = SOURCE_ROOT; };
 		845CB01B25965A03000C31E9 /* MenuButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MenuButton.swift; sourceTree = "<group>"; };
 		846E682B2588FB3E00C71DA6 /* CowrywiseCC.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = CowrywiseCC.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		846E682E2588FB3E00C71DA6 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -94,6 +115,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				8449DA48259B358100594B74 /* Alamofire in Frameworks */,
+				845AF5FD25A64E1100AEB04A /* Charts.framework in Frameworks */,
 				84B4F8D7258E0090001BDC81 /* KingfisherSwiftUI in Frameworks */,
 				84716F8E259F5A1B00A3CF22 /* ActivityIndicatorView in Frameworks */,
 			);
@@ -114,6 +136,15 @@
 				84117FA325A22F6500BE711B /* MontserratAlternates-Thin.ttf */,
 			);
 			path = Resources;
+			sourceTree = "<group>";
+		};
+		845AF5F525A64D5E00AEB04A /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				845AF5FA25A64D5E00AEB04A /* Charts.framework */,
+				845AF5FC25A64D5E00AEB04A /* ChartsTests.xctest */,
+			);
+			name = Products;
 			sourceTree = "<group>";
 		};
 		846E68222588FB3E00C71DA6 = {
@@ -137,6 +168,7 @@
 		846E682D2588FB3E00C71DA6 /* CowrywiseCC */ = {
 			isa = PBXGroup;
 			children = (
+				845AF5F425A64D5E00AEB04A /* Charts.xcodeproj */,
 				84117F9E25A22CE600BE711B /* Resources */,
 				847B3271258CD36D00C7C4F1 /* Currency */,
 				846E68442588FBD200C71DA6 /* Supporting Views */,
@@ -276,12 +308,35 @@
 			);
 			productRefGroup = 846E682C2588FB3E00C71DA6 /* Products */;
 			projectDirPath = "";
+			projectReferences = (
+				{
+					ProductGroup = 845AF5F525A64D5E00AEB04A /* Products */;
+					ProjectRef = 845AF5F425A64D5E00AEB04A /* Charts.xcodeproj */;
+				},
+			);
 			projectRoot = "";
 			targets = (
 				846E682A2588FB3E00C71DA6 /* CowrywiseCC */,
 			);
 		};
 /* End PBXProject section */
+
+/* Begin PBXReferenceProxy section */
+		845AF5FA25A64D5E00AEB04A /* Charts.framework */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.framework;
+			path = Charts.framework;
+			remoteRef = 845AF5F925A64D5E00AEB04A /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		845AF5FC25A64D5E00AEB04A /* ChartsTests.xctest */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.cfbundle;
+			path = ChartsTests.xctest;
+			remoteRef = 845AF5FB25A64D5E00AEB04A /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+/* End PBXReferenceProxy section */
 
 /* Begin PBXResourcesBuildPhase section */
 		846E68292588FB3E00C71DA6 /* Resources */ = {
