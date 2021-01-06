@@ -16,8 +16,6 @@
 		84117FAD25A22F6500BE711B /* MontserratAlternates-Bold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 84117FA625A22F6500BE711B /* MontserratAlternates-Bold.ttf */; };
 		84117FAE25A22F6500BE711B /* MontserratAlternates-Light.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 84117FA725A22F6500BE711B /* MontserratAlternates-Light.ttf */; };
 		84117FB025A23CC000BE711B /* Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84117FAF25A23CC000BE711B /* Extensions.swift */; };
-		8420E6DF25A621DE000E1016 /* Charts.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 8420E6DC25A621AB000E1016 /* Charts.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
-		8420E6E025A6223C000E1016 /* Charts.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8420E6DC25A621AB000E1016 /* Charts.framework */; };
 		8449DA48259B358100594B74 /* Alamofire in Frameworks */ = {isa = PBXBuildFile; productRef = 8449DA47259B358100594B74 /* Alamofire */; };
 		845CB01C25965A03000C31E9 /* MenuButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 845CB01B25965A03000C31E9 /* MenuButton.swift */; };
 		846E682F2588FB3E00C71DA6 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 846E682E2588FB3E00C71DA6 /* AppDelegate.swift */; };
@@ -44,16 +42,16 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
-		8420E6DB25A621AB000E1016 /* PBXContainerItemProxy */ = {
+		844726F525A626F20029777A /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
-			containerPortal = 8420E6D625A621AB000E1016 /* Charts.xcodeproj */;
+			containerPortal = 844726F025A626F20029777A /* Charts.xcodeproj */;
 			proxyType = 2;
 			remoteGlobalIDString = 65AD9E95D9ED4DC0BD73A743;
 			remoteInfo = Charts;
 		};
-		8420E6DD25A621AB000E1016 /* PBXContainerItemProxy */ = {
+		844726F725A626F20029777A /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
-			containerPortal = 8420E6D625A621AB000E1016 /* Charts.xcodeproj */;
+			containerPortal = 844726F025A626F20029777A /* Charts.xcodeproj */;
 			proxyType = 2;
 			remoteGlobalIDString = 1CBBC58C6CE1EBEE9852CE41;
 			remoteInfo = ChartsTests;
@@ -67,7 +65,6 @@
 			dstPath = "";
 			dstSubfolderSpec = 10;
 			files = (
-				8420E6DF25A621DE000E1016 /* Charts.framework in Embed Frameworks */,
 			);
 			name = "Embed Frameworks";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -84,7 +81,7 @@
 		84117FA625A22F6500BE711B /* MontserratAlternates-Bold.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "MontserratAlternates-Bold.ttf"; sourceTree = "<group>"; };
 		84117FA725A22F6500BE711B /* MontserratAlternates-Light.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "MontserratAlternates-Light.ttf"; sourceTree = "<group>"; };
 		84117FAF25A23CC000BE711B /* Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Extensions.swift; sourceTree = "<group>"; };
-		8420E6D625A621AB000E1016 /* Charts.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = Charts.xcodeproj; path = "../../../../Downloads/Charts-master/Charts.xcodeproj"; sourceTree = "<group>"; };
+		844726F025A626F20029777A /* Charts.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; path = Charts.xcodeproj; sourceTree = "<group>"; };
 		845CB01B25965A03000C31E9 /* MenuButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MenuButton.swift; sourceTree = "<group>"; };
 		846E682B2588FB3E00C71DA6 /* CowrywiseCC.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = CowrywiseCC.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		846E682E2588FB3E00C71DA6 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -114,7 +111,6 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				8420E6E025A6223C000E1016 /* Charts.framework in Frameworks */,
 				8449DA48259B358100594B74 /* Alamofire in Frameworks */,
 				84B4F8D7258E0090001BDC81 /* KingfisherSwiftUI in Frameworks */,
 				84716F8E259F5A1B00A3CF22 /* ActivityIndicatorView in Frameworks */,
@@ -138,11 +134,11 @@
 			path = Resources;
 			sourceTree = "<group>";
 		};
-		8420E6D725A621AB000E1016 /* Products */ = {
+		844726F125A626F20029777A /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				8420E6DC25A621AB000E1016 /* Charts.framework */,
-				8420E6DE25A621AB000E1016 /* ChartsTests.xctest */,
+				844726F625A626F20029777A /* Charts.framework */,
+				844726F825A626F20029777A /* ChartsTests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -150,7 +146,7 @@
 		846E68222588FB3E00C71DA6 = {
 			isa = PBXGroup;
 			children = (
-				8420E6D625A621AB000E1016 /* Charts.xcodeproj */,
+				844726F025A626F20029777A /* Charts.xcodeproj */,
 				84B4F8DA258E39F0001BDC81 /* Source */,
 				846E682D2588FB3E00C71DA6 /* CowrywiseCC */,
 				846E682C2588FB3E00C71DA6 /* Products */,
@@ -310,8 +306,8 @@
 			projectDirPath = "";
 			projectReferences = (
 				{
-					ProductGroup = 8420E6D725A621AB000E1016 /* Products */;
-					ProjectRef = 8420E6D625A621AB000E1016 /* Charts.xcodeproj */;
+					ProductGroup = 844726F125A626F20029777A /* Products */;
+					ProjectRef = 844726F025A626F20029777A /* Charts.xcodeproj */;
 				},
 			);
 			projectRoot = "";
@@ -322,18 +318,18 @@
 /* End PBXProject section */
 
 /* Begin PBXReferenceProxy section */
-		8420E6DC25A621AB000E1016 /* Charts.framework */ = {
+		844726F625A626F20029777A /* Charts.framework */ = {
 			isa = PBXReferenceProxy;
 			fileType = wrapper.framework;
 			path = Charts.framework;
-			remoteRef = 8420E6DB25A621AB000E1016 /* PBXContainerItemProxy */;
+			remoteRef = 844726F525A626F20029777A /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
-		8420E6DE25A621AB000E1016 /* ChartsTests.xctest */ = {
+		844726F825A626F20029777A /* ChartsTests.xctest */ = {
 			isa = PBXReferenceProxy;
 			fileType = wrapper.cfbundle;
 			path = ChartsTests.xctest;
-			remoteRef = 8420E6DD25A621AB000E1016 /* PBXContainerItemProxy */;
+			remoteRef = 844726F725A626F20029777A /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
 /* End PBXReferenceProxy section */
