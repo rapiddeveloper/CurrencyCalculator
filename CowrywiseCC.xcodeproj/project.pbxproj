@@ -58,6 +58,20 @@
 			remoteGlobalIDString = 1CBBC58C6CE1EBEE9852CE41;
 			remoteInfo = ChartsTests;
 		};
+		84D997DE25A618EF0004F203 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 84D997D925A618EF0004F203 /* Charts.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 65AD9E95D9ED4DC0BD73A743;
+			remoteInfo = Charts;
+		};
+		84D997E025A618EF0004F203 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 84D997D925A618EF0004F203 /* Charts.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 1CBBC58C6CE1EBEE9852CE41;
+			remoteInfo = ChartsTests;
+		};
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -104,6 +118,7 @@
 		84D997CF25A5EC100004F203 /* ConversionInfo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConversionInfo.swift; sourceTree = "<group>"; };
 		84D997D125A5EE170004F203 /* ErrorInfo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ErrorInfo.swift; sourceTree = "<group>"; };
 		84D997D325A5EFCE0004F203 /* Responses.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Responses.swift; sourceTree = "<group>"; };
+		84D997D925A618EF0004F203 /* Charts.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = Charts.xcodeproj; path = "../../../../Downloads/Charts-master/Charts.xcodeproj"; sourceTree = "<group>"; };
 		84FD467D2594D29900202D1F /* Link.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Link.swift; sourceTree = "<group>"; };
 		84FD4681259521F700202D1F /* Line.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Line.swift; sourceTree = "<group>"; };
 		84FD468525952BE200202D1F /* CurrencyTextField.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CurrencyTextField.swift; sourceTree = "<group>"; };
@@ -141,6 +156,7 @@
 		846E68222588FB3E00C71DA6 = {
 			isa = PBXGroup;
 			children = (
+				84D997D925A618EF0004F203 /* Charts.xcodeproj */,
 				84B4F8DA258E39F0001BDC81 /* Source */,
 				846E682D2588FB3E00C71DA6 /* CowrywiseCC */,
 				846E682C2588FB3E00C71DA6 /* Products */,
@@ -251,6 +267,15 @@
 			name = Frameworks;
 			sourceTree = "<group>";
 		};
+		84D997DA25A618EF0004F203 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				84D997DF25A618EF0004F203 /* Charts.framework */,
+				84D997E125A618EF0004F203 /* ChartsTests.xctest */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -310,6 +335,10 @@
 			projectDirPath = "";
 			projectReferences = (
 				{
+					ProductGroup = 84D997DA25A618EF0004F203 /* Products */;
+					ProjectRef = 84D997D925A618EF0004F203 /* Charts.xcodeproj */;
+				},
+				{
 					ProductGroup = 84B4F8DD258E3AAD001BDC81 /* Products */;
 					ProjectRef = 84B4F8DC258E3AAD001BDC81 /* Charts.xcodeproj */;
 				},
@@ -334,6 +363,20 @@
 			fileType = wrapper.cfbundle;
 			path = ChartsTests.xctest;
 			remoteRef = 84B4F8E3258E3AAD001BDC81 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		84D997DF25A618EF0004F203 /* Charts.framework */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.framework;
+			path = Charts.framework;
+			remoteRef = 84D997DE25A618EF0004F203 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		84D997E125A618EF0004F203 /* ChartsTests.xctest */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.cfbundle;
+			path = ChartsTests.xctest;
+			remoteRef = 84D997E025A618EF0004F203 /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
 /* End PBXReferenceProxy section */
