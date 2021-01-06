@@ -6,6 +6,7 @@
 //  Copyright © 2021 rapid interactive. All rights reserved.
 //
 
+/*
 import Foundation
 import UIKit
 
@@ -17,4 +18,4 @@ extension UIFont {
      convenience init?(fontStyle: FontStyle, size: CGFloat) {
         self.init(name: fontStyle.rawValue, size: size)
     }
-}
+}*/

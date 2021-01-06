@@ -12,6 +12,7 @@ import SwiftUI
 import ActivityIndicatorView
 
 struct CurrencyList: View {
+    
     @EnvironmentObject var appData: AppData
     @State private var tempSelectedCurrency: String = ""
     @Environment(\.presentationMode) var presentationMode
@@ -42,11 +43,14 @@ struct CurrencyList: View {
                 })
             }
             .padding()
+            
             if self.appData.currenciesNetworkStatus == .pending {
+                
                 ActivityIndicatorView(isVisible: showLoadingIndicator, type: .default)
                     .frame(width: 32.0, height: 32.0)
                     .foregroundColor(.gray)
                 Spacer()
+                
             } else if appData.currenciesNetworkStatus == .failed {
                 CurrenciesError(msg: self.appData.error.message)
             } else if appData.currenciesNetworkStatus == .completed &&
@@ -104,6 +108,7 @@ struct CurrencyList: View {
         return [CurrencyType.base: newBaseCurrency, CurrencyType.target: newTargetCurrency]
     }
     
+    /*
     func getNewCurrenciesTester() {
         
         /* should return base currency with target currency swapped when baseCurrency is selected
@@ -130,7 +135,7 @@ struct CurrencyList: View {
            newCurrencies[CurrencyType.target] == "EUR"{
             print("currencies swapped")
         }
-    }
+    }*/
     
      
 }

@@ -7,7 +7,7 @@
 /*
  Abstract: A view that shows a timeseries chart of the forex rate of
  1 unit for the selected base currency. The chart also shows an active dot and a tooltip
- whenever a user tap on any point on the line
+ whenever a user taps on any point on the line
  */
 
 import SwiftUI
@@ -32,7 +32,6 @@ struct RateTrend: View {
     @State private var pos: CGPoint = .zero
     @State private var x: String = ""   // x value at the position
     @State private var y: String = ""   //  y value at the position
-    //@State private var showLoadingIndicator = true
     
     var showLoadingIndicator: Binding<Bool> {
               Binding(get: {
@@ -42,6 +41,7 @@ struct RateTrend: View {
                     self.appData.timeseriesNetworkStatus =  $0 ? .pending : .completed
               })
     }
+    
     // active dot dimensions
     let dotWidth: CGFloat = 8
     let dotHeight: CGFloat = 8
@@ -56,7 +56,7 @@ struct RateTrend: View {
         var y: CGFloat = 0
        
         if pos.x > 0 {
-            x = pos.x// - (dotWidth * 0.25)
+            x = pos.x
         } else {
             x = pos.x
         }
@@ -100,17 +100,19 @@ struct RateTrend: View {
         let tooltipFlipped = shouldFlipTooltip()
         
         return VStack {
+            
+                // mode buttons
                 HStack {
                     Button(action: {
                         self.pos = .zero
                         self.appData.updateConversionInfo(mode: 0)
-                        self.appData.loadRateTimeseries(completion: {})
+                        self.appData.loadRateTimeseries()
                         
                     }, label: {
                         VStack(alignment: .center, spacing: 8) {
                             Text("30 Days Past")
                                 .fontWeight(.medium)
-                                .foregroundColor(mode == 0 ? Color.white : Color.gray)
+                                .foregroundColor(mode == 0 ? Color.white : Color("inactiveModeColor"))
                             Circle()
                                 .fill(mode == 0 ? Color.green : Color.clear)
                                 .frame(width: 10, height: 10)
@@ -120,12 +122,12 @@ struct RateTrend: View {
                     Button(action: {
                         self.pos = .zero
                         self.appData.updateConversionInfo(mode: 1)
-                        self.appData.loadRateTimeseries(completion: {})
+                        self.appData.loadRateTimeseries()
                     }, label: {
                         VStack(alignment: .center, spacing: 8) {
                             Text("90 Days Past")
                                 .fontWeight(.medium)
-                                .foregroundColor(mode == 1 ? Color.white : Color.gray)
+                                .foregroundColor(mode == 1 ? Color.white : Color("inactiveModeColor"))
                             Circle()
                                 .fill(mode == 1 ? Color.green : Color.clear)
                                 .frame(width: 10, height: 10)
@@ -134,7 +136,8 @@ struct RateTrend: View {
                 }
                 .padding(.horizontal, 32)
                 .padding(.vertical, 32)
-            
+                
+                // select view according to network status
                 if showLoadingIndicator.wrappedValue {
                     ActivityIndicatorView(isVisible: showLoadingIndicator, type: .default)
                         .frame(width: 32.0, height: 32.0)
@@ -156,7 +159,7 @@ struct RateTrend: View {
                         .overlay (
                             GeometryReader { proxy in
                                 if self.pos != .zero {
-                                    Tooltip(x: self.x, y: self.tooltipBaseInfo, cornerRadius: 10, fill: .green, isFlipped: tooltipFlipped)
+                                    Tooltip(x: self.x, y: self.tooltipBaseInfo, cornerRadius: 10, fill: Color("primaryColor"), isFlipped: tooltipFlipped)
                                         .position(self.tooltipPos)
                                         .offset(x: tooltipFlipped ? -140 : 0, y: 0)
                                     Group {

@@ -26,7 +26,7 @@ struct Link: View {
             }
          }) {
              Text(text)
-                .font(.caption)
+                .font(.subheadline)
                  .foregroundColor(textColor)
                  .background(
                      GeometryReader { proxy in

@@ -12,7 +12,9 @@
 //
 //  Created by Admin on 11/2/20.
 //  Copyright © 2020 rapid interactive. All rights reserved.
-//
+/*
+ Abstract: A view that allows a user to input an amount of money
+ */
 
 import Foundation
 import UIKit
@@ -41,6 +43,7 @@ class CustomTextField: UITextField {
     }
 }
 
+/// A view that allows a user to input an amount of money
 struct CurrencyTextField: UIViewRepresentable {
     
  
@@ -51,7 +54,7 @@ struct CurrencyTextField: UIViewRepresentable {
   
     var isResultDisplayed: Bool
      
-    var onCommit: () -> ()
+    var onCommit: () -> () = {}
     
      func makeUIView(context: Context) -> UITextField {
         
@@ -67,7 +70,8 @@ struct CurrencyTextField: UIViewRepresentable {
             attributedString.addAttribute(.kern, value: 2.0, range: NSRange(location: 0, length: attributedString.length))
             label.attributedText = attributedString
         }
-    
+        
+        
         textField.setContentCompressionResistancePriority(.defaultLow, for: .horizontal)
         
         textField.keyboardType = .numberPad
@@ -88,8 +92,6 @@ struct CurrencyTextField: UIViewRepresentable {
     
     func updateUIView(_ textView: UITextField, context: Context) {
         
-         
-        
         for subview in textView.subviews {
             if subview.tag ==  1 {
                 if let label = subview as? UILabel {
@@ -101,8 +103,6 @@ struct CurrencyTextField: UIViewRepresentable {
         if !isResultDisplayed {
             textView.text = text
         } else {
-            
-            //  UIColor.systemGray4
             textView.text = text
             let result = text.split(separator: ".")
             let fractionalPart = result.count == 2 ? String(result[1]) : ""
@@ -110,15 +110,13 @@ struct CurrencyTextField: UIViewRepresentable {
                 let thirdCharFromEndIdx = 3
                 let attributedString = NSMutableAttributedString(string: fractionalPart)
                 attributedString.setAttributes([NSAttributedString.Key.foregroundColor: UIColor.systemGray4],
-                                              range: NSRange(location: thirdCharFromEndIdx,
-                                                             length: fractionalPart.count - thirdCharFromEndIdx))
+                                               range: NSRange(location: thirdCharFromEndIdx,
+                                                              length: fractionalPart.count - thirdCharFromEndIdx))
                 
                 let attributedString0 = NSMutableAttributedString(string: String(result[0])+".")
                 attributedString0.append(attributedString)
                 textView.attributedText = attributedString0
             }
-            
-           
         }
         
     }
@@ -134,82 +132,50 @@ class CurrencyTextFieldCoordinator: NSObject, UITextFieldDelegate {
     var representable: CurrencyTextField
     
     init(representable: CurrencyTextField) {
-        
         self.representable = representable
     }
     
     func textFieldDidChangeSelection(_ textField: UITextField) {
         
-
         if let userText = textField.text {
             representable.text = userText
         }
     }
     
-    
-    
     func textFieldDidEndEditing(_ textField: UITextField) {
-             
-             guard let text = textField.text else { return }
-             
-            if representable.isResultDisplayed {
-               
-                let result = text.split(separator: ".")
-                let fractionalPart = result.count == 2 ? String(result[1]) : ""
-                
-                textField.textColor = .systemGray
-                textField.text = ""
-                if fractionalPart.count > 3 {
-                    let thirdCharFromEndIdx = 3
-                    let attributedString = NSMutableAttributedString(string: fractionalPart)
-                    
-                    attributedString.setAttributes([NSAttributedString.Key.foregroundColor: UIColor.systemGray4],
-                                                   range: NSRange(location: thirdCharFromEndIdx,
-                                                                  length: fractionalPart.count - thirdCharFromEndIdx))
-                    
-                    let wholePartWithPoint = String(result[0]) + "."
-                    textField.text = ""
-                    textField.attributedText = nil
- 
-                    let attributedString0 = NSMutableAttributedString(string: wholePartWithPoint)
-                    
-                    attributedString0.append(attributedString)
-                    
-                    textField.attributedText = attributedString0
-                }
-          
-            }
-         
-    }
-    
-     
-    
-    
-    /*
-    func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
-         if let userText = textField.text {
-                    representable.text = userText
-                }
-        return true
-        /*
-        // get the current text, or use an empty string if that failed
-        let currentText = textField.text ?? ""
-
-        // attempt to read the range they are trying to change, or exit if we can't
-        guard let stringRange = Range(range, in: currentText) else { return false }
-
-        // add their new text to the existing text
-        let updatedText = currentText.replacingCharacters(in: stringRange, with: string)
-
-        // make sure the result is under 16 characters
-          return updatedText.count <= 9*/
         
-       
-    }*/
-    
-   
-    
-    
+        guard let text = textField.text else { return }
+        
+        if representable.isResultDisplayed {
+            
+            textField.textColor = .systemGray
+            textField.text = ""
+            
+            let result = text.split(separator: ".")
+            let fractionalPart = result.count == 2 ? String(result[1]) : ""
+           
+            if fractionalPart.count > 3 {
+                let thirdCharFromEndIdx = 3
+                let attributedString = NSMutableAttributedString(string: fractionalPart)
+                
+                attributedString.setAttributes([NSAttributedString.Key.foregroundColor: UIColor.systemGray4],
+                                               range: NSRange(location: thirdCharFromEndIdx,
+                                                              length: fractionalPart.count - thirdCharFromEndIdx))
+                
+                let wholePartWithPoint = String(result[0]) + "."
+                textField.text = ""
+                textField.attributedText = nil
+                
+                let attributedString0 = NSMutableAttributedString(string: wholePartWithPoint)
+                
+                attributedString0.append(attributedString)
+                
+                textField.attributedText = attributedString0
+            }
+            
+        }
+        
+    }
  
 }
 

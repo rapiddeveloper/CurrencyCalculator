@@ -4,7 +4,9 @@
 //
 //  Created by Admin on 12/15/20.
 //  Copyright © 2020 rapid interactive. All rights reserved.
-//
+/*
+ Abstract: A model that encapsulates data that pertains to the app 
+ */
 
 import Foundation
 import Combine
@@ -35,6 +37,7 @@ enum ErrorType: String {
     case currencies = "currencies"
 }
 
+/*
 enum RateError: Int {
     
     case code104 = 104
@@ -42,214 +45,13 @@ enum RateError: Int {
     case code102 = 102
     case code201 = 201
     
-}
-
-
-struct RateResponse: Codable {
-    var success: Bool
-    var timestamp: Double
-    var historical: Bool
-    var base: String
-    var date: String
-    var rates: [String: Double]
- }
-
-struct ErrorInfo: Codable {
-    var code: Int
-    var type: String
-}
-
-struct ResponseSuccess: Codable {
-    var success: Bool 
-}
-
-struct FailureResponse: Codable {
-    var success: Bool
-    var error: ErrorInfo
-}
-
-struct ErrorViewModel {
-    
-    var error: ErrorInfo
-   // var networkError: Error?
-    var type: ErrorType
-    
-    var message: String {
-        var msg = ""
-        switch type {
-            case .rate:
-                 let temp = error.type.replacingOccurrences(of: "_", with: " ")
-                 msg = temp.capitalized
-            case .timeseries:
-                 msg = "No results available"
-            case .networkFailure:
-                 msg = "Cuurency Converter seems to be offline"
-            case .currencies:
-                        let temp = error.type.replacingOccurrences(of: "_", with: " ")
-                        msg = temp.capitalized
-           
-        }
-       
-        return msg
-    }
-    
-    var title: String {
-        
-        var title = ""
-        
-        switch type {
-            case .rate:
-                 title = "Conversion Rate Unavailable"
-            case .timeseries:
-                title = "Timeseries Unavailable"
-            case .networkFailure:
-                title = "Network Failure"
-            case .currencies:
-                title = "Currencies Unavailable"
-          
-        }
-        
-        return title
-    }
-    
-    
-}
-
-struct CurrenciesResponse: Codable {
-   var success: Bool
-   var symbols: [String:String]
-}
-
-struct TimeseriesResponse: Codable {
-   var motd: [String:String]
-   var success: Bool
-   var timeseries: Bool
-   var base: String
-   var start_date: String
-   var end_date: String
-   var rates: [String: [String:Double]]
-}
+}*/
 
 struct Flag: Codable {
     var flag: String
 }
 
-struct Rate {
-    var date: Double
-    var value: Double
-}
 
- 
-
-struct ConversionInfo {
-    var baseCurrencyAmt: Double?
-    var targetCurrencyAmt: Double?
-    var baseCurrency: String
-    var targetCurrency: String
-    var currencies: [(String,String)]?
-    var rate: [String: Double]?
-    var targetCurrencyFlag: String?
-    var baseCurrencyFlag: String?
-    var rates: [String: [String:Double]]?
-    var mode: Int
-    var pos: CGPoint
-}
-
-struct ConversionInfoViewModel {
-    
-    var conversionInfo: ConversionInfo
-    
-    
-    var baseCurrencyAmount: String {
-        if let amt = conversionInfo.baseCurrencyAmt {
-            return String(amt)
-        } else {
-            return ""
-        }
-    }
-    
-    var targetCurrencyAmount: String {
-        if let amt = conversionInfo.targetCurrencyAmt {
-            return String(amt)
-        } else {
-            return ""
-        }
-    }
-    
-    var baseCurrency: String {
-        String(conversionInfo.baseCurrency.uppercased())
-    }
-    
-    var targetCurrency: String {
-        String(conversionInfo.targetCurrency.uppercased())
-    }
-    
-    var currencies: [String] {
-        
-        var currencies: [String] = []
-        
-        if let currencyCodesAndNames = conversionInfo.currencies {
-           // currencies = currencyCodesAndNames.map({"\($0.0) - \($0.1)"})
-             currencies = currencyCodesAndNames.map({"\($0.0)"})
-        }
-        
-        return currencies
-    }
-    
-    var timeframeMode: Int {
-        conversionInfo.mode
-    }
-    
-    var tooltipPos: CGPoint {
-        get {
-             conversionInfo.pos
-        }
-        
-        set {
-            conversionInfo.pos = newValue
-        }
-    }
-    
-    var entries: [ChartDataEntry] {
-        
-            let formatter = DateFormatter()
-            formatter.dateStyle = .short
-            formatter.timeStyle = .none
-            formatter.dateFormat = "yyyy-MM-dd"
-            
-            var ratelist = [ChartDataEntry]()
-            
-            if let rates = conversionInfo.rates {
-                let dateKeys = Array(rates.keys)
-                for dateKey in dateKeys {
-                    if let rate = rates[dateKey],
-                        let rateValue = rate[conversionInfo.targetCurrency],
-                        let date = formatter.date(from: dateKey) {
-                        ratelist.append(ChartDataEntry(x: date.timeIntervalSince1970, y: rateValue))
-                    }
-                }
-                ratelist.sort(by: {$0.x < $1.x})
-              
-            }
-        
-            return ratelist
-        }
-    
-    var rate: String {
-        var result = ""
-        
-        if let rate = conversionInfo.rate, let rateValue = rate[targetCurrency] {
-            result = String(rateValue)
-        }
-        return result
-    }
-    
-  }
-       
-
-enum ConversionErrors: Error {
-    case divisionByZero
-}
 
 class AppData: ObservableObject {
     
@@ -266,9 +68,7 @@ class AppData: ObservableObject {
     @Published var errorMsgDisplayed = false
     @Published var error: ErrorViewModel = ErrorViewModel(
                                                             error: ErrorInfo(code: 0, type: ""),
-                                                          //  networkError: Error,
                                                             type: .rate
-                                                          
                                                         )
     @Published var currenciesErrorDisplayed = false
 
@@ -276,7 +76,6 @@ class AppData: ObservableObject {
     var ratePublisher: AnyCancellable?
     var conversionType: ConversionType = .baseToTarget
    
-   // let APIKey = "1d4bb84c085abdc2dd12645046fb3ab3" //"9e01c5fa47031db88531e4fb4bffa919"
     let timeSeriesEndpoint = "timeseries"
     let currenciesEndpoint = "symbols"
     var currenciesURL = "" 
@@ -284,10 +83,6 @@ class AppData: ObservableObject {
     var isOffline = false
     
     var APIKey = ""
-    
-    var showHomescreen: Bool {
-        currenciesNetworkStatus == .completed
-    }
     
     
     var baseCurrencyFlagURL: String {
@@ -347,22 +142,16 @@ class AppData: ObservableObject {
         let plistFilename = "FIXER-Info"
         let plistKey = "FIXER-APIKEY"
         
-        APIKey = loadApiKey(plistKey: plistKey, plistFilename: plistFilename)
+        APIKey = loadAPIKey(plistKey: plistKey, plistFilename: plistFilename)
         
         currenciesURL = "http://data.fixer.io/api/\(currenciesEndpoint)?access_key=\(APIKey)"
         self.conversionInfo = ConversionInfoViewModel(conversionInfo: ConversionInfo(baseCurrencyAmt: 0, targetCurrencyAmt: 0, baseCurrency: "EUR", targetCurrency: "NGN", rate: nil, mode: 0, pos: .zero))
         
-        loadCurrencies(completion: {})
-        
-        
-        
+        loadCurrencies()
     }
     
-//    func setErrorMsg(errorCode: RateError)  {
-//         errorMsg = "The only supported base currency is Euro (EUR)"
-//    }
-    
-    func loadCurrencies(completion: @escaping ()->()) {
+    ///  Fetches currencies from the currencies url and execute the completion handler
+    func loadCurrencies(completion: @escaping ()->() = {}) {
         
         DispatchQueue.main.async {
             self.currenciesNetworkStatus = .pending
@@ -397,7 +186,7 @@ class AppData: ObservableObject {
         errorMsgDisplayed.toggle()
     }
     
-    func loadApiKey(plistKey: String, plistFilename: String) -> String {
+    func loadAPIKey(plistKey: String, plistFilename: String) -> String {
         
         guard let filePath = Bundle.main.path(forResource: plistFilename , ofType: "plist") else {
             fatalError("File \(plistFilename) does not exist")
@@ -410,12 +199,9 @@ class AppData: ObservableObject {
         
         return value
     }
-    
-    
-    
      
     ///  Fetches timeseries of an exchange rate using the timeseries url and execute the completion handler
-    func loadRateTimeseries(completion: @escaping ()->()) {
+    func loadRateTimeseries(completion: @escaping ()->() = {}) {
         
         DispatchQueue.main.async {
             self.timeseriesNetworkStatus = .pending
@@ -478,14 +264,9 @@ class AppData: ObservableObject {
         }
     }
     
-    
-     
-    
-    
+    // The following methods update properties of the conversion view model
     
     func updateConversionInfo(newBaseCurrencyAmt: String, newTargetCurrencyAmt: String) {
-        
-    
         
         // validation
         if let baseAmt = Double(newBaseCurrencyAmt), baseAmt >= 0 {
@@ -536,7 +317,7 @@ class AppData: ObservableObject {
     /*
      performs a conversion given a conversion type and updates the corresponding currency amount
      e.g .baseToTarget converts baseCurrencyAmount from base currency to target currency and updates the targetCurrencyAmount
-     of conversionInfo
+     of conversionInfo model
      */
     func convert(from conversionType: ConversionType) {
         
@@ -554,18 +335,6 @@ class AppData: ObservableObject {
             conversionInfo.conversionInfo.baseCurrencyAmt = targetAmt / exchangeRate
             conversionResult = targetAmt / exchangeRate
         }
-    }
-    
-    
-    func convertAmount(conversionType: ConversionType) {
-        loadConversionRate {
-             self.convert(from: conversionType)
-        }
-//        do {
-//            try convert(from: conversionType)
-//        } catch {
-//            <#statements#>
-//        }
     }
     
     
@@ -596,6 +365,8 @@ class AppData: ObservableObject {
            }
        }
     
+    // The following methods update properties of the Error view model
+    
     /// updates error view model with error from rate conversion endpoint
     func updateError(newRateError: ErrorInfo) {
         error.type = .rate
@@ -614,8 +385,6 @@ class AppData: ObservableObject {
     func isErrorAlertDisplayed()->Bool {
        return errorMsgDisplayed
     }
-    
-  
  
     
     /*
