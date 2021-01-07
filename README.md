@@ -4,7 +4,7 @@ A Currency Calculator developed with SwiftUI, UIkit and iOS charts using the MVV
 <strong>Note:<strong> Xcode has issues with submodules,so the charts framework has to be cloned manually from the terminal after cloning this repo:
  <ul>
    <li>From your terminal cd into the Submodules directory</li>
-   <li>run <code>git submodule update --init --recursive<code></li>
+   <li>run <code>git submodule update --init --recursive</code></li>
    <li>Clean build Folder if any error about the chart framework occurs(Go To Product Menu in toolbar > Select Clean Build Folder)</li>
    <li>Build and Run Project</li>
  </ul>
