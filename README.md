@@ -5,6 +5,8 @@ A Currency Calculator developed with SwiftUI, UIkit and iOS charts using the MVV
  <ul>
    <li>From your terminal cd into the Submodules directory</li>
    <li>run <code>git submodule update --init --recursive<code></li>
+   <li>Clean build Folder if any error about the chart framework occurs(Go To Product Menu in toolbar > Select Clean Build Folder)</li>
+   <li>Build and Run Project</li>
  </ul>
  <br>
  <br>
