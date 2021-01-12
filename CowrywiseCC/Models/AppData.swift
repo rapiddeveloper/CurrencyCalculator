@@ -53,6 +53,38 @@ struct Flag: Codable {
 
 
 
+class FixerRequestInterceptor: RequestInterceptor {
+    
+    let retryLimit = 3
+    let retryDelay: TimeInterval = 5
+    
+    func retry(_ request: Request,
+               for session: Session,
+               dueTo error: Error,
+               completion: @escaping (RetryResult) -> Void) {
+        
+        let response = request.task?.response as? HTTPURLResponse
+        //
+        print(error)
+        if let response = response {
+            print(response.statusCode)
+        }
+        if let response = response, response.statusCode != 200,
+            request.retryCount < retryLimit {
+                print(response.statusCode)
+                completion(.retryWithDelay(retryDelay))
+        } else {
+              return completion(.doNotRetry)
+        }
+       
+    }
+}
+ 
+
+
+
+
+
 class AppData: ObservableObject {
     
     @Published var conversionInfo: ConversionInfoViewModel!
@@ -71,37 +103,68 @@ class AppData: ObservableObject {
                                                             type: .rate
                                                         )
     @Published var currenciesErrorDisplayed = false
-
+    
     
     var ratePublisher: AnyCancellable?
     var conversionType: ConversionType = .baseToTarget
    
-    let timeSeriesEndpoint = "timeseries"
-    let currenciesEndpoint = "symbols"
-    var currenciesURL = "" 
+    var currenciesURL: URL?
     var selectedCurrencyType: CurrencyType = .base
     var isOffline = false
     
     var APIKey = ""
     
+    let sessionManager: Session = {
+          
+          let configuration = URLSessionConfiguration.af.default
+          
+          configuration.requestCachePolicy = .returnCacheDataElseLoad
+          
+          let responseCacher = ResponseCacher(behavior: .modify { _, response in
+              let userInfo = ["date": Date()]
+              return CachedURLResponse(
+                  response: response.response,
+                  data: response.data,
+                  userInfo: userInfo,
+                  storagePolicy: .allowed)
+              })
+          
+          let interceptor = FixerRequestInterceptor()
+          return Session(configuration: configuration,  interceptor: interceptor, cachedResponseHandler: responseCacher)
+      }()
+    
     
     var baseCurrencyFlagURL: String {
+        
         let currency = conversionInfo.baseCurrency.lowercased()
-        let start = currency.startIndex
-        let end = currency.index(after: start)
-        let countryCode = currency[start...end]
-        return "https://www.countryflags.io/\(countryCode)/flat/64.png"
+        return getFlagURL(of: currency)
     }
     
     var targetCurrencyFlagURL: String {
-             let currency = conversionInfo.targetCurrency.lowercased()
-             let start = currency.startIndex
-             let end = currency.index(after: start)
-             let countryCode = currency[start...end]
-             return "https://www.countryflags.io/\(countryCode)/flat/64.png"
+        
+        let currency = conversionInfo.targetCurrency.lowercased()
+        return getFlagURL(of: currency)
     }
     
-    func rateTimeseriesURL(daysPast: Int) -> String {
+    func getFlagURL(of currency: String) -> String {
+        
+        let start = currency.startIndex
+        let end = currency.index(after: start)
+        let countryCode = currency[start...end]
+        
+        var components = URLComponents()
+        components.scheme = "https"
+        components.host = "www.countryflags.io"
+        components.path = "/\(countryCode)/flat/64.png"
+        
+        if let url = components.url {
+            return url.absoluteString
+        } else {
+            return ""
+        }
+    }
+    
+    func rateTimeseriesURL(daysPast: Int) -> URL? {
        
         let formatter = DateFormatter()
         formatter.dateStyle = .short
@@ -113,15 +176,24 @@ class AppData: ObservableObject {
         let startDate = formatter.string(from: daysAgo)
         let endDate = formatter.string(from: today)
         
-         let symbol = conversionInfo.targetCurrency
-         let base = conversionInfo.baseCurrency
+        var components = URLComponents()
+        components.scheme = "https"
+        components.host = "api.exchangerate.host"
+        components.path = "/timeseries"
+        components.queryItems = [
+            URLQueryItem(name: "start_date", value: startDate),
+            URLQueryItem(name: "end_date", value: endDate),
+            URLQueryItem(name: "base", value: conversionInfo.baseCurrency),
+            URLQueryItem(name: "symbols", value: conversionInfo.targetCurrency)
+        ]
         
-        return "https://api.exchangerate.host/\(timeSeriesEndpoint)?start_date=\(startDate)&end_date=\(endDate)&base=\(base)&symbols=\(symbol)"
+        return components.url
+        
     }
     
-    var rateEndpoint: String {
+    var rateURL: URL? {
  
-        let today = Date(timeIntervalSinceNow: TimeInterval(-1 * 24 * 60 * 60) ) //Date()
+        let today = Date(timeIntervalSinceNow: TimeInterval(-1 * 24 * 60 * 60) )
         let formatter = DateFormatter()
        
         formatter.dateStyle = .short
@@ -130,7 +202,17 @@ class AppData: ObservableObject {
         
         let formattedDate = formatter.string(from: today)
         
-        return   "http://data.fixer.io/api/\(formattedDate)?access_key=\(APIKey)&base=\(conversionInfo.baseCurrency)&symbols=\(conversionInfo.targetCurrency)"
+        var components = URLComponents()
+        components.scheme = "http"
+        components.host = "data.fixer.io"
+        components.path = "/api/\(formattedDate)"
+        components.queryItems = [
+            URLQueryItem(name: "access_key", value: APIKey),
+            URLQueryItem(name: "base", value: conversionInfo.baseCurrency),
+            URLQueryItem(name: "symbols", value: conversionInfo.targetCurrency)
+        ]
+        
+        return components.url
     }
     
     var isRateAvailable: Bool {
@@ -141,45 +223,55 @@ class AppData: ObservableObject {
         
         let plistFilename = "FIXER-Info"
         let plistKey = "FIXER-APIKEY"
-        
+        var components = URLComponents()
+       
         APIKey = loadAPIKey(plistKey: plistKey, plistFilename: plistFilename)
         
-        currenciesURL = "http://data.fixer.io/api/\(currenciesEndpoint)?access_key=\(APIKey)"
+        components.scheme = "http"
+        components.host = "data.fixer.io"
+        components.path = "/api/symbols"
+        components.queryItems = [URLQueryItem(name: "access_key", value: APIKey)]
+        currenciesURL = components.url
+        
         self.conversionInfo = ConversionInfoViewModel(conversionInfo: ConversionInfo(baseCurrencyAmt: 0, targetCurrencyAmt: 0, baseCurrency: "EUR", targetCurrency: "NGN", rate: nil, mode: 0, pos: .zero))
         
         loadCurrencies()
+        
     }
     
     ///  Fetches currencies from the currencies url and execute the completion handler
     func loadCurrencies(completion: @escaping ()->() = {}) {
         
+        guard let url = currenciesURL else { return }
+        //let parameters = ["access_key": APIKey]
+        
         DispatchQueue.main.async {
             self.currenciesNetworkStatus = .pending
         }
         
-        Alamofire.request(currenciesURL).response { response in
+        sessionManager.request(url).response { response in
+            
             // check if there was an error reaching the server and network error is currently not displayed
-            if let networkError = response.error  {
-                self.updateError(newNetworkError: networkError)
-                self.currenciesNetworkStatus = .failed
+               if let networkError = response.error  {
+                   self.updateError(newNetworkError: networkError)
+                   self.currenciesNetworkStatus = .failed
+               }
             
-            }
-            
-            let decoder = JSONDecoder()
-            if let data = response.data {
-                  if  let result = try? decoder.decode(CurrenciesResponse.self, from: data) {
-                    self.updateConversionInfo(currencies: result.symbols.sorted(by: {$0.0 < $1.0 }))
-                    self.currenciesNetworkStatus = .completed
-                } else if let result = try? decoder.decode(FailureResponse.self, from: data) {
-                    self.updateError(newRateError: result.error)
-                     self.currenciesNetworkStatus = .completed
-                 } else {}
-                
+               let decoder = JSONDecoder()
+               if let data = response.data {
+                     if  let result = try? decoder.decode(CurrenciesResponse.self, from: data) {
+                       self.updateConversionInfo(currencies: result.symbols.sorted(by: {$0.0 < $1.0 }))
+                       self.currenciesNetworkStatus = .completed
+                   } else if let result = try? decoder.decode(FailureResponse.self, from: data) {
+                       self.updateError(newRateError: result.error)
+                        self.currenciesErrorDisplayed = true
+                        self.currenciesNetworkStatus = .completed
+                    } else {}
+               }
                
-            }
-            
-            completion()
+               completion()
         }
+        
     }
     
     func toggleErrorMsg() {
@@ -203,12 +295,13 @@ class AppData: ObservableObject {
     ///  Fetches timeseries of an exchange rate using the timeseries url and execute the completion handler
     func loadRateTimeseries(completion: @escaping ()->() = {}) {
         
+        guard let url = rateTimeseriesURL(daysPast: conversionInfo.conversionInfo.mode == 0 ? 30 : 90) else { return }
+        
         DispatchQueue.main.async {
             self.timeseriesNetworkStatus = .pending
         }
         
-        let url = rateTimeseriesURL(daysPast: conversionInfo.conversionInfo.mode == 0 ? 30 : 90)
-        Alamofire.request(url).response { response in
+        sessionManager.request(url).response { response in
             if let error = response.error {
                 self.updateError(newNetworkError: error)
                 self.conversionInfo.conversionInfo.rates = nil
@@ -230,19 +323,19 @@ class AppData: ObservableObject {
     }
     
     /// Fetches conversion rate using the conversion rate url and updates conversionInfo view model with it
-    
     func loadConversionRate(completion: @escaping ()->()) {
+        
+        guard let url = rateURL else { return }
         
         DispatchQueue.main.async {
             self.rateNetworkStatus = .pending
         }
          
-        Alamofire.request(rateEndpoint).response { response in
+        sessionManager.request(url).response { response in
             if let error = response.error {
                 self.updateConversionInfo(with: nil)
                 self.updateError(newNetworkError: error)
                 if !self.isErrorAlertDisplayed() {
-                         
                     self.toggleErrorMsg()
                 }
                 self.rateNetworkStatus = .failed
@@ -263,6 +356,8 @@ class AppData: ObservableObject {
             completion()
         }
     }
+    
+   
     
     // The following methods update properties of the conversion view model
     
@@ -337,33 +432,26 @@ class AppData: ObservableObject {
         }
     }
     
-    
-    func loadFlag(url: String, completed: @escaping (Flag?) -> ()) {
-            if let url = URL(string: url) {
-               let urlRequest = URLRequest(url: url)
-               let session = URLSession.shared
-               ratePublisher = session.dataTaskPublisher(for: urlRequest)
-               .tryMap({ data, response -> Data? in
-                   if let res = response as? HTTPURLResponse {
-                       
-                       if res.statusCode == 200 { // returned anything
-                           return data
-                       }
-                   }
-                   return nil
-               })
-               .receive(on: RunLoop.main)
-               .assertNoFailure()
-               .sink(receiveValue: { data in
-                   let decoder = JSONDecoder()
-                   if let responseData = data,
-                       let result = try? decoder.decode([Flag].self, from: responseData) {
-                        completed(result.first)
-                   }
-    
-               })
-           }
-       }
+    func getCurrencyFlag(currency: String) -> String {
+        
+        let currency = currency.lowercased()
+        let start = currency.startIndex
+        let end = currency.index(after: start)
+        let countryCode = currency[start...end]
+        
+        var components = URLComponents()
+        components.scheme = "https"
+        components.host = "www.countryflags.io"
+        components.path = "/\(countryCode)/flat/64.png"
+        
+        if let url = components.url {
+            return url.absoluteString
+        } else {
+            return ""
+        }
+        
+        
+    }
     
     // The following methods update properties of the Error view model
     
