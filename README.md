@@ -1,5 +1,5 @@
 # CowrywiseCC
-A Currency Calculator developed with SwiftUI, UIkit and iOS charts using the MVVM architecture.
+A Currency Calculator developed with SwiftUI, UIkit and iOS charts using the MVVM architecture. Currently only supports EURO as base currency
 <br>
 <strong>Note:<strong> Xcode has issues with submodules,so the charts framework has to be cloned manually from the terminal after cloning this repo:
  <ul>
