@@ -66,7 +66,7 @@ struct CurrencyList: View {
                             .onTapGesture {
                                 self.tempSelectedCurrency = currency
                         }
-                        .listRowBackground(self.tempSelectedCurrency == currency ? Color.gray : Color.clear)
+                        .listRowBackground(self.tempSelectedCurrency == currency ? Color(UIColor.systemGray4) : Color.clear)
                     }
                 }
             }

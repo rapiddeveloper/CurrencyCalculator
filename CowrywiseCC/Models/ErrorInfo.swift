@@ -29,7 +29,7 @@ struct ErrorViewModel {
             case .timeseries:
                  msg = "No results available"
             case .networkFailure:
-                 msg = "Cuurency Converter seems to be offline"
+                 msg = "Currency Converter seems to be offline"
             case .currencies:
                         let temp = error.type.replacingOccurrences(of: "_", with: " ")
                         msg = temp.capitalized
